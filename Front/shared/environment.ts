@@ -24,5 +24,10 @@ export const Environment = {
     /**
      * サイトのURL
      */
-    siteUrl: ''
+    siteUrl: '',
+
+    /**
+     * サイトの著作権
+     */
+     siteCopyright: '© 2022 Othello Web',
 } as const;
