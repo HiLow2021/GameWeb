@@ -24,6 +24,5 @@ export const Environment = {
     /**
      * サイトのURL
      */
-    siteUrl: process.env.SITE_URL,
-
+    siteUrl: ''
 } as const;

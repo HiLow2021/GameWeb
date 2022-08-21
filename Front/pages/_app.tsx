@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Environment } from '../shared/environment';
 import '../styles/globals.css';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps): JSX.Element => {
     return (
         <>
             <Head>
