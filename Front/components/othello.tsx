@@ -1,4 +1,11 @@
-import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
+import { useState } from 'react';
+import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
+
+type Stone = {
+    x: number;
+    y: number;
+    color: string;
+};
 
 const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
     const cellCount = 8;
@@ -8,10 +15,26 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const strokeWidth = 4;
     const strokeWidthHalf = strokeWidth / 2;
 
+    const [stones, setStones] = useState<Stone[]>([
+        { x: cellCountHalf - 1, y: cellCountHalf - 1, color: 'white' },
+        { x: cellCountHalf - 1, y: cellCountHalf, color: 'black' },
+        { x: cellCountHalf, y: cellCountHalf - 1, color: 'black' },
+        { x: cellCountHalf, y: cellCountHalf, color: 'white' }
+    ]);
+
     return (
         <>
-            <Stage width={width} height={height}>
-                <Layer>
+            <Stage
+                width={width}
+                height={height}
+                onClick={(e) => {
+                    const x = Math.floor(e.evt.offsetX / cellWidth);
+                    const y = Math.floor(e.evt.offsetY / cellHeight);
+
+                    setStones((stone) => [...stone, { x, y, color: 'black' }]);
+                }}
+            >
+                <Layer key="othello-board-layer">
                     <Rect fill="green" width={width} height={height} />
                     <Rect
                         stroke="black"
@@ -46,17 +69,17 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             />
                         ))
                     )}
-                    {[cellCountHalf, cellCountHalf + 1].map((y) =>
-                        [cellCountHalf, cellCountHalf + 1].map((x) => (
-                            <Ellipse
-                                fill={(x + y) % 2 == 1 ? 'black' : 'white'}
-                                x={cellWidth * x - cellWidth / 2 + strokeWidthHalf}
-                                y={cellHeight * y - cellHeight / 2 + strokeWidthHalf}
-                                radiusX={cellWidth / 3}
-                                radiusY={cellHeight / 3}
-                            />
-                        ))
-                    )}
+                </Layer>
+                <Layer key="othello-stone-layer">
+                    {stones.map((stone) => (
+                        <Ellipse
+                            fill={stone.color}
+                            x={cellWidth * stone.x + cellWidth / 2 + strokeWidthHalf}
+                            y={cellHeight * stone.y + cellHeight / 2 + strokeWidthHalf}
+                            radiusX={cellWidth / 3}
+                            radiusY={cellHeight / 3}
+                        />
+                    ))}
                 </Layer>
             </Stage>
         </>
