@@ -3,10 +3,10 @@ import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
 const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
     const cellCount = 8;
     const cellCountHalf = cellCount / 2;
-    const strokeWidth = 4;
-    const strokeWidthHalf = strokeWidth / 2;
     const cellWidth = width / cellCount;
     const cellHeight = height / cellCount;
+    const strokeWidth = 4;
+    const strokeWidthHalf = strokeWidth / 2;
 
     return (
         <>
