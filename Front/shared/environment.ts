@@ -29,5 +29,5 @@ export const Environment = {
     /**
      * サイトの著作権
      */
-     siteCopyright: '© 2022 Othello Web',
+    siteCopyright: '© 2022 Othello Web'
 } as const;
