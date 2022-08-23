@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
+import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
 
 type Stone = {
     x: number;
