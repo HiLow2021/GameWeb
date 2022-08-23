@@ -1,11 +1,11 @@
-import { CellType } from './cellType';
+import { OthelloBoardCell } from './enums/othelloBoardCell';
 
 export class OthelloBoard {
     public readonly size: number;
 
     public readonly halfSize: number;
 
-    public readonly cells: CellType[][];
+    public readonly cells: OthelloBoardCell[][];
 
     public constructor(size: number) {
         this.size = size;
@@ -23,28 +23,28 @@ export class OthelloBoard {
     public initialize(): void {
         for (let y = 0; y < this.cells.length; y++) {
             for (let x = 0; x < this.cells[y].length; x++) {
-                this.cells[y][x] = CellType.empty;
+                this.cells[y][x] = OthelloBoardCell.empty;
             }
         }
-        this.cells[this.halfSize - 1][this.halfSize - 1] = CellType.white;
-        this.cells[this.halfSize][this.halfSize - 1] = CellType.black;
-        this.cells[this.halfSize - 1][this.halfSize] = CellType.black;
-        this.cells[this.halfSize][this.halfSize] = CellType.white;
+        this.cells[this.halfSize - 1][this.halfSize - 1] = OthelloBoardCell.white;
+        this.cells[this.halfSize][this.halfSize - 1] = OthelloBoardCell.black;
+        this.cells[this.halfSize - 1][this.halfSize] = OthelloBoardCell.black;
+        this.cells[this.halfSize][this.halfSize] = OthelloBoardCell.white;
     }
 
-    public get(x: number, y: number): CellType {
+    public get(x: number, y: number): OthelloBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return CellType.outOfRange;
+            return OthelloBoardCell.outOfRange;
         }
 
         return this.cells[y][x];
     }
 
-    public getCount(cellType: CellType): number {
+    public getCount(cell: OthelloBoardCell): number {
         let count = 0;
         for (let y = 0; y < this.cells.length; y++) {
             for (let x = 0; x < this.cells[y].length; x++) {
-                if (this.cells[y][x] === cellType) {
+                if (this.cells[y][x] === cell) {
                     count++;
                 }
             }
@@ -53,12 +53,12 @@ export class OthelloBoard {
         return count;
     }
 
-    public set(x: number, y: number, cellType: CellType): void {
+    public set(x: number, y: number, cell: OthelloBoardCell): void {
         if (!this.isWithinRange(x, y)) {
             return;
         }
 
-        this.cells[y][x] = cellType;
+        this.cells[y][x] = cell;
     }
 
     private isWithinRange(x: number, y: number): boolean {

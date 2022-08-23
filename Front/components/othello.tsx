@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
-import { CellType } from '../shared/othello/cellType';
+import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
 import { OthelloBoard } from '../shared/othello/othelloBoard';
 
 type Coordinate = {
@@ -11,15 +11,15 @@ type Coordinate = {
 };
 
 const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const cellCount = 8;
-    const cellCountHalf = cellCount / 2;
-    const cellWidth = width / cellCount;
-    const cellHeight = height / cellCount;
+    const size = 8;
+    const sizeHalf = size / 2;
+    const cellWidth = width / size;
+    const cellHeight = height / size;
     const strokeWidth = 4;
     const strokeWidthHalf = strokeWidth / 2;
-    const othelloBoard = new OthelloBoard(cellCount);
+    const othelloBoard = new OthelloBoard(size);
 
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellTypesToStones(othelloBoard.cells));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloBoard.cells));
 
     return (
         <>
@@ -57,8 +57,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             points={[0, cellHeight * (i + 1) + strokeWidthHalf, width, cellHeight * (i + 1) + strokeWidthHalf]}
                         />
                     ))}
-                    {[cellCountHalf - 2, cellCountHalf + 2].map((y) =>
-                        [cellCountHalf - 2, cellCountHalf + 2].map((x) => (
+                    {[sizeHalf - 2, sizeHalf + 2].map((y) =>
+                        [sizeHalf - 2, sizeHalf + 2].map((x) => (
                             <Ellipse
                                 fill="black"
                                 x={cellWidth * x + strokeWidthHalf}
@@ -85,13 +85,13 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     );
 };
 
-function convertCellTypesToStones(cellTypes: CellType[][]): Coordinate[] {
+function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
     const coordinates: Coordinate[] = [];
-    for (let y = 0; y < cellTypes.length; y++) {
-        for (let x = 0; x < cellTypes[y].length; x++) {
+    for (let y = 0; y < cells.length; y++) {
+        for (let x = 0; x < cells[y].length; x++) {
             let coordinate: Coordinate;
 
-            switch (cellTypes[y][x]) {
+            switch (cells[y][x]) {
                 case 'black':
                     coordinate = { x, y, color: 'black', shape: 'ellipse' };
                     break;
