@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
 import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
-import { OthelloBoard } from '../shared/othello/othelloBoard';
+import { OthelloManager } from '../shared/othello/othelloManager';
 
 type Coordinate = {
     x: number;
@@ -17,9 +17,9 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const cellHeight = height / size;
     const strokeWidth = 4;
     const strokeWidthHalf = strokeWidth / 2;
-    const othelloBoard = new OthelloBoard(size);
+    const othelloManager = new OthelloManager(size);
 
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloBoard.cells));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
 
     return (
         <>
@@ -30,7 +30,9 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                     const x = Math.floor(e.evt.offsetX / cellWidth);
                     const y = Math.floor(e.evt.offsetY / cellHeight);
 
-                    setCoordinates((coordinates) => [...coordinates, { x, y, color: 'black', shape: '' }]);
+                    if (othelloManager.next(x, y)) {
+                        setCoordinates((coordinates) => [...coordinates, { x, y, color: 'black', shape: '' }]);
+                    }
                 }}
             >
                 <Layer key="othello-board-layer">
