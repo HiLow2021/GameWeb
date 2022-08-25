@@ -1,14 +1,14 @@
 export class Vector {
-    public static readonly up: Vector = { x: 0, y: -1 };
-    public static readonly upRight: Vector = { x: 1, y: -1 };
-    public static readonly right: Vector = { x: 1, y: 0 };
-    public static readonly downRight: Vector = { x: 1, y: 1 };
-    public static readonly down: Vector = { x: 0, y: 1 };
-    public static readonly downLeft: Vector = { x: -1, y: 1 };
-    public static readonly left: Vector = { x: -1, y: 0 };
-    public static readonly upLeft: Vector = { x: -1, y: -1 };
+    public static readonly up = new Vector(0, -1);
+    public static readonly upRight = new Vector(1, -1);
+    public static readonly right = new Vector(1, 0);
+    public static readonly downRight = new Vector(1, 1);
+    public static readonly down = new Vector(0, 1);
+    public static readonly downLeft = new Vector(-1, 1);
+    public static readonly left = new Vector(-1, 0);
+    public static readonly upLeft = new Vector(-1, -1);
 
-    public static readonly all: Vector[] = [
+    public static readonly all = [
         Vector.up,
         Vector.upRight,
         Vector.right,
