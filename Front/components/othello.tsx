@@ -19,10 +19,11 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const strokeWidth = 4;
     const strokeWidthHalf = strokeWidth / 2;
 
-    const [othelloManager, _] = useState<OthelloManager>(new OthelloManager(size));
+    const [othelloManager] = useState<OthelloManager>(new OthelloManager(size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
+    const [isOpponent] = useState(() => () => othelloManager.currentTurn === 'white');
 
     return (
         <>
@@ -41,7 +42,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         setCanClick((_) => false);
                         setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
 
-                        while (othelloManager.currentTurn === 'white') {
+                        while (isOpponent()) {
                             await CommonUtility.delay(1000);
                             await othelloManager.nextByAI();
 
@@ -104,7 +105,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 radiusX={cellWidth / 3}
                                 radiusY={cellHeight / 3}
                             />
-                        ) : (
+                        ) : !isOpponent() ? (
                             <Rect
                                 stroke={coordinate.color}
                                 strokeWidth={strokeWidth}
@@ -113,6 +114,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 width={cellWidth - strokeWidth * 2}
                                 height={cellHeight - strokeWidth * 2}
                             />
+                        ) : (
+                            <></>
                         )
                     )}
                 </Layer>
