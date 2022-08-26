@@ -21,18 +21,36 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const [othelloManager, _] = useState<OthelloManager>(new OthelloManager(size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
+    const [canClick, setCanClick] = useState(true);
 
     return (
         <>
             <Stage
                 width={width}
                 height={height}
-                onClick={(e) => {
-                    const x = Math.floor(e.evt.offsetX / cellWidth);
-                    const y = Math.floor(e.evt.offsetY / cellHeight);
+                onClick={async (e) => {
+                    if (!canClick) {
+                        return;
+                    }
 
-                    if (othelloManager.next(x, y)) {
+                    const x1 = Math.floor(e.evt.offsetX / cellWidth);
+                    const y1 = Math.floor(e.evt.offsetY / cellHeight);
+
+                    if (othelloManager.next(x1, y1)) {
+                        setCanClick((_) => false);
                         setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+
+                        const response = await fetch('/api/calculateNext', {
+                            method: 'POST',
+                            body: JSON.stringify({ cells: othelloManager.board.cells, currentTurn: othelloManager.currentTurn })
+                        });
+                        const position = await response.json();
+
+                        await delay(1000);
+
+                        othelloManager.next(position.x, position.y);
+                        setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                        setCanClick((_) => true);
                     }
                 }}
                 onMouseMove={(e) => {
@@ -148,6 +166,10 @@ function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
     }
 
     return coordinates;
+}
+
+function delay(milliSeconds: number): Promise<void> {
+    return new Promise((res) => setTimeout(res, milliSeconds));
 }
 
 export default Othello;

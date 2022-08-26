@@ -1,34 +1,38 @@
 import { OthelloBoardCell } from './enums/othelloBoardCell';
 
 export class OthelloBoard {
+    private _cells: OthelloBoardCell[][];
+
     public readonly size: number;
 
     public readonly halfSize: number;
 
-    public readonly cells: OthelloBoardCell[][];
+    get cells(): OthelloBoardCell[][] {
+        return this._cells;
+    }
 
     public constructor(size: number) {
         this.size = size;
         this.halfSize = size / 2;
 
-        this.cells = new Array(size);
+        this._cells = new Array(size);
         for (let index = 0; index < size; index++) {
-            this.cells[index] = new Array(size);
+            this._cells[index] = new Array(size);
         }
 
         this.validate();
     }
 
     public initialize(): void {
-        for (let y = 0; y < this.cells.length; y++) {
-            for (let x = 0; x < this.cells[y].length; x++) {
-                this.cells[y][x] = OthelloBoardCell.empty;
+        for (let y = 0; y < this._cells.length; y++) {
+            for (let x = 0; x < this._cells[y].length; x++) {
+                this._cells[y][x] = OthelloBoardCell.empty;
             }
         }
-        this.cells[this.halfSize - 1][this.halfSize - 1] = OthelloBoardCell.white;
-        this.cells[this.halfSize][this.halfSize - 1] = OthelloBoardCell.black;
-        this.cells[this.halfSize - 1][this.halfSize] = OthelloBoardCell.black;
-        this.cells[this.halfSize][this.halfSize] = OthelloBoardCell.white;
+        this._cells[this.halfSize - 1][this.halfSize - 1] = OthelloBoardCell.white;
+        this._cells[this.halfSize][this.halfSize - 1] = OthelloBoardCell.black;
+        this._cells[this.halfSize - 1][this.halfSize] = OthelloBoardCell.black;
+        this._cells[this.halfSize][this.halfSize] = OthelloBoardCell.white;
     }
 
     public get(x: number, y: number): OthelloBoardCell {
@@ -36,7 +40,7 @@ export class OthelloBoard {
             return OthelloBoardCell.outOfRange;
         }
 
-        return this.cells[y][x];
+        return this._cells[y][x];
     }
 
     public set(x: number, y: number, cell: OthelloBoardCell): void {
@@ -44,14 +48,18 @@ export class OthelloBoard {
             return;
         }
 
-        this.cells[y][x] = cell;
+        this._cells[y][x] = cell;
+    }
+
+    public setAll(cells: OthelloBoardCell[][]): void {
+        this._cells = cells;
     }
 
     public getCount(cell: OthelloBoardCell): number {
         let count = 0;
-        for (let y = 0; y < this.cells.length; y++) {
-            for (let x = 0; x < this.cells[y].length; x++) {
-                if (this.cells[y][x] === cell) {
+        for (let y = 0; y < this._cells.length; y++) {
+            for (let x = 0; x < this._cells[y].length; x++) {
+                if (this._cells[y][x] === cell) {
                     count++;
                 }
             }
@@ -61,10 +69,10 @@ export class OthelloBoard {
     }
 
     public reset(cell: OthelloBoardCell): void {
-        for (let y = 0; y < this.cells.length; y++) {
-            for (let x = 0; x < this.cells[y].length; x++) {
-                if (this.cells[y][x] === cell) {
-                    this.cells[y][x] = OthelloBoardCell.empty;
+        for (let y = 0; y < this._cells.length; y++) {
+            for (let x = 0; x < this._cells[y].length; x++) {
+                if (this._cells[y][x] === cell) {
+                    this._cells[y][x] = OthelloBoardCell.empty;
                 }
             }
         }
