@@ -46,6 +46,20 @@ export class OthelloManager {
         return false;
     }
 
+    public async nextByAI(): Promise<boolean> {
+        if (this.isFinished) {
+            false;
+        }
+
+        const response = await fetch('/api/calculateNext', {
+            method: 'POST',
+            body: JSON.stringify({ cells: this.board.cells, currentTurn: this.currentTurn })
+        });
+        const position = await response.json();
+
+        return this.next(position.x, position.y);
+    }
+
     private rotateTurn(): void {
         const canBlackTurn = this.canPutAll(OthelloBoardCell.black);
         const canWhiteTurn = this.canPutAll(OthelloBoardCell.white);

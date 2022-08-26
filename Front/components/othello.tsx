@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
+import { CommonUtility } from '../shared/commonUtility';
 import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
 import { OthelloManager } from '../shared/othello/othelloManager';
 
@@ -40,16 +41,13 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         setCanClick((_) => false);
                         setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
 
-                        const response = await fetch('/api/calculateNext', {
-                            method: 'POST',
-                            body: JSON.stringify({ cells: othelloManager.board.cells, currentTurn: othelloManager.currentTurn })
-                        });
-                        const position = await response.json();
+                        while (othelloManager.currentTurn === 'white') {
+                            await CommonUtility.delay(1000);
+                            await othelloManager.nextByAI();
 
-                        await delay(1000);
+                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                        }
 
-                        othelloManager.next(position.x, position.y);
-                        setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
                         setCanClick((_) => true);
                     }
                 }}
@@ -166,10 +164,6 @@ function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
     }
 
     return coordinates;
-}
-
-function delay(milliSeconds: number): Promise<void> {
-    return new Promise((res) => setTimeout(res, milliSeconds));
 }
 
 export default Othello;
