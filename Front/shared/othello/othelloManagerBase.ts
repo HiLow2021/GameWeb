@@ -3,8 +3,8 @@ import { Turn } from './enums/turn';
 import { Vector } from './vector';
 import { OthelloBoard } from './othelloBoard';
 
-export class OthelloManagerBase {
-    private _currentTurn: Turn = Turn.black;
+export abstract class OthelloManagerBase {
+    protected _currentTurn: Turn = Turn.black;
 
     public readonly board: OthelloBoard;
 
@@ -28,7 +28,6 @@ export class OthelloManagerBase {
     public initialize(): void {
         this._currentTurn = Turn.black;
         this.board.initialize();
-        this.setHighLight(this.currentStone);
     }
 
     public next(x: number, y: number): boolean {
@@ -38,7 +37,6 @@ export class OthelloManagerBase {
 
         if (this.put(x, y, this.currentStone)) {
             this.rotateTurn();
-            this.setHighLight(this.currentStone);
 
             return true;
         }
@@ -46,7 +44,7 @@ export class OthelloManagerBase {
         return false;
     }
 
-    private rotateTurn(): void {
+    protected rotateTurn(): void {
         const canBlackTurn = this.canPutAll(OthelloBoardCell.black);
         const canWhiteTurn = this.canPutAll(OthelloBoardCell.white);
 
@@ -59,7 +57,7 @@ export class OthelloManagerBase {
         }
     }
 
-    private canPut(x: number, y: number, chip: OthelloBoardCell): boolean {
+    protected canPut(x: number, y: number, chip: OthelloBoardCell): boolean {
         const currentChip = this.board.get(x, y);
         if (currentChip !== OthelloBoardCell.empty && currentChip !== OthelloBoardCell.highLight) {
             return false;
@@ -74,7 +72,7 @@ export class OthelloManagerBase {
         return false;
     }
 
-    private canPutAll(chip: OthelloBoardCell): boolean {
+    protected canPutAll(chip: OthelloBoardCell): boolean {
         for (let x = 0; x < this.board.size; x++) {
             for (let y = 0; y < this.board.size; y++) {
                 if (this.canPut(x, y, chip)) {
@@ -86,7 +84,7 @@ export class OthelloManagerBase {
         return false;
     }
 
-    private put(x: number, y: number, chip: OthelloBoardCell): boolean {
+    protected put(x: number, y: number, chip: OthelloBoardCell): boolean {
         if (!this.canPut(x, y, chip)) {
             return false;
         }
@@ -102,7 +100,7 @@ export class OthelloManagerBase {
         return count > 0;
     }
 
-    private reverse(x1: number, y1: number, dx: number, dy: number, chip1: OthelloBoardCell, isSearchOnly = false): number {
+    protected reverse(x1: number, y1: number, dx: number, dy: number, chip1: OthelloBoardCell, isSearchOnly = false): number {
         x1 += dx;
         y1 += dy;
 
@@ -133,19 +131,7 @@ export class OthelloManagerBase {
         return count;
     }
 
-    private setHighLight(chip: OthelloBoardCell): void {
-        this.board.reset(OthelloBoardCell.highLight);
-
-        for (let x = 0; x < this.board.size; x++) {
-            for (let y = 0; y < this.board.size; y++) {
-                if (this.canPut(x, y, chip)) {
-                    this.board.set(x, y, OthelloBoardCell.highLight);
-                }
-            }
-        }
-    }
-
-    private canSearch(chip1: OthelloBoardCell, chip2: OthelloBoardCell): boolean {
+    protected canSearch(chip1: OthelloBoardCell, chip2: OthelloBoardCell): boolean {
         return (
             (chip1 == OthelloBoardCell.black && chip2 == OthelloBoardCell.white) ||
             (chip2 == OthelloBoardCell.black && chip1 == OthelloBoardCell.white)
