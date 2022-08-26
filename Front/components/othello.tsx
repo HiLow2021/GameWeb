@@ -34,10 +34,10 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         return;
                     }
 
-                    const x1 = Math.floor(e.evt.offsetX / cellWidth);
-                    const y1 = Math.floor(e.evt.offsetY / cellHeight);
+                    const x = Math.floor(e.evt.offsetX / cellWidth);
+                    const y = Math.floor(e.evt.offsetY / cellHeight);
 
-                    if (othelloManager.next(x1, y1)) {
+                    if (othelloManager.next(x, y)) {
                         setCanClick((_) => false);
                         setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
 
