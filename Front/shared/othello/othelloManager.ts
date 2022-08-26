@@ -4,7 +4,7 @@ import { Vector } from './vector';
 import { OthelloBoard } from './othelloBoard';
 
 export class OthelloManager {
-    private _currentTurn: Turn;
+    private _currentTurn: Turn = Turn.black;
 
     public readonly board: OthelloBoard;
 
@@ -22,10 +22,13 @@ export class OthelloManager {
 
     public constructor(size: number) {
         this.board = new OthelloBoard(size);
-        this._currentTurn = Turn.black;
+        this.initialize();
     }
 
-    public initialize(): void {}
+    public initialize(): void {
+        this._currentTurn = Turn.black;
+        this.board.initialize();
+    }
 
     public next(x: number, y: number): boolean {
         if (this.isFinished) {

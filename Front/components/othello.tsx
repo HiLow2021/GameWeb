@@ -17,8 +17,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const cellHeight = height / size;
     const strokeWidth = 4;
     const strokeWidthHalf = strokeWidth / 2;
-    const othelloManager = new OthelloManager(size);
 
+    const [othelloManager, _] = useState<OthelloManager>(new OthelloManager(size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
 
     return (
@@ -31,7 +31,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                     const y = Math.floor(e.evt.offsetY / cellHeight);
 
                     if (othelloManager.next(x, y)) {
-                        setCoordinates((coordinates) => [...coordinates, { x, y, color: 'black', shape: '' }]);
+                        setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
                     }
                 }}
             >

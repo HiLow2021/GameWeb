@@ -17,7 +17,6 @@ export class OthelloBoard {
         }
 
         this.validate();
-        this.initialize();
     }
 
     public initialize(): void {
