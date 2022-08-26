@@ -69,14 +69,14 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         width={width - strokeWidth}
                         height={height - strokeWidth}
                     />
-                    {[...Array(7)].map((_, i) => (
+                    {[...Array(size - 1)].map((_, i) => (
                         <Line
                             stroke="black"
                             strokeWidth={strokeWidth}
                             points={[cellWidth * (i + 1) + strokeWidthHalf, 0, cellWidth * (i + 1) + strokeWidthHalf, height]}
                         />
                     ))}
-                    {[...Array(7)].map((_, i) => (
+                    {[...Array(size - 1)].map((_, i) => (
                         <Line
                             stroke="black"
                             strokeWidth={strokeWidth}
