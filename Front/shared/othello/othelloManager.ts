@@ -28,6 +28,7 @@ export class OthelloManager {
     public initialize(): void {
         this._currentTurn = Turn.black;
         this.board.initialize();
+        this.setHighLight(this.currentStone);
     }
 
     public next(x: number, y: number): boolean {
@@ -37,6 +38,7 @@ export class OthelloManager {
 
         if (this.put(x, y, this.currentStone)) {
             this.rotateTurn();
+            this.setHighLight(this.currentStone);
 
             return true;
         }
@@ -129,6 +131,18 @@ export class OthelloManager {
         }
 
         return count;
+    }
+
+    private setHighLight(chip: OthelloBoardCell): void {
+        this.board.reset(OthelloBoardCell.highLight);
+
+        for (let x = 0; x < this.board.size; x++) {
+            for (let y = 0; y < this.board.size; y++) {
+                if (this.canPut(x, y, chip)) {
+                    this.board.set(x, y, OthelloBoardCell.highLight);
+                }
+            }
+        }
     }
 
     private canSearch(chip1: OthelloBoardCell, chip2: OthelloBoardCell): boolean {

@@ -72,15 +72,26 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                     )}
                 </Layer>
                 <Layer key="othello-stone-layer">
-                    {coordinates.map((coordinate) => (
-                        <Ellipse
-                            fill={coordinate.color}
-                            x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidthHalf}
-                            y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidthHalf}
-                            radiusX={cellWidth / 3}
-                            radiusY={cellHeight / 3}
-                        />
-                    ))}
+                    {coordinates.map((coordinate) =>
+                        coordinate.shape === 'ellipse' ? (
+                            <Ellipse
+                                fill={coordinate.color}
+                                x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidthHalf}
+                                y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidthHalf}
+                                radiusX={cellWidth / 3}
+                                radiusY={cellHeight / 3}
+                            />
+                        ) : (
+                            <Rect
+                                stroke={coordinate.color}
+                                strokeWidth={strokeWidth}
+                                x={cellWidth * coordinate.x + strokeWidth + strokeWidthHalf}
+                                y={cellHeight * coordinate.y + strokeWidth + strokeWidthHalf}
+                                width={cellWidth - strokeWidth * 2}
+                                height={cellHeight - strokeWidth * 2}
+                            />
+                        )
+                    )}
                 </Layer>
             </Stage>
         </>
@@ -103,7 +114,7 @@ function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
                     break;
 
                 case 'highLight':
-                    coordinate = { x, y, color: 'yellow', shape: 'rect' };
+                    coordinate = { x, y, color: 'orange', shape: 'rect' };
                     break;
 
                 default:

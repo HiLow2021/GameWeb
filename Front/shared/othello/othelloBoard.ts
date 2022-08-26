@@ -39,6 +39,14 @@ export class OthelloBoard {
         return this.cells[y][x];
     }
 
+    public set(x: number, y: number, cell: OthelloBoardCell): void {
+        if (!this.isWithinRange(x, y)) {
+            return;
+        }
+
+        this.cells[y][x] = cell;
+    }
+
     public getCount(cell: OthelloBoardCell): number {
         let count = 0;
         for (let y = 0; y < this.cells.length; y++) {
@@ -52,12 +60,14 @@ export class OthelloBoard {
         return count;
     }
 
-    public set(x: number, y: number, cell: OthelloBoardCell): void {
-        if (!this.isWithinRange(x, y)) {
-            return;
+    public reset(cell: OthelloBoardCell): void {
+        for (let y = 0; y < this.cells.length; y++) {
+            for (let x = 0; x < this.cells[y].length; x++) {
+                if (this.cells[y][x] === cell) {
+                    this.cells[y][x] = OthelloBoardCell.empty;
+                }
+            }
         }
-
-        this.cells[y][x] = cell;
     }
 
     private isWithinRange(x: number, y: number): boolean {
