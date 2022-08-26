@@ -5,7 +5,9 @@ export class OthelloBoard {
 
     public readonly size: number;
 
-    public readonly halfSize: number;
+    get halfSize(): number {
+        return this.size / 2;
+    }
 
     get cells(): OthelloBoardCell[][] {
         return this._cells;
@@ -13,7 +15,6 @@ export class OthelloBoard {
 
     public constructor(size: number) {
         this.size = size;
-        this.halfSize = size / 2;
 
         this._cells = new Array(size);
         for (let index = 0; index < size; index++) {
