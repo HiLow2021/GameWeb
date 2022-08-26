@@ -8,7 +8,7 @@ type Coordinate = {
     x: number;
     y: number;
     color: string;
-    shape: string;
+    stone: boolean;
 };
 
 const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
@@ -56,7 +56,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                     const x = Math.floor(e.evt.offsetX / cellWidth);
                     const y = Math.floor(e.evt.offsetY / cellHeight);
 
-                    setMouseCoordinate((_) => ({ x, y, color: 'pink', shape: 'rect' }));
+                    setMouseCoordinate((_) => ({ x, y, color: 'pink', stone: false }));
                 }}
             >
                 <Layer key="othello-board-layer">
@@ -97,7 +97,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                 </Layer>
                 <Layer key="othello-stone-layer">
                     {coordinates.map((coordinate) =>
-                        coordinate.shape === 'ellipse' ? (
+                        coordinate.stone ? (
                             <Ellipse
                                 fill={coordinate.color}
                                 x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidthHalf}
@@ -146,20 +146,19 @@ function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
 
             switch (cells[y][x]) {
                 case 'black':
-                    coordinate = { x, y, color: 'black', shape: 'ellipse' };
+                    coordinate = { x, y, color: 'black', stone: true };
                     break;
 
                 case 'white':
-                    coordinate = { x, y, color: 'white', shape: 'ellipse' };
+                    coordinate = { x, y, color: 'white', stone: true };
                     break;
 
                 case 'highLight':
-                    coordinate = { x, y, color: 'orange', shape: 'rect' };
+                    coordinate = { x, y, color: 'orange', stone: false };
                     break;
 
                 default:
-                    coordinate = { x, y, color: '', shape: '' };
-                    break;
+                    continue;
             }
 
             coordinates.push(coordinate);
