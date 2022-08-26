@@ -20,6 +20,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
 
     const [othelloManager, _] = useState<OthelloManager>(new OthelloManager(size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
+    const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
 
     return (
         <>
@@ -33,6 +34,12 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                     if (othelloManager.next(x, y)) {
                         setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
                     }
+                }}
+                onMouseMove={(e) => {
+                    const x = Math.floor(e.evt.offsetX / cellWidth);
+                    const y = Math.floor(e.evt.offsetY / cellHeight);
+
+                    setMouseCoordinate((_) => ({ x, y, color: 'pink', shape: 'rect' }));
                 }}
             >
                 <Layer key="othello-board-layer">
@@ -91,6 +98,20 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 height={cellHeight - strokeWidth * 2}
                             />
                         )
+                    )}
+                </Layer>
+                <Layer>
+                    {mouseCoordinate ? (
+                        <Rect
+                            stroke={mouseCoordinate.color}
+                            strokeWidth={strokeWidth}
+                            x={cellWidth * mouseCoordinate.x + strokeWidth + strokeWidthHalf}
+                            y={cellHeight * mouseCoordinate.y + strokeWidth + strokeWidthHalf}
+                            width={cellWidth - strokeWidth * 2}
+                            height={cellHeight - strokeWidth * 2}
+                        />
+                    ) : (
+                        <></>
                     )}
                 </Layer>
             </Stage>
