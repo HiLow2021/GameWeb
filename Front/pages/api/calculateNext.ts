@@ -4,7 +4,7 @@ import { Turn } from '../../shared/othello/enums/turn';
 import { OthelloAIManager } from '../../shared/othello/othelloAIManager';
 
 type RequestData = {
-    cells: OthelloBoardCell[][]
+    cells: OthelloBoardCell[][];
     currentTurn: Turn;
 };
 
@@ -15,7 +15,7 @@ type ResponseData = {
 
 const handler = (req: NextApiRequest, res: NextApiResponse<ResponseData>): void => {
     const { cells, currentTurn } = JSON.parse(req.body) as RequestData;
-    
+
     const othelloAIManager = new OthelloAIManager(cells.length);
     othelloAIManager.setBoard(cells, currentTurn);
     const position = othelloAIManager.randomMethod();
