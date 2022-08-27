@@ -34,8 +34,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
         <>
             <div className="flex flex-col gap-4 justify-center">
                 <Stage
-                    width={width}
-                    height={height + textAreaHeight}
+                    width={width + strokeWidth}
+                    height={height + strokeWidth + textAreaHeight}
                     onClick={async (e) => {
                         if (!canClick) {
                             return;
@@ -72,8 +72,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             strokeWidth={strokeWidth}
                             x={strokeWidthHalf}
                             y={strokeWidthHalf}
-                            width={width - strokeWidth}
-                            height={height - strokeWidth}
+                            width={width}
+                            height={height}
                         />
                         {[...Array(size - 1)].map((_, i) => (
                             <Line
@@ -140,26 +140,14 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         )}
                     </Layer>
                     <Layer key="othello-text-layer">
-                        <Rect fill="#505050" x={0} y={height} width={width} height={textAreaHeight} />
-                        <Line
+                        <Rect fill="#505050" x={0} y={height + strokeWidth} width={width + strokeWidth} height={textAreaHeight} />
+                        <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
-                            points={[strokeWidthHalf, height, strokeWidthHalf, height + textAreaHeight]}
-                        />
-                        <Line
-                            stroke="black"
-                            strokeWidth={strokeWidth}
-                            points={[width - strokeWidthHalf, height, width - strokeWidthHalf, height + textAreaHeight]}
-                        />
-                        <Line
-                            stroke="black"
-                            strokeWidth={strokeWidth}
-                            points={[
-                                strokeWidthHalf,
-                                height + textAreaHeight - strokeWidthHalf,
-                                width + strokeWidthHalf,
-                                height + textAreaHeight - strokeWidthHalf
-                            ]}
+                            x={strokeWidthHalf}
+                            y={height + strokeWidthHalf}
+                            width={width}
+                            height={textAreaHeight}
                         />
                         <Ellipse
                             fill="black"
