@@ -10,6 +10,9 @@
     "prettier": "prettier --write ./**/*.{ts,tsx}"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@mui/material": "^5.10.2",
     "canvas": "^2.9.3",
     "konva": "^8.3.11",
     "next": "12.2.5",

@@ -1,3 +1,4 @@
+import Button from '@mui/material/Button';
 import { useState } from 'react';
 import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
@@ -27,185 +28,208 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
 
+    const buttonStyle = { fontSize: 24 };
+
     return (
         <>
-            <Stage
-                width={width}
-                height={height + textAreaHeight}
-                onClick={async (e) => {
-                    if (!canClick) {
-                        return;
-                    }
-
-                    const x = Math.floor(e.evt.offsetX / cellWidth);
-                    const y = Math.floor(e.evt.offsetY / cellHeight);
-
-                    if (othelloManager.next(x, y)) {
-                        setCanClick((_) => false);
-                        setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
-
-                        while (isOpponent(othelloManager.currentTurn)) {
-                            await CommonUtility.delay(1000);
-                            await othelloManager.nextByAI();
-
-                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+            <div className="flex flex-col gap-4 justify-center">
+                <Stage
+                    width={width}
+                    height={height + textAreaHeight}
+                    onClick={async (e) => {
+                        if (!canClick) {
+                            return;
                         }
 
-                        setCanClick((_) => true);
-                    }
-                }}
-                onMouseMove={(e) => {
-                    const x = Math.floor(e.evt.offsetX / cellWidth);
-                    const y = Math.floor(e.evt.offsetY / cellHeight);
+                        const x = Math.floor(e.evt.offsetX / cellWidth);
+                        const y = Math.floor(e.evt.offsetY / cellHeight);
 
-                    setMouseCoordinate((_) => ({ x, y, color: 'pink', stone: false }));
-                }}
-            >
-                <Layer key="othello-board-layer">
-                    <Rect fill="green" width={width} height={height} />
-                    <Rect
-                        stroke="black"
-                        strokeWidth={strokeWidth}
-                        x={strokeWidthHalf}
-                        y={strokeWidthHalf}
-                        width={width - strokeWidth}
-                        height={height - strokeWidth}
-                    />
-                    {[...Array(size - 1)].map((_, i) => (
-                        <Line
+                        if (othelloManager.next(x, y)) {
+                            setCanClick((_) => false);
+                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+
+                            while (isOpponent(othelloManager.currentTurn)) {
+                                await CommonUtility.delay(1000);
+                                await othelloManager.nextByAI();
+
+                                setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                            }
+
+                            setCanClick((_) => true);
+                        }
+                    }}
+                    onMouseMove={(e) => {
+                        const x = Math.floor(e.evt.offsetX / cellWidth);
+                        const y = Math.floor(e.evt.offsetY / cellHeight);
+
+                        setMouseCoordinate((_) => ({ x, y, color: 'pink', stone: false }));
+                    }}
+                >
+                    <Layer key="othello-board-layer">
+                        <Rect fill="green" width={width} height={height} />
+                        <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
-                            points={[cellWidth * (i + 1) + strokeWidthHalf, 0, cellWidth * (i + 1) + strokeWidthHalf, height]}
+                            x={strokeWidthHalf}
+                            y={strokeWidthHalf}
+                            width={width - strokeWidth}
+                            height={height - strokeWidth}
                         />
-                    ))}
-                    {[...Array(size - 1)].map((_, i) => (
-                        <Line
-                            stroke="black"
-                            strokeWidth={strokeWidth}
-                            points={[0, cellHeight * (i + 1) + strokeWidthHalf, width, cellHeight * (i + 1) + strokeWidthHalf]}
-                        />
-                    ))}
-                    {[sizeHalf - 2, sizeHalf + 2].map((y) =>
-                        [sizeHalf - 2, sizeHalf + 2].map((x) => (
-                            <Ellipse
-                                fill="black"
-                                x={cellWidth * x + strokeWidthHalf}
-                                y={cellHeight * y + strokeWidthHalf}
-                                radiusX={cellWidth / 10}
-                                radiusY={cellHeight / 10}
-                            />
-                        ))
-                    )}
-                </Layer>
-                <Layer key="othello-cell-layer">
-                    {coordinates.map((coordinate) =>
-                        coordinate.stone ? (
-                            <Ellipse
-                                fill={coordinate.color}
-                                x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidthHalf}
-                                y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidthHalf}
-                                radiusX={cellWidth / 3}
-                                radiusY={cellHeight / 3}
-                            />
-                        ) : !isOpponent(othelloManager.currentTurn) ? (
-                            <Rect
-                                stroke={coordinate.color}
+                        {[...Array(size - 1)].map((_, i) => (
+                            <Line
+                                stroke="black"
                                 strokeWidth={strokeWidth}
-                                x={cellWidth * coordinate.x + strokeWidth + strokeWidthHalf}
-                                y={cellHeight * coordinate.y + strokeWidth + strokeWidthHalf}
+                                points={[cellWidth * (i + 1) + strokeWidthHalf, 0, cellWidth * (i + 1) + strokeWidthHalf, height]}
+                            />
+                        ))}
+                        {[...Array(size - 1)].map((_, i) => (
+                            <Line
+                                stroke="black"
+                                strokeWidth={strokeWidth}
+                                points={[0, cellHeight * (i + 1) + strokeWidthHalf, width, cellHeight * (i + 1) + strokeWidthHalf]}
+                            />
+                        ))}
+                        {[sizeHalf - 2, sizeHalf + 2].map((y) =>
+                            [sizeHalf - 2, sizeHalf + 2].map((x) => (
+                                <Ellipse
+                                    fill="black"
+                                    x={cellWidth * x + strokeWidthHalf}
+                                    y={cellHeight * y + strokeWidthHalf}
+                                    radiusX={cellWidth / 10}
+                                    radiusY={cellHeight / 10}
+                                />
+                            ))
+                        )}
+                    </Layer>
+                    <Layer key="othello-cell-layer">
+                        {coordinates.map((coordinate) =>
+                            coordinate.stone ? (
+                                <Ellipse
+                                    fill={coordinate.color}
+                                    x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidthHalf}
+                                    y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidthHalf}
+                                    radiusX={cellWidth / 3}
+                                    radiusY={cellHeight / 3}
+                                />
+                            ) : !isOpponent(othelloManager.currentTurn) ? (
+                                <Rect
+                                    stroke={coordinate.color}
+                                    strokeWidth={strokeWidth}
+                                    x={cellWidth * coordinate.x + strokeWidth + strokeWidthHalf}
+                                    y={cellHeight * coordinate.y + strokeWidth + strokeWidthHalf}
+                                    width={cellWidth - strokeWidth * 2}
+                                    height={cellHeight - strokeWidth * 2}
+                                />
+                            ) : (
+                                <></>
+                            )
+                        )}
+                    </Layer>
+                    <Layer key="othello-mouse-layer">
+                        {mouseCoordinate && mouseCoordinate.y < size ? (
+                            <Rect
+                                stroke={mouseCoordinate.color}
+                                strokeWidth={strokeWidth}
+                                x={cellWidth * mouseCoordinate.x + strokeWidth + strokeWidthHalf}
+                                y={cellHeight * mouseCoordinate.y + strokeWidth + strokeWidthHalf}
                                 width={cellWidth - strokeWidth * 2}
                                 height={cellHeight - strokeWidth * 2}
                             />
                         ) : (
                             <></>
-                        )
-                    )}
-                </Layer>
-                <Layer key="othello-mouse-layer">
-                    {mouseCoordinate && mouseCoordinate.y < size ? (
-                        <Rect
-                            stroke={mouseCoordinate.color}
+                        )}
+                    </Layer>
+                    <Layer key="othello-text-layer">
+                        <Rect fill="#505050" x={0} y={height} width={width} height={textAreaHeight} />
+                        <Line
+                            stroke="black"
                             strokeWidth={strokeWidth}
-                            x={cellWidth * mouseCoordinate.x + strokeWidth + strokeWidthHalf}
-                            y={cellHeight * mouseCoordinate.y + strokeWidth + strokeWidthHalf}
-                            width={cellWidth - strokeWidth * 2}
-                            height={cellHeight - strokeWidth * 2}
+                            points={[strokeWidthHalf, height, strokeWidthHalf, height + textAreaHeight]}
                         />
-                    ) : (
-                        <></>
-                    )}
-                </Layer>
-                <Layer key="othello-text-layer">
-                    <Rect fill="#505050" x={0} y={height} width={width} height={textAreaHeight} />
-                    <Line
-                        stroke="black"
-                        strokeWidth={strokeWidth}
-                        points={[strokeWidthHalf, height, strokeWidthHalf, height + textAreaHeight]}
-                    />
-                    <Line
-                        stroke="black"
-                        strokeWidth={strokeWidth}
-                        points={[width - strokeWidthHalf, height, width - strokeWidthHalf, height + textAreaHeight]}
-                    />
-                    <Line
-                        stroke="black"
-                        strokeWidth={strokeWidth}
-                        points={[
-                            strokeWidthHalf,
-                            height + textAreaHeight - strokeWidthHalf,
-                            width + strokeWidthHalf,
-                            height + textAreaHeight - strokeWidthHalf
-                        ]}
-                    />
-                    <Ellipse
-                        fill="black"
-                        x={cellWidth + strokeWidthHalf}
-                        y={height + cellHeight / 2 + strokeWidthHalf}
-                        radiusX={cellWidth / 3}
-                        radiusY={cellHeight / 3}
-                    />
-                    <Text
-                        text={displayCount(othelloManager.board, OthelloBoardCell.black)}
-                        x={cellWidth / 2}
-                        y={height}
-                        width={cellWidth + strokeWidth}
-                        height={textAreaHeight}
-                        fill="white"
-                        fontSize={32}
-                        align="center"
-                        verticalAlign="middle"
-                    />
-                    <Ellipse
-                        fill="white"
-                        x={cellWidth * (size - 1) + strokeWidthHalf}
-                        y={height + cellHeight / 2 + strokeWidthHalf}
-                        radiusX={cellWidth / 3}
-                        radiusY={cellHeight / 3}
-                    />
-                    <Text
-                        text={displayCount(othelloManager.board, OthelloBoardCell.white)}
-                        x={cellWidth * (size - 1) - cellWidth / 2}
-                        y={height}
-                        width={cellWidth + strokeWidth}
-                        height={textAreaHeight}
-                        fill="black"
-                        fontSize={32}
-                        align="center"
-                        verticalAlign="middle"
-                    />
-                    <Text
-                        text={displayText(othelloManager.board, othelloManager.currentTurn)}
-                        x={0}
-                        y={height}
-                        width={width}
-                        height={textAreaHeight}
-                        fill="white"
-                        fontSize={32}
-                        align="center"
-                        verticalAlign="middle"
-                    />
-                </Layer>
-            </Stage>
+                        <Line
+                            stroke="black"
+                            strokeWidth={strokeWidth}
+                            points={[width - strokeWidthHalf, height, width - strokeWidthHalf, height + textAreaHeight]}
+                        />
+                        <Line
+                            stroke="black"
+                            strokeWidth={strokeWidth}
+                            points={[
+                                strokeWidthHalf,
+                                height + textAreaHeight - strokeWidthHalf,
+                                width + strokeWidthHalf,
+                                height + textAreaHeight - strokeWidthHalf
+                            ]}
+                        />
+                        <Ellipse
+                            fill="black"
+                            x={cellWidth + strokeWidthHalf}
+                            y={height + cellHeight / 2 + strokeWidthHalf}
+                            radiusX={cellWidth / 3}
+                            radiusY={cellHeight / 3}
+                        />
+                        <Text
+                            text={displayCount(othelloManager.board, OthelloBoardCell.black)}
+                            x={cellWidth / 2}
+                            y={height}
+                            width={cellWidth + strokeWidth}
+                            height={textAreaHeight}
+                            fill="white"
+                            fontSize={32}
+                            align="center"
+                            verticalAlign="middle"
+                        />
+                        <Ellipse
+                            fill="white"
+                            x={cellWidth * (size - 1) + strokeWidthHalf}
+                            y={height + cellHeight / 2 + strokeWidthHalf}
+                            radiusX={cellWidth / 3}
+                            radiusY={cellHeight / 3}
+                        />
+                        <Text
+                            text={displayCount(othelloManager.board, OthelloBoardCell.white)}
+                            x={cellWidth * (size - 1) - cellWidth / 2}
+                            y={height}
+                            width={cellWidth + strokeWidth}
+                            height={textAreaHeight}
+                            fill="black"
+                            fontSize={32}
+                            align="center"
+                            verticalAlign="middle"
+                        />
+                        <Text
+                            text={displayText(othelloManager.board, othelloManager.currentTurn)}
+                            x={0}
+                            y={height}
+                            width={width}
+                            height={textAreaHeight}
+                            fill="white"
+                            fontSize={32}
+                            align="center"
+                            verticalAlign="middle"
+                        />
+                    </Layer>
+                </Stage>
+                <div className="flex justify-end">
+                    <Button
+                        className="h-12 w-48"
+                        fullWidth={false}
+                        variant="contained"
+                        color="success"
+                        style={buttonStyle}
+                        onClick={() => {
+                            if (!canClick) {
+                                return;
+                            }
+
+                            othelloManager.initialize();
+                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                        }}
+                    >
+                        リセット
+                    </Button>
+                </div>
+            </div>
         </>
     );
 };
