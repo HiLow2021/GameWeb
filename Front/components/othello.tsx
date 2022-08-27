@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
+import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
 import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
+import { Turn } from '../shared/othello/enums/turn';
+import { OthelloBoard } from '../shared/othello/othelloBoard';
 import { OthelloManager } from '../shared/othello/othelloManager';
 
 type Coordinate = {
@@ -16,6 +18,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const sizeHalf = size / 2;
     const cellWidth = width / size;
     const cellHeight = height / size;
+    const textAreaHeight = 80;
     const strokeWidth = 4;
     const strokeWidthHalf = strokeWidth / 2;
 
@@ -23,13 +26,12 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
-    const [isOpponent] = useState(() => () => othelloManager.currentTurn === 'white');
 
     return (
         <>
             <Stage
                 width={width}
-                height={height}
+                height={height + textAreaHeight}
                 onClick={async (e) => {
                     if (!canClick) {
                         return;
@@ -42,7 +44,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         setCanClick((_) => false);
                         setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
 
-                        while (isOpponent()) {
+                        while (isOpponent(othelloManager.currentTurn)) {
                             await CommonUtility.delay(1000);
                             await othelloManager.nextByAI();
 
@@ -95,7 +97,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         ))
                     )}
                 </Layer>
-                <Layer key="othello-stone-layer">
+                <Layer key="othello-cell-layer">
                     {coordinates.map((coordinate) =>
                         coordinate.stone ? (
                             <Ellipse
@@ -105,7 +107,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 radiusX={cellWidth / 3}
                                 radiusY={cellHeight / 3}
                             />
-                        ) : !isOpponent() ? (
+                        ) : !isOpponent(othelloManager.currentTurn) ? (
                             <Rect
                                 stroke={coordinate.color}
                                 strokeWidth={strokeWidth}
@@ -119,8 +121,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         )
                     )}
                 </Layer>
-                <Layer>
-                    {mouseCoordinate ? (
+                <Layer key="othello-mouse-layer">
+                    {mouseCoordinate && mouseCoordinate.y < size ? (
                         <Rect
                             stroke={mouseCoordinate.color}
                             strokeWidth={strokeWidth}
@@ -132,6 +134,76 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                     ) : (
                         <></>
                     )}
+                </Layer>
+                <Layer key="othello-text-layer">
+                    <Rect fill="#505050" x={0} y={height} width={width} height={textAreaHeight} />
+                    <Line
+                        stroke="black"
+                        strokeWidth={strokeWidth}
+                        points={[strokeWidthHalf, height, strokeWidthHalf, height + textAreaHeight]}
+                    />
+                    <Line
+                        stroke="black"
+                        strokeWidth={strokeWidth}
+                        points={[width - strokeWidthHalf, height, width - strokeWidthHalf, height + textAreaHeight]}
+                    />
+                    <Line
+                        stroke="black"
+                        strokeWidth={strokeWidth}
+                        points={[
+                            strokeWidthHalf,
+                            height + textAreaHeight - strokeWidthHalf,
+                            width + strokeWidthHalf,
+                            height + textAreaHeight - strokeWidthHalf
+                        ]}
+                    />
+                    <Ellipse
+                        fill="black"
+                        x={cellWidth + strokeWidthHalf}
+                        y={height + cellHeight / 2 + strokeWidthHalf}
+                        radiusX={cellWidth / 3}
+                        radiusY={cellHeight / 3}
+                    />
+                    <Text
+                        text={displayCount(othelloManager.board, OthelloBoardCell.black)}
+                        x={cellWidth / 2}
+                        y={height}
+                        width={cellWidth + strokeWidth}
+                        height={textAreaHeight}
+                        fill="white"
+                        fontSize={32}
+                        align="center"
+                        verticalAlign="middle"
+                    />
+                    <Ellipse
+                        fill="white"
+                        x={cellWidth * (size - 1) + strokeWidthHalf}
+                        y={height + cellHeight / 2 + strokeWidthHalf}
+                        radiusX={cellWidth / 3}
+                        radiusY={cellHeight / 3}
+                    />
+                    <Text
+                        text={displayCount(othelloManager.board, OthelloBoardCell.white)}
+                        x={cellWidth * (size - 1) - cellWidth / 2}
+                        y={height}
+                        width={cellWidth + strokeWidth}
+                        height={textAreaHeight}
+                        fill="black"
+                        fontSize={32}
+                        align="center"
+                        verticalAlign="middle"
+                    />
+                    <Text
+                        text={displayText(othelloManager.board, othelloManager.currentTurn)}
+                        x={0}
+                        y={height}
+                        width={width}
+                        height={textAreaHeight}
+                        fill="white"
+                        fontSize={32}
+                        align="center"
+                        verticalAlign="middle"
+                    />
                 </Layer>
             </Stage>
         </>
@@ -166,6 +238,34 @@ function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
     }
 
     return coordinates;
+}
+
+function isOpponent(currentTurn: Turn): boolean {
+    return currentTurn === 'white';
+}
+
+function displayCount(board: OthelloBoard, cell: OthelloBoardCell): string {
+    return board.getCount(cell).toString();
+}
+
+function displayText(board: OthelloBoard, currentTurn: Turn): string {
+    const blackCount = board.getCount(OthelloBoardCell.black);
+    const whiteCount = board.getCount(OthelloBoardCell.white);
+
+    let text = '';
+    if (currentTurn === Turn.black) {
+        text = 'プレイヤーのターンです';
+    } else if (currentTurn === Turn.white) {
+        text = 'AIのターンです';
+    } else if (currentTurn === Turn.finished && blackCount > whiteCount) {
+        text = 'プレイヤーの勝利です';
+    } else if (currentTurn === Turn.finished && whiteCount > blackCount) {
+        text = 'AIの勝利です';
+    } else if (currentTurn === Turn.finished && blackCount === whiteCount) {
+        text = '引き分けです';
+    }
+
+    return text;
 }
 
 export default Othello;
