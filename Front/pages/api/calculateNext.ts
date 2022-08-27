@@ -18,7 +18,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse<ResponseData>): void 
 
     const othelloAIManager = new OthelloAIManager(cells.length);
     othelloAIManager.setBoard(cells, currentTurn);
-    const position = othelloAIManager.randomMethod();
+    const position = othelloAIManager.monteCarloMethod(1000);
 
     res.status(200).json({ x: position.x, y: position.y });
 };
