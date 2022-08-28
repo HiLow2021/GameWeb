@@ -49,7 +49,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
 
                             while (isOpponent(othelloManager.currentTurn)) {
-                                await CommonUtility.delay(1000);
+                                await CommonUtility.delay(100);
                                 await othelloManager.nextByAI();
 
                                 setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));

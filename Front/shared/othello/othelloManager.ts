@@ -22,7 +22,7 @@ export class OthelloManager extends OthelloManagerBase {
             false;
         }
 
-        const response = await fetch('/api/calculateNext', {
+        const response = await fetch('/api/othello/next', {
             method: 'POST',
             body: JSON.stringify({ cells: this.board.cells, currentTurn: this.currentTurn })
         });
