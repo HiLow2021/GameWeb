@@ -12,7 +12,7 @@ export const Environment = {
     /**
      * サイトのアイコン
      */
-    siteFavicon: '/icons/favicon.ico',
+    siteFavicon: 'favicon.ico',
 
     /**
      * サイトの説明
