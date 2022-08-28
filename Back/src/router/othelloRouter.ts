@@ -17,8 +17,6 @@ type ResponseData = {
 
 othelloRouter.post('/othello/next', (req: Request, res: Response, next: NextFunction): void => {
     try {
-        console.log(req.body)
-
         const { cells, currentTurn } = req.body as RequestData;
 
         const othelloAIManager = new OthelloAIManager(cells.length);

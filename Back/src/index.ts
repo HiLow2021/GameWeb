@@ -1,10 +1,12 @@
 import express from 'express';
+import corsHandler from './middleware/corsHandler';
 import errorHandler from './middleware/errorHandler';
 import routers from './router/routers';
 
 const app: express.Express = express();
 const port = 5000;
 
+app.use(corsHandler);
 app.use(express.json());
 
 routers.map((router) => {
