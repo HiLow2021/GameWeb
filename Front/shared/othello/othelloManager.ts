@@ -26,6 +26,9 @@ export class OthelloManager extends OthelloManagerBase {
 
         const response = await fetch(this._apiUrl, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ cells: this.board.cells, currentTurn: this.currentTurn })
         });
         const position = await response.json();
