@@ -5,7 +5,7 @@ import routers from './router/routers';
 const app: express.Express = express();
 const port = 5000;
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 routers.map((router) => {
     app.use('/api', router);
