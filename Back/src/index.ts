@@ -6,8 +6,9 @@ import routers from './router/routers';
 const app: express.Express = express();
 const port = 5000;
 
-app.use(corsHandler);
 app.use(express.json());
+
+app.use(corsHandler);
 
 routers.map((router) => {
     app.use('/api', router);
