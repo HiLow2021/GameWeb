@@ -2,8 +2,6 @@ import { OthelloBoardCell } from './enums/othelloBoardCell';
 import { OthelloManagerBase } from './othelloManagerBase';
 
 export class OthelloManager extends OthelloManagerBase {
-    private readonly _apiUrl = 'http://localhost:5000/api/othello/next';
-
     public initialize(): void {
         super.initialize();
         this.setHighLight(this.currentStone);
@@ -24,11 +22,8 @@ export class OthelloManager extends OthelloManagerBase {
             false;
         }
 
-        const response = await fetch(this._apiUrl, {
+        const response = await fetch('/api/calculateNext', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({ cells: this.board.cells, currentTurn: this.currentTurn })
         });
         const position = await response.json();
