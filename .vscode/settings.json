@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
+        "codepaths",
         "konva",
-        "tailwindcss"
+        "tailwindcss",
+        "tsbuildinfo"
     ],
     "css.lint.unknownAtRules": "ignore"
 }
