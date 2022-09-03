@@ -26,11 +26,11 @@ othelloRouter.post('/othello/next', (req: Request, res: Response, next: NextFunc
         const response = { x: position.x, y: position.y } as ResponseData;
 
         res.status(200).json(response);
-
-        next();
     } catch (error) {
         next(error);
     }
+
+    next();
 });
 
 export default othelloRouter;
