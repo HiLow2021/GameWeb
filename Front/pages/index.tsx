@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { Layout } from '../components/layout';
-import { GameList } from '../shared/const/gameList';
+import { GameList } from '../shared/game/gameList';
 
 const Index: NextPage = (): JSX.Element => {
     return (

@@ -2,10 +2,10 @@ import Button from '@mui/material/Button';
 import { useState } from 'react';
 import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
-import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
-import { Turn } from '../shared/othello/enums/turn';
-import { OthelloBoard } from '../shared/othello/othelloBoard';
-import { OthelloManager } from '../shared/othello/othelloManager';
+import { OthelloBoardCell } from '../shared/game/othello/enums/othelloBoardCell';
+import { Turn } from '../shared/game/othello/enums/turn';
+import { OthelloBoard } from '../shared/game/othello/othelloBoard';
+import { OthelloManager } from '../shared/game/othello/othelloManager';
 
 type Coordinate = {
     x: number;
