@@ -1,18 +1,22 @@
 import type { NextPage } from 'next';
-import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { Layout } from '../components/layout';
-
-// konva が ES Module に対応していないことによるエラーの対応措置。
-// https://qiita.com/koji-koji/items/6b71c1579e1a77d44b4b
-const Othello = dynamic(() => import('../components/othello'), {
-    ssr: false
-});
+import { GameList } from '../shared/const/gameList';
 
 const Index: NextPage = (): JSX.Element => {
     return (
         <Layout>
             <div className="flex justify-center">
-                <Othello width={600} height={600} />
+                {GameList.map((game) => (
+                    <Link href={game.path}>
+                        <a>
+                            <div className="flex flex-col">
+                                <img className="h-40 w-40 object-cover" src={game.thumbnail} alt={game.title} />
+                                <div className="p-4 text-xl text-center">{game.title}</div>
+                            </div>
+                        </a>
+                    </Link>
+                ))}
             </div>
         </Layout>
     );
