@@ -23,7 +23,6 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     const textAreaMargin = 24;
     const textStrokeWidth = 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
-    const fontSize = 32;
     const missingNumber = widthSize * heightSize - 1;
 
     const [slidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize, missingNumber));
