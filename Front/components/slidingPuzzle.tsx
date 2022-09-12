@@ -19,7 +19,12 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     const innerStrokeWidthHalf = innerStrokeWidth / 2;
     const cellWidth = (width - outerStrokeWidth * 2) / widthSize;
     const cellHeight = (height - outerStrokeWidth * 2) / heightSize;
-    const missingNumber = widthSize * heightSize - 3;
+    const textAreaHeight = 80;
+    const textAreaMargin = 24;
+    const textStrokeWidth = 4;
+    const textStrokeWidthHalf = textStrokeWidth / 2;
+    const fontSize = 32;
+    const missingNumber = widthSize * heightSize - 1;
 
     const [slidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize, missingNumber));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
@@ -39,7 +44,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
             <div className="flex flex-col gap-4 justify-center">
                 <Stage
                     width={width}
-                    height={height}
+                    height={height + textAreaHeight + textAreaMargin}
                     onClick={async (e) => {
                         if (!canClick || slidingPuzzleManager.isSorted) {
                             return;
@@ -74,11 +79,14 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                             coordinate.number !== missingNumber ? (
                                 <Group>
                                     <Rect
-                                        fill="#DDDDDD"
                                         x={cellWidth * coordinate.x + outerStrokeWidth}
                                         y={cellHeight * coordinate.y + outerStrokeWidth}
                                         width={cellWidth}
                                         height={cellHeight}
+                                        fillPriority="linear-gradient"
+                                        fillLinearGradientStartPoint={{ x: 0, y: 0 }}
+                                        fillLinearGradientEndPoint={{ x: cellWidth, y: cellHeight }}
+                                        fillLinearGradientColorStops={[0, '#EEEEEE', 1, '#BBBBBB']}
                                     />
                                     <Rect
                                         stroke="#888888"
@@ -104,6 +112,39 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                                 <></>
                             )
                         )}
+                    </FastLayer>
+                    <FastLayer key="sliding-puzzle-text-layer">
+                        <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
+                        <Rect
+                            stroke="black"
+                            strokeWidth={textStrokeWidth}
+                            x={textStrokeWidthHalf}
+                            y={height + textAreaMargin + textStrokeWidthHalf}
+                            width={width - textStrokeWidth}
+                            height={textAreaHeight - textStrokeWidth}
+                        />
+                        <Text
+                            text={`Step ${slidingPuzzleManager.step}`}
+                            x={0}
+                            y={height + textAreaMargin}
+                            width={width / 2}
+                            height={textAreaHeight}
+                            fill="black"
+                            fontSize={32}
+                            align="center"
+                            verticalAlign="middle"
+                        />
+                        <Text
+                            text={slidingPuzzleManager.isSorted ? 'クリア！' : ''}
+                            x={width / 2}
+                            y={height + textAreaMargin}
+                            width={width / 2}
+                            height={textAreaHeight}
+                            fill="#FF2200"
+                            fontSize={32}
+                            align="center"
+                            verticalAlign="middle"
+                        />
                     </FastLayer>
                 </Stage>
                 <div className="flex justify-end">

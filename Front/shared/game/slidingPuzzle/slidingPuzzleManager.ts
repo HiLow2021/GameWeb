@@ -2,9 +2,15 @@ import { SlidingPuzzleBoard } from './slidingPuzzleBoard';
 import { Vector } from './vector';
 
 export class SlidingPuzzleManager {
+    private _step: number = 0;
+
     public readonly board: SlidingPuzzleBoard;
 
     public readonly missingNumber: number;
+
+    get step(): number {
+        return this._step;
+    }
 
     get isSorted(): boolean {
         return this.board.cells.flat().every((x, i) => x === i);
@@ -21,9 +27,25 @@ export class SlidingPuzzleManager {
     public initialize(): void {
         this.board.initialize();
         this.shuffle();
+        this._step = 0;
     }
 
-    public shuffle(step: number = 1000): void {
+    public slide(x: number, y: number): boolean {
+        for (const direction of Vector.all) {
+            if (this.board.get(x + direction.x, y + direction.y) === this.missingNumber) {
+                const result = this.board.swap(x, y, x + direction.x, y + direction.y);
+                if (result) {
+                    this._step++;
+                }
+
+                return result;
+            }
+        }
+
+        return false;
+    }
+
+    private shuffle(step: number = 1000): void {
         const missingNumberPosition = this.board.find(this.missingNumber);
         if (!missingNumberPosition) {
             return;
@@ -39,16 +61,6 @@ export class SlidingPuzzleManager {
                 }
             }
         }
-    }
-
-    public slide(x: number, y: number): boolean {
-        for (const direction of Vector.all) {
-            if (this.board.get(x + direction.x, y + direction.y) === this.missingNumber) {
-                return this.board.swap(x, y, x + direction.x, y + direction.y);
-            }
-        }
-
-        return false;
     }
 
     private shuffleArray<T>(source: T[]): T[] {
