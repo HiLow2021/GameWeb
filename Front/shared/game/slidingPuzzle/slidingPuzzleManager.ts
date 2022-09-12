@@ -32,6 +32,9 @@ export class SlidingPuzzleManager {
         for (let index = 0; index < step; index++) {
             for (const direction of this.shuffleArray(Vector.all)) {
                 if (this.slide(missingNumberPosition.x + direction.x, missingNumberPosition.y + direction.y)) {
+                    missingNumberPosition.x += direction.x;
+                    missingNumberPosition.y += direction.y;
+
                     break;
                 }
             }
@@ -41,9 +44,7 @@ export class SlidingPuzzleManager {
     public slide(x: number, y: number): boolean {
         for (const direction of Vector.all) {
             if (this.board.get(x + direction.x, y + direction.y) === this.missingNumber) {
-                this.board.swap(x, y, x + direction.x, y + direction.y);
-
-                return true;
+                return this.board.swap(x, y, x + direction.x, y + direction.y);
             }
         }
 
