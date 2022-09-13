@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
+import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
 import { OthelloBoardCell } from '../shared/game/othello/enums/othelloBoardCell';
 import { Turn } from '../shared/game/othello/enums/turn';
@@ -65,7 +65,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         setMouseCoordinate((_) => ({ x, y, color: 'pink', stone: false }));
                     }}
                 >
-                    <Layer key="othello-board-layer">
+                    <FastLayer key="othello-board-layer">
                         <Rect fill="green" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -100,8 +100,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 />
                             ))
                         )}
-                    </Layer>
-                    <Layer key="othello-cell-layer">
+                    </FastLayer>
+                    <FastLayer key="othello-cell-layer">
                         {coordinates.map((coordinate) =>
                             coordinate.stone ? (
                                 <Ellipse
@@ -124,8 +124,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 <></>
                             )
                         )}
-                    </Layer>
-                    <Layer key="othello-mouse-layer">
+                    </FastLayer>
+                    <FastLayer key="othello-mouse-layer">
                         {mouseCoordinate && mouseCoordinate.y < size ? (
                             <Rect
                                 stroke={mouseCoordinate.color}
@@ -138,8 +138,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         ) : (
                             <></>
                         )}
-                    </Layer>
-                    <Layer key="othello-text-layer">
+                    </FastLayer>
+                    <FastLayer key="othello-text-layer">
                         <Rect fill="#505050" x={0} y={height + strokeWidth} width={width + strokeWidth} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -196,7 +196,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             align="center"
                             verticalAlign="middle"
                         />
-                    </Layer>
+                    </FastLayer>
                 </Stage>
                 <div className="flex justify-end">
                     <Button
