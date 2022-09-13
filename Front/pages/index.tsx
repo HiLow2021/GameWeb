@@ -6,7 +6,7 @@ import { GameList } from '../shared/game/gameList';
 const Index: NextPage = (): JSX.Element => {
     return (
         <Layout>
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-4">
                 {GameList.map((game) => (
                     <Link href={game.path}>
                         <a>

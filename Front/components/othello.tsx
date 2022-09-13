@@ -24,7 +24,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const strokeWidthHalf = strokeWidth / 2;
 
     const [othelloManager] = useState<OthelloManager>(new OthelloManager(size));
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(othelloManager.board.cells));
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
 
@@ -46,13 +46,13 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
 
                         if (othelloManager.next(x, y)) {
                             setCanClick((_) => false);
-                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
 
                             while (isOpponent(othelloManager.currentTurn)) {
                                 await CommonUtility.delay(100);
                                 await othelloManager.nextByAI();
 
-                                setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                                setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
                             }
 
                             setCanClick((_) => true);
@@ -211,7 +211,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             }
 
                             othelloManager.initialize();
-                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
                         }}
                     >
                         リセット
@@ -222,7 +222,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     );
 };
 
-function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
+function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
     const coordinates: Coordinate[] = [];
     for (let y = 0; y < cells.length; y++) {
         for (let x = 0; x < cells[y].length; x++) {
