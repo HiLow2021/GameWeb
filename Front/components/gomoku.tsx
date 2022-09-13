@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva';
+import { Ellipse, FastLayer, Line, Rect, Stage } from 'react-konva';
 
 type Coordinate = {
     x: number;
@@ -44,7 +44,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                         setCanClick((_) => true);
                     }}
                 >
-                    <Layer key="gomoku-board-layer">
+                    <FastLayer key="gomoku-board-layer">
                         <Rect fill="#f5deb3" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -89,8 +89,8 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                                 />
                             ))
                         )}
-                    </Layer>
-                    <Layer key="gomoku-cell-layer">
+                    </FastLayer>
+                    <FastLayer key="gomoku-cell-layer">
                         {coordinates.map((coordinate) => (
                             <Ellipse
                                 fill="black"
@@ -100,7 +100,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                                 radiusY={cellHeight / 2.5}
                             />
                         ))}
-                    </Layer>
+                    </FastLayer>
                 </Stage>
                 <div className="flex justify-end">
                     <Button
