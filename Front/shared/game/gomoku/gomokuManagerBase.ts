@@ -43,7 +43,13 @@ export abstract class GomokuManagerBase {
         return false;
     }
 
-    protected rotateTurn(): void {}
+    protected rotateTurn(): void {
+        if (this._currentTurn === Turn.black) {
+            this._currentTurn = Turn.white;
+        } else if (this._currentTurn === Turn.white) {
+            this._currentTurn = Turn.black;
+        }
+    }
 
     protected canPut(x: number, y: number): boolean {
         return this.board.get(x, y) === GomokuBoardCell.empty;

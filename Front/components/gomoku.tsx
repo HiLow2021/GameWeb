@@ -1,6 +1,9 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage } from 'react-konva';
+import { CommonUtility } from '../shared/commonUtility';
+import { GomokuBoardCell } from '../shared/game/gomoku/enums/gomokuBoardCell';
+import { GomokuManager } from '../shared/game/gomoku/gomokuManager';
 
 type Coordinate = {
     x: number;
@@ -20,7 +23,8 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
     const cellWidthHalf = cellWidth / 2;
     const cellHeightHalf = cellHeight / 2;
 
-    const [coordinates, setCoordinates] = useState<Coordinate[]>([]);
+    const [gomokuManager] = useState<GomokuManager>(new GomokuManager(widthSize, heightSize));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(gomokuManager.board.cells));
     const [canClick, setCanClick] = useState(true);
 
     const buttonStyle = { fontSize: 24 };
@@ -39,9 +43,16 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                         const x = Math.floor((e.evt.offsetX - strokeWidth) / (cellWidth + strokeWidth));
                         const y = Math.floor((e.evt.offsetY - strokeWidth) / (cellHeight + strokeWidth));
 
-                        setCanClick((_) => false);
-                        setCoordinates((prev) => [...prev, { x, y, color: 'black', stone: true }]);
-                        setCanClick((_) => true);
+                        if (gomokuManager.next(x, y)) {
+                            setCanClick((_) => false);
+                            setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+
+                            await CommonUtility.delay(100);
+                            await gomokuManager.nextByAI();
+
+                            setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                            setCanClick((_) => true);
+                        }
                     }}
                 >
                     <FastLayer key="gomoku-board-layer">
@@ -93,7 +104,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                     <FastLayer key="gomoku-cell-layer">
                         {coordinates.map((coordinate) => (
                             <Ellipse
-                                fill="black"
+                                fill={coordinate.color}
                                 x={cellWidthHalf + (cellWidth + strokeWidth) * coordinate.x + strokeWidth + strokeWidthHalf}
                                 y={cellHeightHalf + (cellHeight + strokeWidth) * coordinate.y + strokeWidth + strokeWidthHalf}
                                 radiusX={cellWidth / 2.5}
@@ -114,7 +125,8 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                                 return;
                             }
 
-                            setCoordinates((_) => []);
+                            gomokuManager.initialize();
+                            setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
                         }}
                     >
                         リセット
@@ -124,5 +136,31 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
         </>
     );
 };
+
+function convertCellsToCoordinates(cells: GomokuBoardCell[][]): Coordinate[] {
+    const coordinates: Coordinate[] = [];
+    for (let y = 0; y < cells.length; y++) {
+        for (let x = 0; x < cells[y].length; x++) {
+            let coordinate: Coordinate;
+
+            switch (cells[y][x]) {
+                case 'black':
+                    coordinate = { x, y, color: 'black' };
+                    break;
+
+                case 'white':
+                    coordinate = { x, y, color: 'white' };
+                    break;
+
+                default:
+                    continue;
+            }
+
+            coordinates.push(coordinate);
+        }
+    }
+
+    return coordinates;
+}
 
 export default Gomoku;
