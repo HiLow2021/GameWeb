@@ -20,7 +20,6 @@ export class GomokuAIManager extends GomokuManagerBase {
         return new Vector(x, y);
     }
 
-
     private random(min: number, max: number): number {
         min = Math.ceil(min);
         max = Math.floor(max);
