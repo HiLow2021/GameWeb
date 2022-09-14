@@ -1,7 +1,6 @@
-export type Turn = 'black' | 'white' | 'finished';
+export type Turn = 'black' | 'white';
 
 export const Turn = {
     black: 'black',
-    white: 'white',
-    finished: 'finished'
+    white: 'white'
 } as const;

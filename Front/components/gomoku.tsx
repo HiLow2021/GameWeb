@@ -1,8 +1,10 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import { Ellipse, FastLayer, Line, Rect, Stage } from 'react-konva';
+import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
 import { GomokuBoardCell } from '../shared/game/gomoku/enums/gomokuBoardCell';
+import { Result } from '../shared/game/gomoku/enums/result';
+import { Turn } from '../shared/game/gomoku/enums/turn';
 import { GomokuManager } from '../shared/game/gomoku/gomokuManager';
 
 type Coordinate = {
@@ -22,6 +24,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
     const cellHeight = (height - strokeWidth * 2 - strokeWidth * heightSize) / heightSize;
     const cellWidthHalf = cellWidth / 2;
     const cellHeightHalf = cellHeight / 2;
+    const textAreaHeight = 80;
 
     const [gomokuManager] = useState<GomokuManager>(new GomokuManager(widthSize, heightSize));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(gomokuManager.board.cells));
@@ -34,7 +37,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
             <div className="flex flex-col gap-4 justify-center">
                 <Stage
                     width={width}
-                    height={height}
+                    height={height + textAreaHeight}
                     onClick={async (e) => {
                         if (!canClick) {
                             return;
@@ -112,6 +115,28 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                             />
                         ))}
                     </FastLayer>
+                    <FastLayer key="gomoku-text-layer">
+                        <Rect fill="#606060" x={0} y={height} width={width} height={textAreaHeight} />
+                        <Rect
+                            stroke="black"
+                            strokeWidth={strokeWidth}
+                            x={strokeWidthHalf}
+                            y={height - strokeWidthHalf}
+                            width={width - strokeWidth}
+                            height={textAreaHeight}
+                        />
+                        <Text
+                            text={displayText(gomokuManager.result, gomokuManager.currentTurn)}
+                            x={0}
+                            y={height}
+                            width={width}
+                            height={textAreaHeight}
+                            fill="white"
+                            fontSize={32}
+                            align="center"
+                            verticalAlign="middle"
+                        />
+                    </FastLayer>
                 </Stage>
                 <div className="flex justify-end">
                     <Button
@@ -161,6 +186,22 @@ function convertCellsToCoordinates(cells: GomokuBoardCell[][]): Coordinate[] {
     }
 
     return coordinates;
+}
+
+function displayText(result: Result, turn: Turn): string {
+    if (result === Result.black) {
+        return 'プレイヤーの勝利です';
+    } else if (result === Result.white) {
+        return 'AIの勝利です';
+    } else if (result === Result.draw) {
+        return '引き分けです';
+    } else if (result === Result.undecided && turn === Turn.black) {
+        return 'プレイヤーのターンです';
+    } else if (result === Result.undecided && turn === Turn.white) {
+        return 'AIのターンです';
+    } else {
+        return '';
+    }
 }
 
 export default Gomoku;

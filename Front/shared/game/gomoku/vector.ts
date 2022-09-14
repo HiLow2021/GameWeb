@@ -18,6 +18,7 @@ export class Vector {
         Vector.left,
         Vector.upLeft
     ];
+    public static readonly half = Vector.all.slice(0, Vector.all.length / 2);
 
     public constructor(public x: number, public y: number) {}
 }
