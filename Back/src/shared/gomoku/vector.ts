@@ -8,6 +8,7 @@ export class Vector {
     public static readonly left = new Vector(-1, 0);
     public static readonly upLeft = new Vector(-1, -1);
 
+    public static readonly half = [Vector.up, Vector.upRight, Vector.right, Vector.downRight];
     public static readonly all = [
         Vector.up,
         Vector.upRight,

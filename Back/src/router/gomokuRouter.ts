@@ -21,7 +21,7 @@ gomokuRouter.post('/gomoku/next', (req: Request, res: Response, next: NextFuncti
 
         const gomokuAIManager = new GomokuAIManager(cells[0].length, cells.length);
         gomokuAIManager.setBoard(cells, currentTurn);
-        const position = gomokuAIManager.randomMethod();
+        const position = gomokuAIManager.simpleMethod();
 
         const response = { x: position.x, y: position.y } as ResponseData;
 

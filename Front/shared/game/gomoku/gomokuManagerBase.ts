@@ -92,9 +92,9 @@ export abstract class GomokuManagerBase {
     protected updateResult(x: number, y: number, chip: GomokuBoardCell): void {
         const win = this.checkWin(x, y, chip);
 
-        if (win && Turn.black) {
+        if (win && this._currentTurn === Turn.black) {
             this._result = Result.black;
-        } else if (win && Turn.white) {
+        } else if (win && this._currentTurn === Turn.white) {
             this._result = Result.white;
         } else if (!this.canPutAll()) {
             this._result = Result.draw;
@@ -104,29 +104,26 @@ export abstract class GomokuManagerBase {
     }
 
     protected checkWin(x: number, y: number, chip: GomokuBoardCell): boolean {
-        for (const v of Vector.half) {
-            if (this.checkLine(x, y, v.x, v.y, chip)) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.countAll(x, y, chip).some((count) => count >= this.winCount);
     }
 
-    protected checkLine(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell): boolean {
-        do {
+    protected count(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell): number {
+        while (this.board.get(x + dx, y + dy) === chip) {
             x += dx;
             y += dy;
-        } while (this.board.get(x, y) === chip);
+        }
 
         let count = 0;
-        let result = false;
-        do {
+        while (this.board.get(x, y) === chip) {
             x -= dx;
             y -= dy;
-            result = count++ >= this.winCount;
-        } while (this.board.get(x, y) === chip && !result);
+            count++;
+        }
 
-        return result;
+        return count;
+    }
+
+    protected countAll(x: number, y: number, chip: GomokuBoardCell): number[] {
+        return Vector.half.map((direction) => this.count(x, y, direction.x, direction.y, chip));
     }
 }
