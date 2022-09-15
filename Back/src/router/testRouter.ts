@@ -5,11 +5,11 @@ const testRouter: Router = express.Router();
 testRouter.get('/test', (_: Request, res: Response, next: NextFunction): void => {
     try {
         res.status(200).json({ text: 'API Success!!' });
-
-        next();
     } catch (error) {
         next(error);
     }
+
+    next();
 });
 
 testRouter.get('/test/error', (_: Request, __: Response, next: NextFunction): void => {

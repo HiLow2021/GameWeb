@@ -7,7 +7,7 @@ export const Environment = {
     /**
      * サイトの名前
      */
-    siteTitle: 'Othello Web',
+    siteTitle: 'Game Web',
 
     /**
      * サイトのアイコン
@@ -29,5 +29,5 @@ export const Environment = {
     /**
      * サイトの著作権
      */
-    siteCopyright: '© 2022 Othello Web'
+    siteCopyright: '© 2022 Game Web'
 } as const;

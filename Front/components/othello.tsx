@@ -1,11 +1,11 @@
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
+import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
-import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
-import { Turn } from '../shared/othello/enums/turn';
-import { OthelloBoard } from '../shared/othello/othelloBoard';
-import { OthelloManager } from '../shared/othello/othelloManager';
+import { OthelloBoardCell } from '../shared/game/othello/enums/othelloBoardCell';
+import { Turn } from '../shared/game/othello/enums/turn';
+import { OthelloBoard } from '../shared/game/othello/othelloBoard';
+import { OthelloManager } from '../shared/game/othello/othelloManager';
 
 type Coordinate = {
     x: number;
@@ -24,7 +24,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const strokeWidthHalf = strokeWidth / 2;
 
     const [othelloManager] = useState<OthelloManager>(new OthelloManager(size));
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToStones(othelloManager.board.cells));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(othelloManager.board.cells));
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
 
@@ -46,13 +46,13 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
 
                         if (othelloManager.next(x, y)) {
                             setCanClick((_) => false);
-                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
 
                             while (isOpponent(othelloManager.currentTurn)) {
                                 await CommonUtility.delay(100);
                                 await othelloManager.nextByAI();
 
-                                setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                                setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
                             }
 
                             setCanClick((_) => true);
@@ -65,7 +65,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         setMouseCoordinate((_) => ({ x, y, color: 'pink', stone: false }));
                     }}
                 >
-                    <Layer key="othello-board-layer">
+                    <FastLayer key="othello-board-layer">
                         <Rect fill="green" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -100,8 +100,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 />
                             ))
                         )}
-                    </Layer>
-                    <Layer key="othello-cell-layer">
+                    </FastLayer>
+                    <FastLayer key="othello-cell-layer">
                         {coordinates.map((coordinate) =>
                             coordinate.stone ? (
                                 <Ellipse
@@ -124,8 +124,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 <></>
                             )
                         )}
-                    </Layer>
-                    <Layer key="othello-mouse-layer">
+                    </FastLayer>
+                    <FastLayer key="othello-mouse-layer">
                         {mouseCoordinate && mouseCoordinate.y < size ? (
                             <Rect
                                 stroke={mouseCoordinate.color}
@@ -138,8 +138,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         ) : (
                             <></>
                         )}
-                    </Layer>
-                    <Layer key="othello-text-layer">
+                    </FastLayer>
+                    <FastLayer key="othello-text-layer">
                         <Rect fill="#505050" x={0} y={height + strokeWidth} width={width + strokeWidth} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -196,7 +196,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             align="center"
                             verticalAlign="middle"
                         />
-                    </Layer>
+                    </FastLayer>
                 </Stage>
                 <div className="flex justify-end">
                     <Button
@@ -211,7 +211,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             }
 
                             othelloManager.initialize();
-                            setCoordinates((_) => convertCellsToStones(othelloManager.board.cells));
+                            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
                         }}
                     >
                         リセット
@@ -222,7 +222,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     );
 };
 
-function convertCellsToStones(cells: OthelloBoardCell[][]): Coordinate[] {
+function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
     const coordinates: Coordinate[] = [];
     for (let y = 0; y < cells.length; y++) {
         for (let x = 0; x < cells[y].length; x++) {
