@@ -29,7 +29,7 @@ export class GomokuAIManager extends GomokuManagerBase {
             for (let j = 0; j < 2; j++) {
                 const candidates = this.searchCandidates(i, this.currentStone);
                 if (candidates.length > 0) {
-                    return candidates[0];
+                    return candidates[this.random(0, candidates.length)];
                 }
 
                 this.rotateTurn();
