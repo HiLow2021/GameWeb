@@ -107,11 +107,12 @@ export abstract class GomokuManagerBase {
         return this.countAll(x, y, chip).some((count) => count >= this.winCount);
     }
 
-    protected count(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell): number {
+    protected count(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell, includingEmptySides: boolean = false): number {
         while (this.board.get(x + dx, y + dy) === chip) {
             x += dx;
             y += dy;
         }
+        const side1 = Number(this.board.get(x + dx, y + dy) === GomokuBoardCell.empty);
 
         let count = 0;
         while (this.board.get(x, y) === chip) {
@@ -119,11 +120,16 @@ export abstract class GomokuManagerBase {
             y -= dy;
             count++;
         }
+        const side2 = Number(this.board.get(x, y) === GomokuBoardCell.empty);
+
+        if (includingEmptySides) {
+            count += side1 + side2;
+        }
 
         return count;
     }
 
-    protected countAll(x: number, y: number, chip: GomokuBoardCell): number[] {
-        return Vector.half.map((direction) => this.count(x, y, direction.x, direction.y, chip));
+    protected countAll(x: number, y: number, chip: GomokuBoardCell, includingEmptySides: boolean = false): number[] {
+        return Vector.half.map((direction) => this.count(x, y, direction.x, direction.y, chip, includingEmptySides));
     }
 }
