@@ -1,3 +1,4 @@
+import { RandomUtility } from '../../utility/randomUtility';
 import { GomokuBoardCell } from './enums/gomokuBoardCell';
 import { Turn } from './enums/turn';
 import { GomokuManagerBase } from './gomokuManagerBase';
@@ -14,11 +15,11 @@ export class GomokuAIManager extends GomokuManagerBase {
     }
 
     public randomMethod(): Vector {
-        let x, y;
+        let x: number, y: number;
 
         do {
-            x = this.random(0, this.board.width);
-            y = this.random(0, this.board.height);
+            x = RandomUtility.random(0, this.board.width);
+            y = RandomUtility.random(0, this.board.height);
         } while (!this.canPut(x, y));
 
         return new Vector(x, y);
@@ -30,7 +31,7 @@ export class GomokuAIManager extends GomokuManagerBase {
             for (let j = 0; j < 2; j++) {
                 const candidates = this.searchCandidates(this.currentStone, i);
                 if (candidates.length > 0) {
-                    return candidates[this.random(0, candidates.length)];
+                    return candidates[RandomUtility.random(0, candidates.length)];
                 }
 
                 this.rotateTurn();
@@ -90,12 +91,5 @@ export class GomokuAIManager extends GomokuManagerBase {
         }
 
         return result;
-    }
-
-    private random(min: number, max: number): number {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-
-        return Math.floor(Math.random() * (max - min) + min);
     }
 }

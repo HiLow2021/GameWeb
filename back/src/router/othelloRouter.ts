@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
-import { OthelloBoardCell } from '../shared/othello/enums/othelloBoardCell';
-import { Turn } from '../shared/othello/enums/turn';
-import { OthelloAIManager } from '../shared/othello/othelloAIManager';
+import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
+import { Turn } from 'shared/game/othello/enums/turn';
+import { OthelloAIManager } from 'shared/game/othello/othelloAIManager';
 
 const othelloRouter: Router = express.Router();
 

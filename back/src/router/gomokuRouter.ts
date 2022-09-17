@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
-import { GomokuBoardCell } from '../shared/gomoku/enums/gomokuBoardCell';
-import { Turn } from '../shared/gomoku/enums/turn';
-import { GomokuAIManager } from '../shared/gomoku/gomokuAIManager';
+import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
+import { Turn } from 'shared/game/gomoku/enums/turn';
+import { GomokuAIManager } from 'shared/game/gomoku/gomokuAIManager';
 
 const gomokuRouter: Router = express.Router();
 

@@ -1,3 +1,4 @@
+import { RandomUtility } from '../../utility/randomUtility';
 import { SlidingPuzzleBoard } from './slidingPuzzleBoard';
 import { Vector } from './vector';
 
@@ -52,7 +53,7 @@ export class SlidingPuzzleManager {
         }
 
         for (let index = 0; index < step; index++) {
-            for (const direction of this.shuffleArray(Vector.all)) {
+            for (const direction of RandomUtility.shuffle(Vector.all)) {
                 if (this.slide(missingNumberPosition.x + direction.x, missingNumberPosition.y + direction.y)) {
                     missingNumberPosition.x += direction.x;
                     missingNumberPosition.y += direction.y;
@@ -61,16 +62,6 @@ export class SlidingPuzzleManager {
                 }
             }
         }
-    }
-
-    private shuffleArray<T>(source: T[]): T[] {
-        const result = [...source];
-        for (let i = source.length - 1; i >= 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [source[i], source[j]] = [source[j], source[i]];
-        }
-
-        return result;
     }
 
     private validate(): void {
