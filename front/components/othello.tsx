@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import { useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
-import { CommonUtility } from 'shared/commonUtility';
+import { CommonUtility } from 'shared/utility/commonUtility';
 import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
 import { Result } from 'shared/game/othello/enums/result';
 import { Turn } from 'shared/game/othello/enums/turn';

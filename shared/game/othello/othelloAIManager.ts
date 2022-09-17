@@ -1,3 +1,5 @@
+import { CommonUtility } from '../../utility/commonUtility';
+import { RandomUtility } from '../../utility/randomUtility';
 import { OthelloBoardCell } from './enums/othelloBoardCell';
 import { Turn } from './enums/turn';
 import { OthelloManagerBase } from './othelloManagerBase';
@@ -10,23 +12,23 @@ export class OthelloAIManager extends OthelloManagerBase {
     }
 
     public randomMethod(): Vector {
-        let x, y;
+        let x: number, y: number;
 
         do {
-            x = this.random(0, this.board.size);
-            y = this.random(0, this.board.size);
+            x = RandomUtility.random(0, this.board.size);
+            y = RandomUtility.random(0, this.board.size);
         } while (!this.canPut(x, y, this.currentStone));
 
         return new Vector(x, y);
     }
 
     public monteCarloMethod(repeatCount: number): Vector {
-        const winCells = this.createCells<number>(this.board.size);
-        const backCells = this.createCells<OthelloBoardCell>(this.board.size);
+        const winCells = CommonUtility.create2Array<number>(this.board.size);
+        const backCells = CommonUtility.create2Array<OthelloBoardCell>(this.board.size);
         const backTurn = this._currentTurn;
         const result = this.randomMethod();
 
-        this.copyCells(this.board.cells, backCells);
+        CommonUtility.copy2Array(this.board.cells, backCells);
 
         for (let index = 0; index < repeatCount; index++) {
             const first = this.randomMethod();
@@ -44,7 +46,7 @@ export class OthelloAIManager extends OthelloManagerBase {
                 winCells[first.y][first.x]++;
             }
 
-            this.copyCells(backCells, this.board.cells);
+            CommonUtility.copy2Array(backCells, this.board.cells);
             this._currentTurn = backTurn;
         }
 
@@ -60,29 +62,5 @@ export class OthelloAIManager extends OthelloManagerBase {
         }
 
         return result;
-    }
-
-    private createCells<T>(size: number): T[][] {
-        const board = new Array(size);
-        for (let index = 0; index < size; index++) {
-            board[index] = new Array(size);
-        }
-
-        return board;
-    }
-
-    private copyCells<T>(source: T[][], destination: T[][]): void {
-        for (let y = 0; y < source.length; y++) {
-            for (let x = 0; x < source[y].length; x++) {
-                destination[y][x] = source[y][x];
-            }
-        }
-    }
-
-    private random(min: number, max: number): number {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-
-        return Math.floor(Math.random() * (max - min) + min);
     }
 }
