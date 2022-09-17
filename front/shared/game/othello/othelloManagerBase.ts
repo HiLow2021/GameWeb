@@ -2,9 +2,12 @@ import { OthelloBoardCell } from './enums/othelloBoardCell';
 import { Turn } from './enums/turn';
 import { Vector } from './vector';
 import { OthelloBoard } from './othelloBoard';
+import { Result } from './enums/result';
 
 export abstract class OthelloManagerBase {
     protected _currentTurn: Turn = Turn.black;
+
+    protected _result: Result = Result.undecided;
 
     public readonly board: OthelloBoard;
 
@@ -17,7 +20,11 @@ export abstract class OthelloManagerBase {
     }
 
     get isFinished(): boolean {
-        return this.currentTurn === Turn.finished;
+        return this._result !== Result.undecided;
+    }
+
+    get result(): Result {
+        return this._result;
     }
 
     public constructor(size: number) {
@@ -27,6 +34,7 @@ export abstract class OthelloManagerBase {
 
     public initialize(): void {
         this._currentTurn = Turn.black;
+        this._result = Result.undecided;
         this.board.initialize();
     }
 
@@ -37,6 +45,7 @@ export abstract class OthelloManagerBase {
 
         if (this.put(x, y, this.currentStone)) {
             this.rotateTurn();
+            this.updateResult();
 
             return true;
         }
@@ -45,15 +54,32 @@ export abstract class OthelloManagerBase {
     }
 
     protected rotateTurn(): void {
-        const canBlackTurn = this.canPutAll(OthelloBoardCell.black);
-        const canWhiteTurn = this.canPutAll(OthelloBoardCell.white);
+        const canPutBlack = this.canPutAll(OthelloBoardCell.black);
+        const canPutWhite = this.canPutAll(OthelloBoardCell.white);
 
-        if (!canBlackTurn && !canWhiteTurn) {
-            this._currentTurn = Turn.finished;
-        } else if (this._currentTurn === Turn.black && canWhiteTurn) {
+        if (this._currentTurn === Turn.black && canPutWhite) {
             this._currentTurn = Turn.white;
-        } else if (this._currentTurn === Turn.white && canBlackTurn) {
+        } else if (this._currentTurn === Turn.white && canPutBlack) {
             this._currentTurn = Turn.black;
+        }
+    }
+
+    protected updateResult(): void {
+        const blackCount = this.board.getCount(OthelloBoardCell.black);
+        const whiteCount = this.board.getCount(OthelloBoardCell.white);
+        const canPutBlack = this.canPutAll(OthelloBoardCell.black);
+        const canPutWhite = this.canPutAll(OthelloBoardCell.white);
+
+        if (!canPutBlack && !canPutWhite) {
+            if (blackCount > whiteCount) {
+                this._result = Result.black;
+            } else if (whiteCount > blackCount) {
+                this._result = Result.white;
+            } else {
+                this._result = Result.draw;
+            }
+        } else {
+            this._result = Result.undecided;
         }
     }
 

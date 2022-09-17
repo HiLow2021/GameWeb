@@ -6,6 +6,7 @@ import { Vector } from './vector';
 
 export abstract class GomokuManagerBase {
     protected _currentTurn: Turn = Turn.black;
+
     protected _result: Result = Result.undecided;
 
     public readonly board: GomokuBoard;
@@ -55,32 +56,6 @@ export abstract class GomokuManagerBase {
         return false;
     }
 
-    protected canPut(x: number, y: number): boolean {
-        return this.board.get(x, y) === GomokuBoardCell.empty;
-    }
-
-    protected canPutAll(): boolean {
-        for (let x = 0; x < this.board.width; x++) {
-            for (let y = 0; y < this.board.height; y++) {
-                if (this.canPut(x, y)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    protected put(x: number, y: number, chip: GomokuBoardCell): boolean {
-        if (!this.canPut(x, y)) {
-            return false;
-        }
-
-        this.board.set(x, y, chip);
-
-        return true;
-    }
-
     protected rotateTurn(): void {
         if (this._currentTurn === Turn.black) {
             this._currentTurn = Turn.white;
@@ -105,6 +80,32 @@ export abstract class GomokuManagerBase {
 
     protected checkWin(x: number, y: number, chip: GomokuBoardCell): boolean {
         return this.countAll(x, y, chip).some((count) => count >= this.winCount);
+    }
+
+    protected canPut(x: number, y: number): boolean {
+        return this.board.get(x, y) === GomokuBoardCell.empty;
+    }
+
+    protected canPutAll(): boolean {
+        for (let x = 0; x < this.board.width; x++) {
+            for (let y = 0; y < this.board.height; y++) {
+                if (this.canPut(x, y)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected put(x: number, y: number, chip: GomokuBoardCell): boolean {
+        if (!this.canPut(x, y)) {
+            return false;
+        }
+
+        this.board.set(x, y, chip);
+
+        return true;
     }
 
     protected count(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell, includingEmptySides: boolean = false): number {
