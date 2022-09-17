@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
 import { CommonUtility } from '../shared/commonUtility';
 import { OthelloBoardCell } from '../shared/game/othello/enums/othelloBoardCell';
+import { Result } from '../shared/game/othello/enums/result';
 import { Turn } from '../shared/game/othello/enums/turn';
 import { OthelloBoard } from '../shared/game/othello/othelloBoard';
 import { OthelloManager } from '../shared/game/othello/othelloManager';
@@ -186,7 +187,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             verticalAlign="middle"
                         />
                         <Text
-                            text={displayText(othelloManager.board, othelloManager.currentTurn)}
+                            text={displayText(othelloManager.result, othelloManager.currentTurn)}
                             x={0}
                             y={height}
                             width={width}
@@ -260,24 +261,20 @@ function displayCount(board: OthelloBoard, cell: OthelloBoardCell): string {
     return board.getCount(cell).toString();
 }
 
-function displayText(board: OthelloBoard, currentTurn: Turn): string {
-    const blackCount = board.getCount(OthelloBoardCell.black);
-    const whiteCount = board.getCount(OthelloBoardCell.white);
-
-    let text = '';
-    if (currentTurn === Turn.black) {
-        text = 'プレイヤーのターンです';
-    } else if (currentTurn === Turn.white) {
-        text = 'AIのターンです';
-    } else if (currentTurn === Turn.finished && blackCount > whiteCount) {
-        text = 'プレイヤーの勝利です';
-    } else if (currentTurn === Turn.finished && whiteCount > blackCount) {
-        text = 'AIの勝利です';
-    } else if (currentTurn === Turn.finished && blackCount === whiteCount) {
-        text = '引き分けです';
+function displayText(result: Result, turn: Turn): string {
+    if (result === Result.black) {
+        return 'プレイヤーの勝利です';
+    } else if (result === Result.white) {
+        return 'AIの勝利です';
+    } else if (result === Result.draw) {
+        return '引き分けです';
+    } else if (result === Result.undecided && turn === Turn.black) {
+        return 'プレイヤーのターンです';
+    } else if (result === Result.undecided && turn === Turn.white) {
+        return 'AIのターンです';
+    } else {
+        return '';
     }
-
-    return text;
 }
 
 export default Othello;
