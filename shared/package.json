@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "eslint": "npx eslint ./src/**/*.ts",
-    "prettier": "npx prettier --write ./src/**/*.ts"
+    "eslint": "npx eslint ./**/*.ts",
+    "prettier": "npx prettier --write ./**/*.ts"
   },
   "repository": {
     "type": "git",
