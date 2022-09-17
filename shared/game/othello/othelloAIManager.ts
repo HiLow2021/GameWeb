@@ -1,6 +1,7 @@
 import { CommonUtility } from '../../utility/commonUtility';
 import { RandomUtility } from '../../utility/randomUtility';
 import { OthelloBoardCell } from './enums/othelloBoardCell';
+import { Result } from './enums/result';
 import { Turn } from './enums/turn';
 import { OthelloManagerBase } from './othelloManagerBase';
 import { Vector } from './vector';
@@ -39,10 +40,7 @@ export class OthelloAIManager extends OthelloManagerBase {
                 this.next(step.x, step.y);
             }
 
-            const blackCount = this.board.getCount(OthelloBoardCell.black);
-            const whiteCount = this.board.getCount(OthelloBoardCell.white);
-
-            if ((backTurn === Turn.black && blackCount > whiteCount) || (backTurn === Turn.white && whiteCount > blackCount)) {
+            if ((backTurn === Turn.black && this.result === Result.black) || (backTurn === Turn.white && this.result === Result.white)) {
                 winCells[first.y][first.x]++;
             }
 
