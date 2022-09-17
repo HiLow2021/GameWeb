@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "npx eslint ./src/**/*.ts",
+    "prettier": "npx prettier --write ./src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/HiLow2021/OthelloWeb/issues"
   },
-  "homepage": "https://github.com/HiLow2021/OthelloWeb#readme"
+  "homepage": "https://github.com/HiLow2021/OthelloWeb#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1"
+  }
 }

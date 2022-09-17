@@ -5,7 +5,7 @@ export class RandomUtility {
 
         return Math.floor(Math.random() * (max - min) + min);
     }
-    
+
     public static shuffle<T>(source: T[]): T[] {
         const result = [...source];
         for (let i = source.length - 1; i >= 0; i--) {
