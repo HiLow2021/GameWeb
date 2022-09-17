@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
-import { SlidingPuzzleManager } from '../shared/game/slidingPuzzle/slidingPuzzleManager';
+import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 
 type Coordinate = {
     x: number;

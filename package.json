@@ -1,0 +1,20 @@
+{
+  "name": "game_web",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HiLow2021/OthelloWeb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HiLow2021/OthelloWeb/issues"
+  },
+  "homepage": "https://github.com/HiLow2021/OthelloWeb#readme",
+  "workspaces": [
+    "shared"
+  ]
+}
