@@ -1,11 +1,11 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
-import { CommonUtility } from '../shared/commonUtility';
-import { GomokuBoardCell } from '../shared/game/gomoku/enums/gomokuBoardCell';
-import { Result } from '../shared/game/gomoku/enums/result';
-import { Turn } from '../shared/game/gomoku/enums/turn';
-import { GomokuManager } from '../shared/game/gomoku/gomokuManager';
+import { CommonUtility } from 'shared/commonUtility';
+import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
+import { Result } from 'shared/game/gomoku/enums/result';
+import { Turn } from 'shared/game/gomoku/enums/turn';
+import { GomokuManager } from 'shared/game/gomoku/gomokuManager';
 
 type Coordinate = {
     x: number;

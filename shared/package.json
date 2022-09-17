@@ -1,0 +1,20 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "1. 自分の石で、5個揃う場所がある場合、その場所に置く。\r 2. 相手の石で、5個揃う場所がある場合、その場所に置く。\r 3. 自分の石で、4個揃う場所があり、置いた後にそのラインの両隣が空白となる場合、その場所に置く。\r 4. 相手の石で、4個揃う場所があり、置いた後にそのラインの両隣が空白となる場合、その場所に置く。\r 5. 自分の石で、3個揃う場所があり、置いた後にそのラインの両隣が空白となる場合、その場所に置く。\r 6. 相手の石で、3個揃う場所があり、置いた後にそのラインの両隣が空白となる場合、その場所に置く。\r 7. あまり不自然でない場所にランダムに置く。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HiLow2021/OthelloWeb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HiLow2021/OthelloWeb/issues"
+  },
+  "homepage": "https://github.com/HiLow2021/OthelloWeb#readme"
+}
