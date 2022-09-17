@@ -1,8 +1,8 @@
 export class CommonUtility {
-    public static create2Array<T>(size: number): T[][] {
-        const board = new Array(size);
-        for (let index = 0; index < size; index++) {
-            board[index] = new Array(size);
+    public static create2Array<T>(width: number, height: number): T[][] {
+        const board = new Array(height);
+        for (let index = 0; index < height; index++) {
+            board[index] = new Array(width);
         }
 
         return board;
