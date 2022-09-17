@@ -23,8 +23,8 @@ export class OthelloAIManager extends OthelloManagerBase {
     }
 
     public monteCarloMethod(repeatCount: number): Vector {
-        const winCells = CommonUtility.create2Array<number>(this.board.size);
-        const backCells = CommonUtility.create2Array<OthelloBoardCell>(this.board.size);
+        const winCells = CommonUtility.create2Array<number>(this.board.size, this.board.size);
+        const backCells = CommonUtility.create2Array<OthelloBoardCell>(this.board.size, this.board.size);
         const backTurn = this._currentTurn;
         const result = this.randomMethod();
 
