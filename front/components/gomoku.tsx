@@ -6,6 +6,7 @@ import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
 import { Result } from 'shared/game/gomoku/enums/result';
 import { Turn } from 'shared/game/gomoku/enums/turn';
 import { GomokuManager } from 'shared/game/gomoku/gomokuManager';
+import useSound from "use-sound"
 
 type Coordinate = {
     x: number;
@@ -30,6 +31,8 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(gomokuManager.board.cells));
     const [canClick, setCanClick] = useState(true);
 
+    const [sound] = useSound('game/gomoku/sound.mp3');
+
     const buttonStyle = { fontSize: 24 };
 
     return (
@@ -48,12 +51,16 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
 
                         if (gomokuManager.next(x, y)) {
                             setCanClick((_) => false);
+                            
                             setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                            sound();
 
-                            await CommonUtility.delay(100);
+                            await CommonUtility.delay(500);
                             await gomokuManager.nextByAI();
 
                             setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                            sound();
+
                             setCanClick((_) => true);
                         }
                     }}
