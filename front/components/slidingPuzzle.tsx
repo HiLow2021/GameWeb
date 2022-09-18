@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
+import useSound from 'use-sound';
 
 type Coordinate = {
     x: number;
@@ -28,6 +29,8 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     const [slidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize, missingNumber));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     const [canClick, setCanClick] = useState(true);
+
+    const [sound] = useSound('game/slidingPuzzle/sound.mp3');
 
     const buttonStyle = { fontSize: 24 };
 
@@ -58,6 +61,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                             setCanClick((_) => false);
 
                             setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+                            sound();
 
                             setCanClick((_) => true);
                         }
