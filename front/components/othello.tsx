@@ -7,7 +7,7 @@ import { Turn } from 'shared/game/othello/enums/turn';
 import { OthelloBoard } from 'shared/game/othello/othelloBoard';
 import { OthelloManager } from 'shared/game/othello/othelloManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
-import useSound from "use-sound";
+import useSound from 'use-sound';
 
 type Coordinate = {
     x: number;
@@ -30,10 +30,9 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
 
-    const [sound] = useSound("game/othello/sound.mp3")
+    const [sound] = useSound('game/othello/sound.mp3');
 
     const buttonStyle = { fontSize: 24 };
-
 
     return (
         <>
