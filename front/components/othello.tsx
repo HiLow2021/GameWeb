@@ -66,7 +66,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
                             sound();
 
-                            while (isOpponent(player, othelloManager.currentTurn) && othelloManager.result === Result.undecided) {
+                            while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
                                 await CommonUtility.delay(500);
                                 await othelloManager.nextByAI(Level.toLogicValue(level));
 
