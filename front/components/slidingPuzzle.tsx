@@ -3,13 +3,7 @@ import { useState } from 'react';
 import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import useSound from 'use-sound';
-
-type Coordinate = {
-    x: number;
-    y: number;
-    number?: number;
-    correct?: boolean;
-};
+import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
 
 const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JSX.Element => {
     const widthSize = 4;

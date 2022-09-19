@@ -3,7 +3,7 @@ import { SlidingPuzzleBoard } from './slidingPuzzleBoard';
 import { Vector } from './vector';
 
 export class SlidingPuzzleManager {
-    private _step: number = 0;
+    private _step = 0;
 
     public readonly board: SlidingPuzzleBoard;
 
@@ -46,7 +46,7 @@ export class SlidingPuzzleManager {
         return false;
     }
 
-    private shuffle(step: number = 1000): void {
+    private shuffle(step = 1000): void {
         const missingNumberPosition = this.board.find(this.missingNumber);
         if (!missingNumberPosition) {
             return;
