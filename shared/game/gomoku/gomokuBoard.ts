@@ -7,6 +7,10 @@ export class GomokuBoard {
 
     public readonly height: number;
 
+    get square(): number {
+        return this.width * this.height;
+    }
+
     get cells(): GomokuBoardCell[][] {
         return this._cells;
     }
@@ -37,6 +41,19 @@ export class GomokuBoard {
         }
 
         return this._cells[y][x];
+    }
+
+    public getCount(cell: GomokuBoardCell): number {
+        let count = 0;
+        for (let y = 0; y < this._cells.length; y++) {
+            for (let x = 0; x < this._cells[y].length; x++) {
+                if (this._cells[y][x] === cell) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     public set(x: number, y: number, cell: GomokuBoardCell): void {

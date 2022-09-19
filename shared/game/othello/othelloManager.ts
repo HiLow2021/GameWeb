@@ -19,7 +19,7 @@ export class OthelloManager extends OthelloManagerBase {
         return false;
     }
 
-    public async nextByAI(): Promise<boolean> {
+    public async nextByAI(repeatCount: number): Promise<boolean> {
         if (this.isFinished) {
             false;
         }
@@ -29,7 +29,7 @@ export class OthelloManager extends OthelloManagerBase {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ cells: this.board.cells, currentTurn: this.currentTurn })
+            body: JSON.stringify({ cells: this.board.cells, currentTurn: this.currentTurn, repeatCount })
         });
         const position = await response.json();
 

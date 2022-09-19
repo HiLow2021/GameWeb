@@ -1,19 +1,17 @@
+import { FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
-import { CommonUtility } from 'shared/utility/commonUtility';
 import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
 import { Result } from 'shared/game/othello/enums/result';
 import { Turn } from 'shared/game/othello/enums/turn';
 import { OthelloBoard } from 'shared/game/othello/othelloBoard';
 import { OthelloManager } from 'shared/game/othello/othelloManager';
-
-type Coordinate = {
-    x: number;
-    y: number;
-    color: string;
-    stone: boolean;
-};
+import { CommonUtility } from 'shared/utility/commonUtility';
+import useSound from 'use-sound';
+import { Coordinate } from '../shared/game/othello/coordinate';
+import { Level } from '../shared/game/othello/level';
+import { Player } from '../shared/game/othello/player';
 
 const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
     const size = 8;
@@ -29,11 +27,29 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
     const [mouseCoordinate, setMouseCoordinate] = useState<Coordinate>();
     const [canClick, setCanClick] = useState(true);
 
-    const buttonStyle = { fontSize: 24 };
+    const [player, setPlayer] = useState<Player>(Player.black);
+    const [level, setLevel] = useState<Level>(Level.normal);
+
+    const [sound] = useSound('game/othello/sound.mp3');
+
+    const initialize = async () => {
+        othelloManager.initialize();
+
+        if (player === Player.white) {
+            await othelloManager.nextByAI(Level.toLogicValue(level));
+            sound();
+        }
+
+        setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+    };
+
+    useEffect(() => {
+        initialize();
+    }, [player, level]);
 
     return (
         <>
-            <div className="flex flex-col gap-4 justify-center">
+            <div className="flex flex-col justify-center gap-4">
                 <Stage
                     width={width + strokeWidth}
                     height={height + strokeWidth + textAreaHeight}
@@ -48,12 +64,14 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         if (othelloManager.next(x, y)) {
                             setCanClick((_) => false);
                             setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+                            sound();
 
-                            while (isOpponent(othelloManager.currentTurn)) {
-                                await CommonUtility.delay(100);
-                                await othelloManager.nextByAI();
+                            while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
+                                await CommonUtility.delay(500);
+                                await othelloManager.nextByAI(Level.toLogicValue(level));
 
                                 setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+                                sound();
                             }
 
                             setCanClick((_) => true);
@@ -112,7 +130,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                     radiusX={cellWidth / 3}
                                     radiusY={cellHeight / 3}
                                 />
-                            ) : !isOpponent(othelloManager.currentTurn) ? (
+                            ) : !isOpponent(player, othelloManager.currentTurn) ? (
                                 <Rect
                                     stroke={coordinate.color}
                                     strokeWidth={strokeWidth}
@@ -187,7 +205,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             verticalAlign="middle"
                         />
                         <Text
-                            text={displayText(othelloManager.result, othelloManager.currentTurn)}
+                            text={displayText(othelloManager.result, othelloManager.currentTurn, player)}
                             x={0}
                             y={height}
                             width={width}
@@ -199,20 +217,61 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         />
                     </FastLayer>
                 </Stage>
+                <div className="flex justify-center gap-12 border-4 border-gray-600 bg-gray-300 py-4">
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem' }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            順番
+                        </FormLabel>
+                        <RadioGroup
+                            row
+                            aria-labelledby="radio-buttons-group-label"
+                            value={player}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setPlayer(e.target.value as Player);
+                            }}
+                        >
+                            <FormControlLabel value="black" control={<Radio />} label="先手 (黒)" />
+                            <FormControlLabel value="white" control={<Radio />} label="後手 (白)" />
+                        </RadioGroup>
+                    </FormControl>
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            難易度
+                        </FormLabel>
+                        <Select
+                            labelId="simple-select-label"
+                            id="simple-select"
+                            value={level}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setLevel(e.target.value as Level);
+                            }}
+                        >
+                            <MenuItem value={'easy'}>弱い</MenuItem>
+                            <MenuItem value={'normal'}>普通</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
                 <div className="flex justify-end">
                     <Button
                         className="h-12 w-48"
                         fullWidth={false}
                         variant="contained"
                         color="success"
-                        style={buttonStyle}
-                        onClick={() => {
+                        style={{ fontSize: 24 }}
+                        onClick={async () => {
                             if (!canClick) {
                                 return;
                             }
 
-                            othelloManager.initialize();
-                            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+                            await initialize();
                         }}
                     >
                         リセット
@@ -253,27 +312,27 @@ function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
     return coordinates;
 }
 
-function isOpponent(currentTurn: Turn): boolean {
-    return currentTurn === 'white';
+function isOpponent(currentTurn: Turn, player: Player): boolean {
+    return (currentTurn === Turn.white && player === Player.black) || (currentTurn === Turn.black && player === Player.white);
 }
 
 function displayCount(board: OthelloBoard, cell: OthelloBoardCell): string {
     return board.getCount(cell).toString();
 }
 
-function displayText(result: Result, turn: Turn): string {
-    if (result === Result.black) {
-        return 'プレイヤーの勝利です';
-    } else if (result === Result.white) {
-        return 'AIの勝利です';
+function displayText(result: Result, currentTurn: Turn, player: Player): string {
+    if (result === Result.undecided) {
+        if ((currentTurn === Turn.black && player === Player.black) || (currentTurn === Turn.white && player === Player.white)) {
+            return 'プレイヤーのターンです';
+        } else {
+            return 'AIのターンです';
+        }
     } else if (result === Result.draw) {
         return '引き分けです';
-    } else if (result === Result.undecided && turn === Turn.black) {
-        return 'プレイヤーのターンです';
-    } else if (result === Result.undecided && turn === Turn.white) {
-        return 'AIのターンです';
+    } else if ((result === Result.black && player === Player.black) || (result === Result.white && player === Player.white)) {
+        return 'プレイヤーの勝利です';
     } else {
-        return '';
+        return 'AIの勝利です';
     }
 }
 

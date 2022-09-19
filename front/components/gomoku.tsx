@@ -1,17 +1,15 @@
-import { Button } from '@mui/material';
-import { useState } from 'react';
+import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
-import { CommonUtility } from 'shared/utility/commonUtility';
 import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
 import { Result } from 'shared/game/gomoku/enums/result';
 import { Turn } from 'shared/game/gomoku/enums/turn';
 import { GomokuManager } from 'shared/game/gomoku/gomokuManager';
-
-type Coordinate = {
-    x: number;
-    y: number;
-    color: string;
-};
+import { CommonUtility } from 'shared/utility/commonUtility';
+import useSound from 'use-sound';
+import { Coordinate } from '../shared/game/gomoku/coordinate';
+import { Level } from '../shared/game/gomoku/level';
+import { Player } from '../shared/game/gomoku/player';
 
 const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Element => {
     const widthSize = 14;
@@ -30,11 +28,29 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(gomokuManager.board.cells));
     const [canClick, setCanClick] = useState(true);
 
-    const buttonStyle = { fontSize: 24 };
+    const [player, setPlayer] = useState<Player>(Player.black);
+    const [level, setLevel] = useState<Level>(Level.normal);
+
+    const [sound] = useSound('game/gomoku/sound.mp3');
+
+    const initialize = async () => {
+        gomokuManager.initialize();
+
+        if (player === Player.white) {
+            await gomokuManager.nextByAI();
+            sound();
+        }
+
+        setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+    };
+
+    useEffect(() => {
+        initialize();
+    }, [player, level]);
 
     return (
         <>
-            <div className="flex flex-col gap-4 justify-center">
+            <div className="flex flex-col justify-center gap-4">
                 <Stage
                     width={width}
                     height={height + textAreaHeight}
@@ -48,12 +64,18 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
 
                         if (gomokuManager.next(x, y)) {
                             setCanClick((_) => false);
-                            setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
-
-                            await CommonUtility.delay(100);
-                            await gomokuManager.nextByAI();
 
                             setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                            sound();
+
+                            if (!gomokuManager.isFinished) {
+                                await CommonUtility.delay(500);
+                                await gomokuManager.nextByAI();
+
+                                setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                                sound();
+                            }
+
                             setCanClick((_) => true);
                         }
                     }}
@@ -126,7 +148,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                             height={textAreaHeight}
                         />
                         <Text
-                            text={displayText(gomokuManager.result, gomokuManager.currentTurn)}
+                            text={displayText(gomokuManager.result, gomokuManager.currentTurn, player)}
                             x={0}
                             y={height}
                             width={width}
@@ -138,20 +160,60 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
                         />
                     </FastLayer>
                 </Stage>
+                <div className="flex justify-center gap-12 border-4 border-gray-600 bg-gray-300 py-4">
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem' }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            順番
+                        </FormLabel>
+                        <RadioGroup
+                            row
+                            aria-labelledby="radio-buttons-group-label"
+                            value={player}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setPlayer(e.target.value as Player);
+                            }}
+                        >
+                            <FormControlLabel value="black" control={<Radio />} label="先手 (黒)" />
+                            <FormControlLabel value="white" control={<Radio />} label="後手 (白)" />
+                        </RadioGroup>
+                    </FormControl>
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            難易度
+                        </FormLabel>
+                        <Select
+                            labelId="simple-select-label"
+                            id="simple-select"
+                            value={level}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setLevel(e.target.value as Level);
+                            }}
+                        >
+                            <MenuItem value={'normal'}>普通</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
                 <div className="flex justify-end">
                     <Button
                         className="h-12 w-48"
                         fullWidth={false}
                         variant="contained"
                         color="warning"
-                        style={buttonStyle}
-                        onClick={() => {
+                        style={{ fontSize: 24 }}
+                        onClick={async () => {
                             if (!canClick) {
                                 return;
                             }
 
-                            gomokuManager.initialize();
-                            setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                            await initialize();
                         }}
                     >
                         リセット
@@ -188,19 +250,19 @@ function convertCellsToCoordinates(cells: GomokuBoardCell[][]): Coordinate[] {
     return coordinates;
 }
 
-function displayText(result: Result, turn: Turn): string {
-    if (result === Result.black) {
-        return 'プレイヤーの勝利です';
-    } else if (result === Result.white) {
-        return 'AIの勝利です';
+function displayText(result: Result, currentTurn: Turn, player: Player): string {
+    if (result === Result.undecided) {
+        if ((currentTurn === Turn.black && player === Player.black) || (currentTurn === Turn.white && player === Player.white)) {
+            return 'プレイヤーのターンです';
+        } else {
+            return 'AIのターンです';
+        }
     } else if (result === Result.draw) {
         return '引き分けです';
-    } else if (result === Result.undecided && turn === Turn.black) {
-        return 'プレイヤーのターンです';
-    } else if (result === Result.undecided && turn === Turn.white) {
-        return 'AIのターンです';
+    } else if ((result === Result.black && player === Player.black) || (result === Result.white && player === Player.white)) {
+        return 'プレイヤーの勝利です';
     } else {
-        return '';
+        return 'AIの勝利です';
     }
 }
 
