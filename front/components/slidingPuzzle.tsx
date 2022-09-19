@@ -1,26 +1,25 @@
-import { Button } from '@mui/material';
-import { useState } from 'react';
+import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
 
 const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const widthSize = 4;
-    const heightSize = 4;
     const outerStrokeWidth = 20;
     const outerStrokeWidthHalf = outerStrokeWidth / 2;
     const innerStrokeWidth = 2;
     const innerStrokeWidthHalf = innerStrokeWidth / 2;
-    const cellWidth = (width - outerStrokeWidth * 2) / widthSize;
-    const cellHeight = (height - outerStrokeWidth * 2) / heightSize;
     const textAreaHeight = 80;
-    const textAreaMargin = 24;
+    const textAreaMargin = 16;
     const textStrokeWidth = 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
-    const missingNumber = widthSize * heightSize - 1;
 
-    const [slidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize, missingNumber));
+    const [widthSize, setWidthSize] = useState(4);
+    const [heightSize, setHeightSize] = useState(4);
+    const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / widthSize);
+    const [cellHeight, setCellHeight] = useState((height - outerStrokeWidth * 2) / heightSize);
+    const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     const [canClick, setCanClick] = useState(true);
 
@@ -32,6 +31,16 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
 
         return { x, y };
     };
+
+    useEffect(() => {
+        setSlidingPuzzleManager(new SlidingPuzzleManager(widthSize, heightSize));
+        setCellWidth((width - outerStrokeWidth * 2) / widthSize);
+        setCellHeight((height - outerStrokeWidth * 2) / heightSize);
+    }, [widthSize, heightSize]);
+
+    useLayoutEffect(() => {
+        setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+    }, [slidingPuzzleManager, cellWidth, cellHeight]);
 
     return (
         <>
@@ -71,7 +80,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                     </FastLayer>
                     <FastLayer key="sliding-puzzle-piece-layer">
                         {coordinates.map((coordinate) =>
-                            coordinate.number !== missingNumber ? (
+                            coordinate.number !== slidingPuzzleManager.missingNumber ? (
                                 <Group>
                                     <Rect
                                         x={cellWidth * coordinate.x + outerStrokeWidth}
@@ -142,6 +151,52 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                         />
                     </FastLayer>
                 </Stage>
+                <div className="flex justify-center gap-12 border-4 border-gray-600 bg-gray-300 py-2">
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            縦サイズ
+                        </FormLabel>
+                        <Select
+                            labelId="simple-select-label"
+                            id="simple-select"
+                            sx={{ minWidth: 80, fontSize: 20, textAlign: 'center' }}
+                            value={heightSize}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setHeightSize(e.target.value as number);
+                            }}
+                        >
+                            {[...Array(7)].map((_, i) => (
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            横サイズ
+                        </FormLabel>
+                        <Select
+                            labelId="simple-select-label"
+                            id="simple-select"
+                            sx={{ minWidth: 80, fontSize: 20, textAlign: 'center' }}
+                            value={widthSize}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setWidthSize(e.target.value as number);
+                            }}
+                        >
+                            {[...Array(7)].map((_, i) => (
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
                 <div className="flex justify-end">
                     <Button
                         className="h-12 w-48"
@@ -170,7 +225,7 @@ function convertCellsToCoordinates(cells: number[][]): Coordinate[] {
     const coordinates: Coordinate[] = [];
     for (let y = 0; y < cells.length; y++) {
         for (let x = 0; x < cells[y].length; x++) {
-            coordinates.push({ x, y, number: cells[y][x], correct: y * cells.length + x === cells[y][x] });
+            coordinates.push({ x, y, number: cells[y][x], correct: y * cells[y].length + x === cells[y][x] });
         }
     }
 
