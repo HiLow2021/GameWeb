@@ -29,7 +29,7 @@ export abstract class GomokuManagerBase {
         return this._result;
     }
 
-    public constructor(width: number, height: number, winCount: number = 5) {
+    public constructor(width: number, height: number, winCount = 5) {
         this.board = new GomokuBoard(width, height);
         this.winCount = winCount;
         this.initialize();
@@ -108,7 +108,7 @@ export abstract class GomokuManagerBase {
         return true;
     }
 
-    protected count(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell, includingEmptySides: boolean = false): number {
+    protected count(x: number, y: number, dx: number, dy: number, chip: GomokuBoardCell, includingEmptySides = false): number {
         while (this.board.get(x + dx, y + dy) === chip) {
             x += dx;
             y += dy;
@@ -130,7 +130,7 @@ export abstract class GomokuManagerBase {
         return count;
     }
 
-    protected countAll(x: number, y: number, chip: GomokuBoardCell, includingEmptySides: boolean = false): number[] {
+    protected countAll(x: number, y: number, chip: GomokuBoardCell, includingEmptySides = false): number[] {
         return Vector.half.map((direction) => this.count(x, y, direction.x, direction.y, chip, includingEmptySides));
     }
 }

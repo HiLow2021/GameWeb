@@ -12,7 +12,7 @@ const Index: NextPage = (): JSX.Element => {
                         <a>
                             <div className="flex flex-col">
                                 <img className="h-48 w-48 object-scale-down" src={game.thumbnail} alt={game.title} />
-                                <div className="p-4 text-xl text-center">{game.title}</div>
+                                <div className="p-4 text-center text-xl">{game.title}</div>
                             </div>
                         </a>
                     </Link>
