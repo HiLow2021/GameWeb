@@ -154,28 +154,6 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                 <div className="flex justify-center gap-12 border-4 border-gray-600 bg-gray-300 py-2">
                     <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
                         <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
-                            縦サイズ
-                        </FormLabel>
-                        <Select
-                            labelId="simple-select-label"
-                            id="simple-select"
-                            sx={{ minWidth: 80, fontSize: 20, textAlign: 'center' }}
-                            value={heightSize}
-                            onChange={async (e) => {
-                                if (!canClick) {
-                                    return;
-                                }
-
-                                setHeightSize(e.target.value as number);
-                            }}
-                        >
-                            {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
                             横サイズ
                         </FormLabel>
                         <Select
@@ -189,6 +167,28 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                                 }
 
                                 setWidthSize(e.target.value as number);
+                            }}
+                        >
+                            {[...Array(7)].map((_, i) => (
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                            縦サイズ
+                        </FormLabel>
+                        <Select
+                            labelId="simple-select-label"
+                            id="simple-select"
+                            sx={{ minWidth: 80, fontSize: 20, textAlign: 'center' }}
+                            value={heightSize}
+                            onChange={async (e) => {
+                                if (!canClick) {
+                                    return;
+                                }
+
+                                setHeightSize(e.target.value as number);
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
