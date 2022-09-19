@@ -37,7 +37,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
 
     return (
         <>
-            <div className="flex flex-col gap-4 justify-center">
+            <div className="flex flex-col justify-center gap-4">
                 <Stage
                     width={width}
                     height={height + textAreaHeight}
