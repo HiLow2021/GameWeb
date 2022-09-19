@@ -8,6 +8,7 @@ const othelloRouter: Router = express.Router();
 type RequestData = {
     cells: OthelloBoardCell[][];
     currentTurn: Turn;
+    repeatCount: number;
 };
 
 type ResponseData = {
@@ -17,11 +18,11 @@ type ResponseData = {
 
 othelloRouter.post('/othello/next', (req: Request, res: Response, next: NextFunction): void => {
     try {
-        const { cells, currentTurn } = req.body as RequestData;
+        const { cells, currentTurn, repeatCount } = req.body as RequestData;
 
         const othelloAIManager = new OthelloAIManager(cells.length);
         othelloAIManager.setBoard(cells, currentTurn);
-        const position = othelloAIManager.monteCarloMethod(1000);
+        const position = othelloAIManager.monteCarloMethod(repeatCount);
 
         const response = { x: position.x, y: position.y } as ResponseData;
 
