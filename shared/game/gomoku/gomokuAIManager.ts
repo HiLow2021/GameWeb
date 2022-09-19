@@ -25,7 +25,7 @@ export class GomokuAIManager extends GomokuManagerBase {
         return new Vector(x, y);
     }
 
-    public simpleMethod(): Vector {
+    public basicMethod(): Vector {
         const backupTurn = this._currentTurn;
         for (let i = this.winCount; i > 2; i--) {
             for (let j = 0; j < 2; j++) {
@@ -68,7 +68,7 @@ export class GomokuAIManager extends GomokuManagerBase {
         return candidates;
     }
 
-    private searchTargetWithinRange(x: number, y: number, chip: GomokuBoardCell, distance: number = 1): boolean {
+    private searchTargetWithinRange(x: number, y: number, chip: GomokuBoardCell, distance = 1): boolean {
         for (const direction of Vector.all) {
             for (let index = 0; index <= distance; index++) {
                 if (this.board.get(x + direction.x * index, y + direction.y * index) === chip) {
