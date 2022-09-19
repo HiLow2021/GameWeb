@@ -26,8 +26,6 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
 
     const [sound] = useSound('game/slidingPuzzle/sound.mp3');
 
-    const buttonStyle = { fontSize: 24 };
-
     const getTargetCell = (offsetX: number, offsetY: number): Coordinate | undefined => {
         const x = Math.floor((offsetX - outerStrokeWidth) / cellWidth);
         const y = Math.floor((offsetY - outerStrokeWidth) / cellHeight);
@@ -150,7 +148,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                         fullWidth={false}
                         variant="contained"
                         color="primary"
-                        style={buttonStyle}
+                        style={{ fontSize: 24 }}
                         onClick={() => {
                             if (!canClick) {
                                 return;
