@@ -5,7 +5,7 @@ import { Layout } from '../../components/layout';
 const Index: NextPage = (): JSX.Element => {
     return (
         <Layout>
-            <GameProvider componentName='slidingPuzzle'/>
+            <GameProvider componentName="slidingPuzzle" />
         </Layout>
     );
 };
