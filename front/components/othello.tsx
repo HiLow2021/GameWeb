@@ -1,5 +1,4 @@
-import { FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
