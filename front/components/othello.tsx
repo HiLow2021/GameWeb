@@ -1,5 +1,6 @@
-import { FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
+import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useState } from 'react';
 import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
 import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
@@ -14,12 +15,13 @@ import { Level } from '../shared/game/othello/level';
 import { Player } from '../shared/game/othello/player';
 
 const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
+    const small = 480 > width;
     const size = 8;
     const sizeHalf = size / 2;
     const cellWidth = width / size;
     const cellHeight = height / size;
-    const textAreaHeight = 80;
-    const strokeWidth = 4;
+    const textAreaHeight = small ? 44 : 80;
+    const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
 
     const [othelloManager] = useState<OthelloManager>(new OthelloManager(size));
@@ -43,6 +45,42 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
         setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
     };
 
+    const select = async (e: KonvaEventObject<Event>): Promise<void> => {
+        if (!canClick) {
+            return;
+        }
+
+        const [x, y] = convert(e);
+        if (othelloManager.next(x, y)) {
+            setCanClick((_) => false);
+            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+            sound();
+
+            while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
+                await CommonUtility.delay(500);
+                await othelloManager.nextByAI(Level.toLogicValue(level));
+
+                setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+                sound();
+            }
+
+            setCanClick((_) => true);
+        }
+
+        function convert(e: KonvaEventObject<Event>): number[] {
+            const stage = e.target.getStage();
+            const position = stage?.getPointerPosition();
+            if (!position) {
+                return [-1, -1];
+            }
+
+            const x = Math.floor(position.x / cellWidth);
+            const y = Math.floor(position.y / cellHeight);
+
+            return [x, y];
+        }
+    };
+
     useEffect(() => {
         initialize();
     }, [player, level]);
@@ -53,30 +91,8 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                 <Stage
                     width={width + strokeWidth}
                     height={height + strokeWidth + textAreaHeight}
-                    onClick={async (e) => {
-                        if (!canClick) {
-                            return;
-                        }
-
-                        const x = Math.floor(e.evt.offsetX / cellWidth);
-                        const y = Math.floor(e.evt.offsetY / cellHeight);
-
-                        if (othelloManager.next(x, y)) {
-                            setCanClick((_) => false);
-                            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
-                            sound();
-
-                            while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
-                                await CommonUtility.delay(500);
-                                await othelloManager.nextByAI(Level.toLogicValue(level));
-
-                                setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
-                                sound();
-                            }
-
-                            setCanClick((_) => true);
-                        }
-                    }}
+                    onClick={select}
+                    onTap={select}
                     onMouseMove={(e) => {
                         const x = Math.floor(e.evt.offsetX / cellWidth);
                         const y = Math.floor(e.evt.offsetY / cellHeight);
@@ -182,7 +198,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             width={cellWidth + strokeWidth}
                             height={textAreaHeight}
                             fill="white"
-                            fontSize={32}
+                            fontSize={small ? 18 : 32}
                             align="center"
                             verticalAlign="middle"
                         />
@@ -200,7 +216,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             width={cellWidth + strokeWidth}
                             height={textAreaHeight}
                             fill="black"
-                            fontSize={32}
+                            fontSize={small ? 18 : 32}
                             align="center"
                             verticalAlign="middle"
                         />
@@ -211,19 +227,20 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                             width={width}
                             height={textAreaHeight}
                             fill="white"
-                            fontSize={32}
+                            fontSize={small ? 18 : 32}
+                            fontStyle={small ? 'bold' : 'normal'}
                             align="center"
                             verticalAlign="middle"
                         />
                     </FastLayer>
                 </Stage>
-                <div className="flex justify-center gap-12 border-4 border-gray-600 bg-gray-300 py-4">
-                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem' }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-2 sm:gap-12 sm:border-4 sm:py-4">
+                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: small ? '0.25rem' : '1rem' }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
                             順番
                         </FormLabel>
                         <RadioGroup
-                            row
+                            row={!small}
                             aria-labelledby="radio-buttons-group-label"
                             value={player}
                             onChange={async (e) => {
@@ -234,18 +251,27 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                                 setPlayer(e.target.value as Player);
                             }}
                         >
-                            <FormControlLabel value="black" control={<Radio />} label="先手 (黒)" />
-                            <FormControlLabel value="white" control={<Radio />} label="後手 (白)" />
+                            <FormControlLabel
+                                value="black"
+                                control={<Radio size={small ? 'small' : 'medium'} />}
+                                label={<Typography sx={{ fontSize: small ? 14 : 16 }}>先手 (黒)</Typography>}
+                            />
+                            <FormControlLabel
+                                value="white"
+                                control={<Radio size={small ? 'small' : 'medium'} />}
+                                label={<Typography sx={{ fontSize: small ? 14 : 16 }}>後手 (白)</Typography>}
+                            />
                         </RadioGroup>
                     </FormControl>
-                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
                             難易度
                         </FormLabel>
                         <Select
                             labelId="simple-select-label"
                             id="simple-select"
                             value={level}
+                            sx={{ fontSize: small ? 14 : 16 }}
                             onChange={async (e) => {
                                 if (!canClick) {
                                     return;
@@ -259,13 +285,13 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         </Select>
                     </FormControl>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-center sm:justify-end">
                     <Button
-                        className="h-12 w-48"
+                        className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
                         color="success"
-                        style={{ fontSize: 24 }}
+                        style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={async () => {
                             if (!canClick) {
                                 return;
