@@ -1,4 +1,5 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
+import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
@@ -6,13 +7,14 @@ import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
 
 const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const outerStrokeWidth = 20;
+    const small = 480 > width;
+    const outerStrokeWidth = small ? 10 : 20;
     const outerStrokeWidthHalf = outerStrokeWidth / 2;
-    const innerStrokeWidth = 2;
+    const innerStrokeWidth = small ? 1 : 2;
     const innerStrokeWidthHalf = innerStrokeWidth / 2;
-    const textAreaHeight = 80;
+    const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
-    const textStrokeWidth = 4;
+    const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
     const [widthSize, setWidthSize] = useState(4);
@@ -25,11 +27,33 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
 
     const [sound] = useSound('game/slidingPuzzle/sound.mp3');
 
-    const getTargetCell = (offsetX: number, offsetY: number): Coordinate | undefined => {
-        const x = Math.floor((offsetX - outerStrokeWidth) / cellWidth);
-        const y = Math.floor((offsetY - outerStrokeWidth) / cellHeight);
+    const select = async (e: KonvaEventObject<Event>): Promise<void> => {
+        if (!canClick || slidingPuzzleManager.isSorted) {
+            return;
+        }
 
-        return { x, y };
+        const [x, y] = convert(e);
+        if (slidingPuzzleManager.slide(x, y)) {
+            setCanClick((_) => false);
+
+            setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+            sound();
+
+            setCanClick((_) => true);
+        }
+
+        function convert(e: KonvaEventObject<Event>): number[] {
+            const stage = e.target.getStage();
+            const position = stage?.getPointerPosition();
+            if (!position) {
+                return [-1, -1];
+            }
+
+            const x = Math.floor((position.x - outerStrokeWidth) / cellWidth);
+            const y = Math.floor((position.y - outerStrokeWidth) / cellHeight);
+
+            return [x, y];
+        }
     };
 
     useEffect(() => {
@@ -45,29 +69,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage
-                    width={width}
-                    height={height + textAreaHeight + textAreaMargin}
-                    onClick={async (e) => {
-                        if (!canClick || slidingPuzzleManager.isSorted) {
-                            return;
-                        }
-
-                        const target = getTargetCell(e.evt.offsetX, e.evt.offsetY);
-                        if (!target) {
-                            return;
-                        }
-
-                        if (slidingPuzzleManager.slide(target.x, target.y)) {
-                            setCanClick((_) => false);
-
-                            setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
-                            sound();
-
-                            setCanClick((_) => true);
-                        }
-                    }}
-                >
+                <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTap={select}>
                     <FastLayer key="sliding-puzzle-board-layer">
                         <Rect
                             stroke="black"
@@ -107,7 +109,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                                         width={cellWidth}
                                         height={cellHeight}
                                         fill={coordinate.correct ? '#0088FF' : '#666666'}
-                                        fontSize={32}
+                                        fontSize={small ? 20 : 32}
                                         align="center"
                                         verticalAlign="middle"
                                     />
@@ -134,7 +136,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                             width={width / 2}
                             height={textAreaHeight}
                             fill="black"
-                            fontSize={32}
+                            fontSize={small ? 22 : 32}
                             align="center"
                             verticalAlign="middle"
                         />
@@ -145,21 +147,22 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                             width={width / 2}
                             height={textAreaHeight}
                             fill="#FF2200"
-                            fontSize={32}
+                            fontSize={small ? 22 : 32}
                             align="center"
                             verticalAlign="middle"
                         />
                     </FastLayer>
                 </Stage>
-                <div className="flex justify-center gap-12 border-4 border-gray-600 bg-gray-300 py-2">
-                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 pt-2 pb-3 sm:gap-12 sm:border-4 sm:py-4">
+                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
                             横サイズ
                         </FormLabel>
                         <Select
                             labelId="simple-select-label"
                             id="simple-select"
-                            sx={{ minWidth: 80, fontSize: 20, textAlign: 'center' }}
+                            size={small ? 'small' : 'medium'}
+                            sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
                             value={widthSize}
                             onChange={async (e) => {
                                 if (!canClick) {
@@ -174,14 +177,15 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                             ))}
                         </Select>
                     </FormControl>
-                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', m: 1, minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: 20 }}>
+                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
+                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
                             縦サイズ
                         </FormLabel>
                         <Select
                             labelId="simple-select-label"
                             id="simple-select"
-                            sx={{ minWidth: 80, fontSize: 20, textAlign: 'center' }}
+                            size={small ? 'small' : 'medium'}
+                            sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
                             value={heightSize}
                             onChange={async (e) => {
                                 if (!canClick) {
@@ -197,13 +201,13 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                         </Select>
                     </FormControl>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-center sm:justify-end">
                     <Button
-                        className="h-12 w-48"
+                        className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
                         color="primary"
-                        style={{ fontSize: 24 }}
+                        style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
                                 return;
