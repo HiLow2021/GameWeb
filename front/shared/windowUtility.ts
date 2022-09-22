@@ -8,10 +8,10 @@ const detectWindowSizeInner = (useSync: boolean): WindowSize => {
     const effectCallback = () => {
         if (typeof window !== 'undefined') {
             const handleResize = () => {
-                setWindowSize({
+                setWindowSize(() => ({
                     width: window.innerWidth,
                     height: window.innerHeight
-                });
+                }));
             };
 
             window.addEventListener('resize', handleResize);
