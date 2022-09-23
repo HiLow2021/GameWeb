@@ -58,13 +58,13 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
 
     useEffect(() => {
         setSlidingPuzzleManager(new SlidingPuzzleManager(widthSize, heightSize));
-        setCellWidth((width - outerStrokeWidth * 2) / widthSize);
-        setCellHeight((height - outerStrokeWidth * 2) / heightSize);
     }, [widthSize, heightSize]);
 
     useLayoutEffect(() => {
+        setCellWidth((width - outerStrokeWidth * 2) / widthSize);
+        setCellHeight((height - outerStrokeWidth * 2) / heightSize);
         setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
-    }, [slidingPuzzleManager, cellWidth, cellHeight]);
+    }, [slidingPuzzleManager]);
 
     return (
         <>
