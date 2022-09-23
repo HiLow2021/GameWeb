@@ -34,12 +34,12 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
 
         const [x, y] = convert(e);
         if (slidingPuzzleManager.slide(x, y)) {
-            setCanClick((_) => false);
+            setCanClick(() => false);
 
-            setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+            setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
             sound();
 
-            setCanClick((_) => true);
+            setCanClick(() => true);
         }
 
         function convert(e: KonvaEventObject<Event>): number[] {
@@ -63,7 +63,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     }, [widthSize, heightSize]);
 
     useLayoutEffect(() => {
-        setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+        setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     }, [slidingPuzzleManager, cellWidth, cellHeight]);
 
     return (
@@ -214,7 +214,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
                             }
 
                             slidingPuzzleManager.initialize();
-                            setCoordinates((_) => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+                            setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
                         }}
                     >
                         リセット
