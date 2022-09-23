@@ -98,6 +98,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
 
                         setMouseCoordinate(() => ({ x, y, color: 'pink', stone: false }));
                     }}
+                    onTouchMove={(e) => e.evt.preventDefault()}
                 >
                     <FastLayer key="othello-board-layer">
                         <Rect fill="green" width={width} height={height} />

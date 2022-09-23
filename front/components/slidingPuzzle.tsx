@@ -69,7 +69,13 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTap={select}>
+                <Stage
+                    width={width}
+                    height={height + textAreaHeight + textAreaMargin}
+                    onClick={select}
+                    onTap={select}
+                    onTouchMove={(e) => e.evt.preventDefault()}
+                >
                     <FastLayer key="sliding-puzzle-board-layer">
                         <Rect
                             stroke="black"

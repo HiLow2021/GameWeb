@@ -90,7 +90,13 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage width={width} height={height + textAreaHeight} onClick={select} onTap={select}>
+                <Stage
+                    width={width}
+                    height={height + textAreaHeight}
+                    onClick={select}
+                    onTap={select}
+                    onTouchMove={(e) => e.evt.preventDefault()}
+                >
                     <FastLayer key="gomoku-board-layer">
                         <Rect fill="#f5deb3" width={width} height={height} />
                         <Rect
