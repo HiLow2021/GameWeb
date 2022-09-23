@@ -1,3 +1,5 @@
 *.pem
+tsconfig.tsbuildinfo
 
+build
 node_modules

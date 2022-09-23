@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
+  "scripts": {
+    "eslint": "npx eslint ./**/*.{ts,tsx}",
+    "prettier": "npx prettier --write ./**/*.{ts,tsx}"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HiLow2021/OthelloWeb.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/HiLow2021/OthelloWeb/issues"
   },

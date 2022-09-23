@@ -41,7 +41,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
             sound();
         }
 
-        setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+        setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
     };
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
@@ -51,19 +51,19 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
 
         const [x, y] = convert(e);
         if (othelloManager.next(x, y)) {
-            setCanClick((_) => false);
-            setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+            setCanClick(() => false);
+            setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
             sound();
 
             while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
                 await CommonUtility.delay(500);
                 await othelloManager.nextByAI(Level.toLogicValue(level));
 
-                setCoordinates((_) => convertCellsToCoordinates(othelloManager.board.cells));
+                setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
                 sound();
             }
 
-            setCanClick((_) => true);
+            setCanClick(() => true);
         }
 
         function convert(e: KonvaEventObject<Event>): number[] {
@@ -96,7 +96,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
                         const x = Math.floor(e.evt.offsetX / cellWidth);
                         const y = Math.floor(e.evt.offsetY / cellHeight);
 
-                        setMouseCoordinate((_) => ({ x, y, color: 'pink', stone: false }));
+                        setMouseCoordinate(() => ({ x, y, color: 'pink', stone: false }));
                     }}
                 >
                     <FastLayer key="othello-board-layer">

@@ -43,7 +43,7 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
             sound();
         }
 
-        setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+        setCoordinates(() => convertCellsToCoordinates(gomokuManager.board.cells));
     };
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
@@ -53,20 +53,20 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
 
         const [x, y] = convert(e);
         if (gomokuManager.next(x, y)) {
-            setCanClick((_) => false);
+            setCanClick(() => false);
 
-            setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+            setCoordinates(() => convertCellsToCoordinates(gomokuManager.board.cells));
             sound();
 
             if (!gomokuManager.isFinished) {
                 await CommonUtility.delay(500);
                 await gomokuManager.nextByAI();
 
-                setCoordinates((_) => convertCellsToCoordinates(gomokuManager.board.cells));
+                setCoordinates(() => convertCellsToCoordinates(gomokuManager.board.cells));
                 sound();
             }
 
-            setCanClick((_) => true);
+            setCanClick(() => true);
         }
 
         function convert(e: KonvaEventObject<Event>): number[] {
