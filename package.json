@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "eslint": "npx eslint ./*/src/**/*.ts",
-    "prettier": "npx prettier --write ./*/src/**/*.ts"
+    "eslint": "npx eslint ./**/*.{ts,tsx}",
+    "prettier": "npx prettier --write ./**/*.{ts,tsx}"
   },
   "repository": {
     "type": "git",
