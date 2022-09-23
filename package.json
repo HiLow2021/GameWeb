@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
+  "scripts": {
+    "eslint": "npx eslint ./*/src/**/*.ts",
+    "prettier": "npx prettier --write ./*/src/**/*.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HiLow2021/OthelloWeb.git"

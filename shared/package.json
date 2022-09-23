@@ -14,10 +14,6 @@
     ".": "./build/index.js",
     "./*": "./build/*.js"
   },
-  "scripts": {
-    "eslint": "npx eslint ./**/*.ts",
-    "prettier": "npx prettier --write ./**/*.ts"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HiLow2021/OthelloWeb.git"
