@@ -5,9 +5,11 @@ import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
+import { getComponentSize } from '../shared/utility/componentUtility';
 
-const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const small = 480 > width;
+const SlidingPuzzle = (): JSX.Element => {
+    const { width, height, small } = getComponentSize();
+
     const outerStrokeWidth = small ? 10 : 20;
     const outerStrokeWidthHalf = outerStrokeWidth / 2;
     const innerStrokeWidth = small ? 1 : 2;
@@ -24,6 +26,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     const [canClick, setCanClick] = useState(true);
+    const [initial, setInitial] = useState(true);
 
     const [sound] = useSound('game/slidingPuzzle/sound.mp3');
 
@@ -57,6 +60,12 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
     };
 
     useEffect(() => {
+        if (initial) {
+            setInitial(false);
+            
+            return;
+        }
+
         setSlidingPuzzleManager(new SlidingPuzzleManager(widthSize, heightSize));
     }, [widthSize, heightSize]);
 
@@ -64,7 +73,7 @@ const SlidingPuzzle = ({ width, height }: { width: number; height: number }): JS
         setCellWidth((width - outerStrokeWidth * 2) / widthSize);
         setCellHeight((height - outerStrokeWidth * 2) / heightSize);
         setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
-    }, [slidingPuzzleManager]);
+    }, [slidingPuzzleManager, width, height]);
 
     return (
         <>
