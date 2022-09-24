@@ -26,6 +26,7 @@ const SlidingPuzzle = (): JSX.Element => {
     const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     const [canClick, setCanClick] = useState(true);
+    const [initial, setInitial] = useState(true);
 
     const [sound] = useSound('game/slidingPuzzle/sound.mp3');
 
@@ -59,6 +60,12 @@ const SlidingPuzzle = (): JSX.Element => {
     };
 
     useEffect(() => {
+        if (initial) {
+            setInitial(false);
+            
+            return;
+        }
+
         setSlidingPuzzleManager(new SlidingPuzzleManager(widthSize, heightSize));
     }, [widthSize, heightSize]);
 
