@@ -10,7 +10,7 @@ export const IsSmallSize = (): boolean => {
 };
 
 export const getGameComponentSize = (): ComponentSize => {
-    const small = IsSmallSize()
+    const small = IsSmallSize();
     const width = small ? 320 : 600;
     const height = small ? 320 : 600;
 
@@ -18,7 +18,7 @@ export const getGameComponentSize = (): ComponentSize => {
 };
 
 export const getSvgSize = (): ComponentSize => {
-    const small = IsSmallSize()
+    const small = IsSmallSize();
     const width = small ? 36 : 48;
     const height = small ? 36 : 48;
 
