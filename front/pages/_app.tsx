@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import SoundStateProvider from '../components/soundStateProvider';
 import { Environment } from '../shared/environment';
 import '../styles/globals.css';
 
@@ -18,7 +19,9 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
                 <meta property="og:type" content="website" />
                 <meta name="twitter:card" content="summary_large_image" />
             </Head>
-            <Component {...pageProps} />
+            <SoundStateProvider>
+                <Component {...pageProps} />
+            </SoundStateProvider>
         </>
     );
 };

@@ -1,14 +1,15 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { FastLayer, Group, Layer, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import useSound from 'use-sound';
+import SoundStateContext from '../contexts/soundStateContext';
 import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
-import { getComponentSize } from '../shared/utility/componentUtility';
+import { getGameComponentSize } from '../shared/utility/componentUtility';
 
 const SlidingPuzzle = (): JSX.Element => {
-    const { width, height, small } = getComponentSize();
+    const { width, height, small } = getGameComponentSize();
 
     const outerStrokeWidth = small ? 10 : 20;
     const outerStrokeWidthHalf = outerStrokeWidth / 2;
@@ -28,7 +29,13 @@ const SlidingPuzzle = (): JSX.Element => {
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
+    const { currentSoundState } = useContext(SoundStateContext);
     const [sound] = useSound('game/slidingPuzzle/sound.mp3');
+    const startSound = () => {
+        if (currentSoundState) {
+            sound();
+        }
+    };
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick || slidingPuzzleManager.isSorted) {
@@ -40,7 +47,7 @@ const SlidingPuzzle = (): JSX.Element => {
             setCanClick(() => false);
 
             setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
-            sound();
+            startSound();
 
             setCanClick(() => true);
         }
@@ -62,7 +69,7 @@ const SlidingPuzzle = (): JSX.Element => {
     useEffect(() => {
         if (initial) {
             setInitial(false);
-            
+
             return;
         }
 
@@ -78,14 +85,8 @@ const SlidingPuzzle = (): JSX.Element => {
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage
-                    width={width}
-                    height={height + textAreaHeight + textAreaMargin}
-                    onClick={select}
-                    onTap={select}
-                    onTouchMove={(e) => e.evt.preventDefault()}
-                >
-                    <FastLayer key="sliding-puzzle-board-layer">
+                <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTouchStart={select}>
+                    <Layer key="sliding-puzzle-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect
                             stroke="black"
                             strokeWidth={outerStrokeWidth}
@@ -94,7 +95,7 @@ const SlidingPuzzle = (): JSX.Element => {
                             width={width - outerStrokeWidth}
                             height={height - outerStrokeWidth}
                         />
-                    </FastLayer>
+                    </Layer>
                     <FastLayer key="sliding-puzzle-piece-layer">
                         {coordinates.map((coordinate) =>
                             coordinate.number !== slidingPuzzleManager.missingNumber ? (

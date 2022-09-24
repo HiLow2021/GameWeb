@@ -1,20 +1,21 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useEffect, useState } from 'react';
-import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
+import { useContext, useEffect, useState } from 'react';
+import { Ellipse, FastLayer, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
 import { Result } from 'shared/game/gomoku/enums/result';
 import { Turn } from 'shared/game/gomoku/enums/turn';
 import { GomokuManager } from 'shared/game/gomoku/gomokuManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
+import SoundStateContext from '../contexts/soundStateContext';
 import { Coordinate } from '../shared/game/gomoku/coordinate';
 import { Level } from '../shared/game/gomoku/level';
 import { Player } from '../shared/game/gomoku/player';
-import { getComponentSize } from '../shared/utility/componentUtility';
+import { getGameComponentSize } from '../shared/utility/componentUtility';
 
 const Gomoku = (): JSX.Element => {
-    const { width, height, small } = getComponentSize();
+    const { width, height, small } = getGameComponentSize();
 
     const widthSize = 14;
     const heightSize = 14;
@@ -35,14 +36,20 @@ const Gomoku = (): JSX.Element => {
     const [player, setPlayer] = useState<Player>(Player.black);
     const [level, setLevel] = useState<Level>(Level.normal);
 
+    const { currentSoundState } = useContext(SoundStateContext);
     const [sound] = useSound('game/gomoku/sound.mp3');
+    const startSound = () => {
+        if (currentSoundState) {
+            sound();
+        }
+    };
 
     const initialize = async () => {
         gomokuManager.initialize();
 
         if (player === Player.white) {
             await gomokuManager.nextByAI();
-            sound();
+            startSound();
         }
 
         setCoordinates(() => convertCellsToCoordinates(gomokuManager.board.cells));
@@ -58,14 +65,14 @@ const Gomoku = (): JSX.Element => {
             setCanClick(() => false);
 
             setCoordinates(() => convertCellsToCoordinates(gomokuManager.board.cells));
-            sound();
+            startSound();
 
             if (!gomokuManager.isFinished) {
                 await CommonUtility.delay(500);
                 await gomokuManager.nextByAI();
 
                 setCoordinates(() => convertCellsToCoordinates(gomokuManager.board.cells));
-                sound();
+                startSound();
             }
 
             setCanClick(() => true);
@@ -92,14 +99,8 @@ const Gomoku = (): JSX.Element => {
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage
-                    width={width}
-                    height={height + textAreaHeight}
-                    onClick={select}
-                    onTap={select}
-                    onTouchMove={(e) => e.evt.preventDefault()}
-                >
-                    <FastLayer key="gomoku-board-layer">
+                <Stage width={width} height={height + textAreaHeight} onClick={select} onTouchStart={select}>
+                    <Layer key="gomoku-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect fill="#f5deb3" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -144,7 +145,7 @@ const Gomoku = (): JSX.Element => {
                                 />
                             ))
                         )}
-                    </FastLayer>
+                    </Layer>
                     <FastLayer key="gomoku-cell-layer">
                         {coordinates.map((coordinate) => (
                             <Ellipse

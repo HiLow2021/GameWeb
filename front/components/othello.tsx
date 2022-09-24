@@ -1,7 +1,7 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useEffect, useState } from 'react';
-import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
+import { useContext, useEffect, useState } from 'react';
+import { Ellipse, FastLayer, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
 import { Result } from 'shared/game/othello/enums/result';
 import { Turn } from 'shared/game/othello/enums/turn';
@@ -9,13 +9,14 @@ import { OthelloBoard } from 'shared/game/othello/othelloBoard';
 import { OthelloManager } from 'shared/game/othello/othelloManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
+import SoundStateContext from '../contexts/soundStateContext';
 import { Coordinate } from '../shared/game/othello/coordinate';
 import { Level } from '../shared/game/othello/level';
 import { Player } from '../shared/game/othello/player';
-import { getComponentSize } from '../shared/utility/componentUtility';
+import { getGameComponentSize } from '../shared/utility/componentUtility';
 
 const Othello = (): JSX.Element => {
-    const { width, height, small } = getComponentSize();
+    const { width, height, small } = getGameComponentSize();
 
     const size = 8;
     const sizeHalf = size / 2;
@@ -33,14 +34,20 @@ const Othello = (): JSX.Element => {
     const [player, setPlayer] = useState<Player>(Player.black);
     const [level, setLevel] = useState<Level>(Level.normal);
 
+    const { currentSoundState } = useContext(SoundStateContext);
     const [sound] = useSound('game/othello/sound.mp3');
+    const startSound = () => {
+        if (currentSoundState) {
+            sound();
+        }
+    };
 
     const initialize = async () => {
         othelloManager.initialize();
 
         if (player === Player.white) {
             await othelloManager.nextByAI(Level.toLogicValue(level));
-            sound();
+            startSound();
         }
 
         setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
@@ -55,14 +62,14 @@ const Othello = (): JSX.Element => {
         if (othelloManager.next(x, y)) {
             setCanClick(() => false);
             setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
-            sound();
+            startSound();
 
             while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
                 await CommonUtility.delay(500);
                 await othelloManager.nextByAI(Level.toLogicValue(level));
 
                 setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
-                sound();
+                startSound();
             }
 
             setCanClick(() => true);
@@ -93,16 +100,15 @@ const Othello = (): JSX.Element => {
                     width={width + strokeWidth}
                     height={height + strokeWidth + textAreaHeight}
                     onClick={select}
-                    onTap={select}
+                    onTouchStart={select}
                     onMouseMove={(e) => {
                         const x = Math.floor(e.evt.offsetX / cellWidth);
                         const y = Math.floor(e.evt.offsetY / cellHeight);
 
                         setMouseCoordinate(() => ({ x, y, color: 'pink', stone: false }));
                     }}
-                    onTouchMove={(e) => e.evt.preventDefault()}
                 >
-                    <FastLayer key="othello-board-layer">
+                    <Layer key="othello-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect fill="green" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -137,7 +143,7 @@ const Othello = (): JSX.Element => {
                                 />
                             ))
                         )}
-                    </FastLayer>
+                    </Layer>
                     <FastLayer key="othello-cell-layer">
                         {coordinates.map((coordinate) =>
                             coordinate.stone ? (
