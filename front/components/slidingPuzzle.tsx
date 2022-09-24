@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { FastLayer, Group, Rect, Stage, Text } from 'react-konva';
+import { FastLayer, Group, Layer, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
@@ -62,7 +62,7 @@ const SlidingPuzzle = (): JSX.Element => {
     useEffect(() => {
         if (initial) {
             setInitial(false);
-            
+
             return;
         }
 
@@ -78,14 +78,8 @@ const SlidingPuzzle = (): JSX.Element => {
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage
-                    width={width}
-                    height={height + textAreaHeight + textAreaMargin}
-                    onClick={select}
-                    onTap={select}
-                    onTouchMove={(e) => e.evt.preventDefault()}
-                >
-                    <FastLayer key="sliding-puzzle-board-layer">
+                <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTouchStart={select}>
+                    <Layer key="sliding-puzzle-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect
                             stroke="black"
                             strokeWidth={outerStrokeWidth}
@@ -94,7 +88,7 @@ const SlidingPuzzle = (): JSX.Element => {
                             width={width - outerStrokeWidth}
                             height={height - outerStrokeWidth}
                         />
-                    </FastLayer>
+                    </Layer>
                     <FastLayer key="sliding-puzzle-piece-layer">
                         {coordinates.map((coordinate) =>
                             coordinate.number !== slidingPuzzleManager.missingNumber ? (

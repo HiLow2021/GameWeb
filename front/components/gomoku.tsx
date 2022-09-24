@@ -1,7 +1,7 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useState } from 'react';
-import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
+import { Ellipse, FastLayer, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
 import { Result } from 'shared/game/gomoku/enums/result';
 import { Turn } from 'shared/game/gomoku/enums/turn';
@@ -92,14 +92,8 @@ const Gomoku = (): JSX.Element => {
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage
-                    width={width}
-                    height={height + textAreaHeight}
-                    onClick={select}
-                    onTap={select}
-                    onTouchMove={(e) => e.evt.preventDefault()}
-                >
-                    <FastLayer key="gomoku-board-layer">
+                <Stage width={width} height={height + textAreaHeight} onClick={select} onTouchStart={select}>
+                    <Layer key="gomoku-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect fill="#f5deb3" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -144,7 +138,7 @@ const Gomoku = (): JSX.Element => {
                                 />
                             ))
                         )}
-                    </FastLayer>
+                    </Layer>
                     <FastLayer key="gomoku-cell-layer">
                         {coordinates.map((coordinate) => (
                             <Ellipse

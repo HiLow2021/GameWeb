@@ -1,7 +1,7 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useState } from 'react';
-import { Ellipse, FastLayer, Line, Rect, Stage, Text } from 'react-konva';
+import { Ellipse, FastLayer, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
 import { Result } from 'shared/game/othello/enums/result';
 import { Turn } from 'shared/game/othello/enums/turn';
@@ -93,16 +93,15 @@ const Othello = (): JSX.Element => {
                     width={width + strokeWidth}
                     height={height + strokeWidth + textAreaHeight}
                     onClick={select}
-                    onTap={select}
+                    onTouchStart={select}
                     onMouseMove={(e) => {
                         const x = Math.floor(e.evt.offsetX / cellWidth);
                         const y = Math.floor(e.evt.offsetY / cellHeight);
 
                         setMouseCoordinate(() => ({ x, y, color: 'pink', stone: false }));
                     }}
-                    onTouchMove={(e) => e.evt.preventDefault()}
                 >
-                    <FastLayer key="othello-board-layer">
+                    <Layer key="othello-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect fill="green" width={width} height={height} />
                         <Rect
                             stroke="black"
@@ -137,7 +136,7 @@ const Othello = (): JSX.Element => {
                                 />
                             ))
                         )}
-                    </FastLayer>
+                    </Layer>
                     <FastLayer key="othello-cell-layer">
                         {coordinates.map((coordinate) =>
                             coordinate.stone ? (
