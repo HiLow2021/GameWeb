@@ -11,9 +11,11 @@ import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/gomoku/coordinate';
 import { Level } from '../shared/game/gomoku/level';
 import { Player } from '../shared/game/gomoku/player';
+import { getComponentSize } from '../shared/utility/componentUtility';
 
-const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const small = 480 > width;
+const Gomoku = (): JSX.Element => {
+    const { width, height, small } = getComponentSize();
+
     const widthSize = 14;
     const heightSize = 14;
     const widthSizeHalf = Math.floor(widthSize / 2);
