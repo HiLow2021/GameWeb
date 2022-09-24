@@ -11,9 +11,11 @@ import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/gomoku/coordinate';
 import { Level } from '../shared/game/gomoku/level';
 import { Player } from '../shared/game/gomoku/player';
+import { getComponentSize } from '../shared/utility/componentUtility';
 
-const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const small = 480 > width;
+const Gomoku = (): JSX.Element => {
+    const { width, height, small } = getComponentSize();
+
     const widthSize = 14;
     const heightSize = 14;
     const widthSizeHalf = Math.floor(widthSize / 2);
@@ -90,7 +92,13 @@ const Gomoku = ({ width, height }: { width: number; height: number }): JSX.Eleme
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage width={width} height={height + textAreaHeight} onClick={select} onTap={select}>
+                <Stage
+                    width={width}
+                    height={height + textAreaHeight}
+                    onClick={select}
+                    onTap={select}
+                    onTouchMove={(e) => e.evt.preventDefault()}
+                >
                     <FastLayer key="gomoku-board-layer">
                         <Rect fill="#f5deb3" width={width} height={height} />
                         <Rect

@@ -12,9 +12,11 @@ import useSound from 'use-sound';
 import { Coordinate } from '../shared/game/othello/coordinate';
 import { Level } from '../shared/game/othello/level';
 import { Player } from '../shared/game/othello/player';
+import { getComponentSize } from '../shared/utility/componentUtility';
 
-const Othello = ({ width, height }: { width: number; height: number }): JSX.Element => {
-    const small = 480 > width;
+const Othello = (): JSX.Element => {
+    const { width, height, small } = getComponentSize();
+
     const size = 8;
     const sizeHalf = size / 2;
     const cellWidth = width / size;
@@ -98,6 +100,7 @@ const Othello = ({ width, height }: { width: number; height: number }): JSX.Elem
 
                         setMouseCoordinate(() => ({ x, y, color: 'pink', stone: false }));
                     }}
+                    onTouchMove={(e) => e.evt.preventDefault()}
                 >
                     <FastLayer key="othello-board-layer">
                         <Rect fill="green" width={width} height={height} />
