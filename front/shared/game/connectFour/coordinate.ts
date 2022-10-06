@@ -1,5 +1,8 @@
 export type Coordinate = {
     x: number;
     y: number;
-    color: string;
+    borderColor: string;
+    innerColorStart: string;
+    innerColorEnd: string;
+    stone: boolean;
 };
