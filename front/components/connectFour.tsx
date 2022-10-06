@@ -247,7 +247,7 @@ function convertCellsToCoordinates(cells: ConnectFourBoardCell[][]): Coordinate[
                     break;
 
                 case ConnectFourBoardCell.highLight:
-                    coordinate = { x, y, borderColor: 'gray', innerColorStart: '#EEEE00', innerColorEnd: '#BBBB00', stone: false };
+                    coordinate = { x, y, borderColor: 'gray', innerColorStart: '', innerColorEnd: '', stone: false };
                     break;
 
                 default:
