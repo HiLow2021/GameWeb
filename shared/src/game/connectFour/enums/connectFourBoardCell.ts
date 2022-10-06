@@ -1,8 +1,9 @@
-export type ConnectFourBoardCell = 'outOfRange' | 'empty' | 'black' | 'white';
+export type ConnectFourBoardCell = 'outOfRange' | 'empty' | 'black' | 'white' | 'highLight';
 
 export const ConnectFourBoardCell = {
     outOfRange: 'outOfRange',
     empty: 'empty',
     black: 'black',
-    white: 'white'
+    white: 'white',
+    highLight: 'highLight'
 } as const;

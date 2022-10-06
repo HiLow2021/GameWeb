@@ -178,12 +178,12 @@ const ConnectFour = (): JSX.Element => {
                             <FormControlLabel
                                 value="black"
                                 control={<Radio size={small ? 'small' : 'medium'} />}
-                                label={<Typography sx={{ fontSize: small ? 14 : 16 }}>先手 (黒)</Typography>}
+                                label={<Typography sx={{ fontSize: small ? 14 : 16 }}>先手 (赤)</Typography>}
                             />
                             <FormControlLabel
                                 value="white"
                                 control={<Radio size={small ? 'small' : 'medium'} />}
-                                label={<Typography sx={{ fontSize: small ? 14 : 16 }}>後手 (白)</Typography>}
+                                label={<Typography sx={{ fontSize: small ? 14 : 16 }}>後手 (黄)</Typography>}
                             />
                         </RadioGroup>
                     </FormControl>
@@ -238,12 +238,16 @@ function convertCellsToCoordinates(cells: ConnectFourBoardCell[][]): Coordinate[
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case 'black':
+                case ConnectFourBoardCell.black:
                     coordinate = { x, y, borderColor: 'gray', innerColorStart: '#EE0000', innerColorEnd: '#BB0000', stone: true };
                     break;
 
-                case 'white':
+                case ConnectFourBoardCell.white:
                     coordinate = { x, y, borderColor: 'gray', innerColorStart: '#EEEE00', innerColorEnd: '#BBBB00', stone: true };
+                    break;
+
+                case ConnectFourBoardCell.highLight:
+                    coordinate = { x, y, borderColor: 'gray', innerColorStart: '#EEEE00', innerColorEnd: '#BBBB00', stone: false };
                     break;
 
                 default:

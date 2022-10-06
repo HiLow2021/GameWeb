@@ -55,6 +55,16 @@ export class ConnectFourBoard {
         this._cells = cells;
     }
 
+    public reset(cell: ConnectFourBoardCell): void {
+        for (let y = 0; y < this._cells.length; y++) {
+            for (let x = 0; x < this._cells[y].length; x++) {
+                if (this._cells[y][x] === cell) {
+                    this._cells[y][x] = ConnectFourBoardCell.empty;
+                }
+            }
+        }
+    }
+
     private isWithinRange(x: number, y: number): boolean {
         return 0 <= x && x < this.width && 0 <= y && y < this.height;
     }
