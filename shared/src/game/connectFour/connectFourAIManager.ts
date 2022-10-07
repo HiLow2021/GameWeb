@@ -24,4 +24,57 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
 
         return new Vector(x, y);
     }
+
+    public basicMethod(): Vector {
+        for (let i = this.winCount; i > 1; i--) {
+            for (const chip of [this.currentStone, this.opponentStone]) {
+                const candidates = this.searchCandidates(chip, i);
+                if (candidates.length > 0) {
+                    return candidates[RandomUtility.random(0, candidates.length)];
+                }
+            }
+        }
+
+        return this.randomMethod();
+    }
+
+    private searchCandidates(chip: ConnectFourBoardCell, neededLineCount: number): Vector[] {
+        const candidates = this.getCanPutPositions().filter((position) => {
+            return this.isCandidate(position.x, position.y, chip, neededLineCount, neededLineCount < this.winCount);
+        });
+
+        return candidates;
+    }
+
+    private isCandidate(x: number, y: number, chip: ConnectFourBoardCell, neededLineCount: number, neededEmptySides: boolean): boolean {
+        this.board.set(x, y, chip);
+        let result = neededEmptySides
+            ? this.countAll(x, y, chip, true).some((count) => count >= neededLineCount + 1)
+            : this.countAll(x, y, chip).some((count) => count >= neededLineCount);
+        if (result && neededLineCount < this.winCount && this.canPut(x, y - 1)) {
+            this.board.set(x, y - 1, this.opponentStone);
+            if (this.countAll(x, y - 1, this.opponentStone).some((count) => count >= neededLineCount + 1)) {
+                result = false;
+            }
+
+            this.board.set(x, y - 1, ConnectFourBoardCell.empty);
+        }
+
+        this.board.set(x, y, ConnectFourBoardCell.empty);
+
+        return result;
+    }
+
+    private getCanPutPositions(): Vector[] {
+        const positions: Vector[] = [];
+        for (let x = 0; x < this.board.width; x++) {
+            for (let y = 0; y < this.board.height; y++) {
+                if (this.canPut(x, y)) {
+                    positions.push(new Vector(x, y));
+                }
+            }
+        }
+
+        return positions;
+    }
 }

@@ -19,9 +19,9 @@ connectFourRouter.post('/connectFour/next', (req: Request, res: Response, next: 
     try {
         const { cells, currentTurn } = req.body as RequestData;
 
-        const gomokuAIManager = new ConnectFourAIManager(cells[0].length, cells.length);
-        gomokuAIManager.setBoard(cells, currentTurn);
-        const position = gomokuAIManager.randomMethod();
+        const connectFourAIManager = new ConnectFourAIManager(cells[0].length, cells.length);
+        connectFourAIManager.setBoard(cells, currentTurn);
+        const position = connectFourAIManager.basicMethod();
 
         const response = { x: position.x, y: position.y } as ResponseData;
 

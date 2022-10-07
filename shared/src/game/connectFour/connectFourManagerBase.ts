@@ -83,7 +83,14 @@ export abstract class ConnectFourManagerBase {
     }
 
     protected canPut(x: number, y: number): boolean {
-        return this.board.get(x, y) === ConnectFourBoardCell.empty && this.board.get(x, y + 1) !== ConnectFourBoardCell.empty;
+        const chip1 = this.board.get(x, y);
+        const chip2 = this.board.get(x, y + 1);
+
+        return (
+            (chip1 === ConnectFourBoardCell.empty || chip1 === ConnectFourBoardCell.highLight) &&
+            chip2 !== ConnectFourBoardCell.empty &&
+            chip2 !== ConnectFourBoardCell.highLight
+        );
     }
 
     protected canPutAll(): boolean {

@@ -112,28 +112,42 @@ const ConnectFour = (): JSX.Element => {
                         />
                     </Layer>
                     <FastLayer key="connect-four-cell-layer">
-                        {coordinates.map((coordinate) => (
-                            <Group>
-                                <Rect
-                                    x={cellWidth * coordinate.x + outerStrokeWidth}
-                                    y={cellHeight * coordinate.y + outerStrokeWidth}
-                                    width={cellWidth}
-                                    height={cellHeight}
-                                    fillPriority="linear-gradient"
-                                    fillLinearGradientStartPoint={{ x: 0, y: 0 }}
-                                    fillLinearGradientEndPoint={{ x: cellWidth, y: cellHeight }}
-                                    fillLinearGradientColorStops={[0, coordinate.innerColorStart, 1, coordinate.innerColorEnd]}
-                                />
+                        {coordinates.map((coordinate) =>
+                            coordinate.stone ? (
+                                <Group>
+                                    <Rect
+                                        x={cellWidth * coordinate.x + outerStrokeWidth}
+                                        y={cellHeight * coordinate.y + outerStrokeWidth}
+                                        width={cellWidth}
+                                        height={cellHeight}
+                                        fillPriority="linear-gradient"
+                                        fillLinearGradientStartPoint={{ x: 0, y: 0 }}
+                                        fillLinearGradientEndPoint={{ x: cellWidth, y: cellHeight }}
+                                        fillLinearGradientColorStops={[0, coordinate.innerColorStart, 1, coordinate.innerColorEnd]}
+                                    />
+                                    <Rect
+                                        stroke={coordinate.borderColor}
+                                        strokeWidth={innerStrokeWidth}
+                                        x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
+                                        y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
+                                        width={cellWidth - innerStrokeWidth}
+                                        height={cellHeight - innerStrokeWidth}
+                                    />
+                                </Group>
+                            ) : !isOpponent(player, connectFourManager.currentTurn) ? (
                                 <Rect
                                     stroke={coordinate.borderColor}
                                     strokeWidth={innerStrokeWidth}
+                                    dash={[2, 4]}
                                     x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
                                     y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
                                     width={cellWidth - innerStrokeWidth}
                                     height={cellHeight - innerStrokeWidth}
                                 />
-                            </Group>
-                        ))}
+                            ) : (
+                                <></>
+                            )
+                        )}
                     </FastLayer>
                     <FastLayer key="connect-four-text-layer">
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
@@ -259,6 +273,10 @@ function convertCellsToCoordinates(cells: ConnectFourBoardCell[][]): Coordinate[
     }
 
     return coordinates;
+}
+
+function isOpponent(currentTurn: Turn, player: Player): boolean {
+    return (currentTurn === Turn.white && player === Player.black) || (currentTurn === Turn.black && player === Player.white);
 }
 
 function displayText(result: Result, currentTurn: Turn, player: Player): string {
