@@ -25,6 +25,15 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
         return new Vector(x, y);
     }
 
+    public improvedRandomMethod(): Vector {
+        const candidates = this.getCanPutPositions().filter((position) => !this.isDangerPosition(position.x, position.y));
+        if (candidates.length > 0) {
+            return candidates[RandomUtility.random(0, candidates.length)];
+        }
+
+        return this.randomMethod();
+    }
+
     public basicMethod(): Vector {
         for (let i = this.winCount; i > 1; i--) {
             for (const chip of [this.currentStone, this.opponentStone]) {
@@ -35,7 +44,7 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
             }
         }
 
-        return this.randomMethod();
+        return this.improvedRandomMethod();
     }
 
     private searchCandidates(chip: ConnectFourBoardCell, neededLineCount: number): Vector[] {
@@ -49,16 +58,29 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
     private isCandidate(x: number, y: number, chip: ConnectFourBoardCell, neededLineCount: number, neededEmptySides: boolean): boolean {
         this.board.set(x, y, chip);
         let result = neededEmptySides
-            ? this.countAll(x, y, chip, true).some((count) => count >= neededLineCount + 1)
+            ? this.countAll(x, y, chip, true).some((count) => count >= neededLineCount + 2)
             : this.countAll(x, y, chip).some((count) => count >= neededLineCount);
-        if (result && neededLineCount < this.winCount && this.canPut(x, y - 1)) {
-            this.board.set(x, y - 1, this.opponentStone);
-            if (this.countAll(x, y - 1, this.opponentStone).some((count) => count >= neededLineCount + 1)) {
-                result = false;
-            }
+        this.board.set(x, y, ConnectFourBoardCell.empty);
 
-            this.board.set(x, y - 1, ConnectFourBoardCell.empty);
+        if (result && neededLineCount < this.winCount) {
+            result = !this.isDangerPosition(x, y, neededLineCount + 1);
         }
+
+        return result;
+    }
+
+    private isDangerPosition(x: number, y: number, neededLineCount = this.winCount): boolean {
+        this.board.set(x, y, this.currentStone);
+
+        if (!this.canPut(x, y - 1)) {
+            this.board.set(x, y, ConnectFourBoardCell.empty);
+
+            return false;
+        }
+
+        this.board.set(x, y - 1, this.opponentStone);
+        const result = this.countAll(x, y - 1, this.opponentStone).some((count) => count >= neededLineCount);
+        this.board.set(x, y - 1, ConnectFourBoardCell.empty);
 
         this.board.set(x, y, ConnectFourBoardCell.empty);
 
