@@ -35,8 +35,14 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
     }
 
     public basicMethod(): Vector {
-        for (let i = this.winCount; i > 1; i--) {
-            for (const chip of [this.currentStone, this.opponentStone]) {
+        for (const chip of [this.currentStone, this.opponentStone]) {
+            const candidates = this.searchCandidates(chip, this.winCount);
+            if (candidates.length > 0) {
+                return candidates[RandomUtility.random(0, candidates.length)];
+            }
+        }
+        for (let i = this.winCount - 1; i > 1; i--) {
+            for (const chip of [this.opponentStone, this.currentStone]) {
                 const candidates = this.searchCandidates(chip, i);
                 if (candidates.length > 0) {
                     return candidates[RandomUtility.random(0, candidates.length)];

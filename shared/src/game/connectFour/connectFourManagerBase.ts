@@ -120,7 +120,8 @@ export abstract class ConnectFourManagerBase {
             x += dx;
             y += dy;
         }
-        const side1 = Number(this.board.get(x + dx, y + dy) === ConnectFourBoardCell.empty);
+        const sideChip1 = this.board.get(x + dx, y + dy);
+        const side1 = Number(sideChip1 === ConnectFourBoardCell.empty || sideChip1 === ConnectFourBoardCell.highLight);
 
         let count = 0;
         while (this.board.get(x, y) === chip) {
@@ -128,7 +129,8 @@ export abstract class ConnectFourManagerBase {
             y -= dy;
             count++;
         }
-        const side2 = Number(this.board.get(x, y) === ConnectFourBoardCell.empty);
+        const sideChip2 = this.board.get(x, y);
+        const side2 = Number(sideChip2 === ConnectFourBoardCell.empty || sideChip2 === ConnectFourBoardCell.highLight);
 
         if (includingEmptySides) {
             count += side1 + side2;
