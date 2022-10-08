@@ -162,7 +162,7 @@ const LightsOut = (): JSX.Element => {
                                 setWidthSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(6)].map((_, i) => (
+                            {[...Array(7)].map((_, i) => (
                                 <MenuItem value={i + 3}>{i + 3}</MenuItem>
                             ))}
                         </Select>
@@ -186,7 +186,7 @@ const LightsOut = (): JSX.Element => {
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
+                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
