@@ -1,4 +1,14 @@
 export class CommonUtility {
+    public static clamp(value: number, min: number, max: number): number {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        } else {
+            return value;
+        }
+    }
+
     public static create2Array<T>(width: number, height: number): T[][] {
         const board = new Array(height);
         for (let index = 0; index < height; index++) {
