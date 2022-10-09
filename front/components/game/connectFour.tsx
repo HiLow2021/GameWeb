@@ -8,11 +8,11 @@ import { Result } from 'shared/game/connectFour/enums/result';
 import { Turn } from 'shared/game/connectFour/enums/turn';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/connectFour/coordinate';
-import { Level } from '../shared/game/connectFour/level';
-import { Player } from '../shared/game/connectFour/player';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/connectFour/coordinate';
+import { Level } from '../../shared/game/connectFour/level';
+import { Player } from '../../shared/game/connectFour/player';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
 const ConnectFour = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();

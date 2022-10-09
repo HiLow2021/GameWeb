@@ -8,11 +8,11 @@ import { Turn } from 'shared/game/gomoku/enums/turn';
 import { GomokuManager } from 'shared/game/gomoku/gomokuManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/gomoku/coordinate';
-import { Level } from '../shared/game/gomoku/level';
-import { Player } from '../shared/game/gomoku/player';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/gomoku/coordinate';
+import { Level } from '../../shared/game/gomoku/level';
+import { Player } from '../../shared/game/gomoku/player';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
 const Gomoku = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();

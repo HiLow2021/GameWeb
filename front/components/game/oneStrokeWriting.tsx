@@ -1,35 +1,40 @@
-import { FormControl, FormLabel, Select, MenuItem, Button } from '@mui/material';
+import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Stage, Text, Layer, Rect, FastLayer } from 'react-konva';
-import { LightsOutBoardCell } from 'shared/game/lightsOut/enum/lightsOutBoardCell';
-import { LightsOutManager } from 'shared/game/lightsOut/lightsOutManager';
+import { FastLayer, Layer, Rect, Stage, Text } from 'react-konva';
+import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
+import { Result } from 'shared/game/oneStrokeWriting/enum/result';
+import { OneStrokeWritingManager } from 'shared/game/oneStrokeWriting/oneStrokeWritingManager';
+import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/lightsOut/coordinate';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/oneStrokeWriting/coordinate';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
-const LightsOut = (): JSX.Element => {
+const OneStrokeWriting = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
 
     const strokeWidth = small ? 10 : 20;
     const strokeWidthHalf = strokeWidth / 2;
+    const margin = 2;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [widthSize, setWidthSize] = useState(5);
-    const [heightSize, setHeightSize] = useState(5);
+    const [widthSize, setWidthSize] = useState(6);
+    const [heightSize, setHeightSize] = useState(6);
     const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / widthSize);
     const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / heightSize);
-    const [lightsOutManager, setLightsOutManager] = useState<LightsOutManager>(new LightsOutManager(widthSize, heightSize));
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(lightsOutManager.board.cells));
+    const [oneStrokeWritingManager, setOneStrokeWritingManager] = useState<OneStrokeWritingManager>(
+        new OneStrokeWritingManager(widthSize, heightSize)
+    );
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(oneStrokeWritingManager));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
     const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/lightsOut/sound.mp3');
+    const [sound] = useSound('game/oneStrokeWriting/sound.mp3');
     const startSound = () => {
         if (currentSoundState) {
             sound();
@@ -37,15 +42,15 @@ const LightsOut = (): JSX.Element => {
     };
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
-        if (!canClick || lightsOutManager.isCompleted) {
+        if (!canClick) {
             return;
         }
 
         const [x, y] = convert(e);
-        if (lightsOutManager.next(x, y)) {
+        if (oneStrokeWritingManager.next(x, y)) {
             setCanClick(() => false);
 
-            setCoordinates(() => convertCellsToCoordinates(lightsOutManager.board.cells));
+            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
             startSound();
 
             setCanClick(() => true);
@@ -64,6 +69,15 @@ const LightsOut = (): JSX.Element => {
             return [x, y];
         }
     };
+    const result = async () => {
+        if (oneStrokeWritingManager.result === Result.failed) {
+            await CommonUtility.delay(200);
+
+            oneStrokeWritingManager.reset();
+        }
+
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+    };
 
     useEffect(() => {
         if (initial) {
@@ -72,44 +86,45 @@ const LightsOut = (): JSX.Element => {
             return;
         }
 
-        setLightsOutManager(new LightsOutManager(widthSize, heightSize));
+        setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
     }, [widthSize, heightSize]);
+
+    useEffect(() => {
+        result();
+    }, [oneStrokeWritingManager.result]);
 
     useLayoutEffect(() => {
         setCellWidth((width - strokeWidth * 2) / widthSize);
         setCellHeight((height - strokeWidth * 2) / heightSize);
-        setCoordinates(() => convertCellsToCoordinates(lightsOutManager.board.cells));
-    }, [lightsOutManager, width, height]);
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+    }, [oneStrokeWritingManager, width, height]);
 
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
                 <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTouchStart={select}>
-                    <Layer key="lights-out-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
+                    <Layer key="lighting-puzzle-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
-                            x={strokeWidthHalf}
-                            y={strokeWidthHalf}
-                            width={width - strokeWidth}
-                            height={height - strokeWidth}
+                            x={strokeWidthHalf - margin}
+                            y={strokeWidthHalf - margin}
+                            width={width - strokeWidth + margin * 2}
+                            height={height - strokeWidth + margin * 2}
                         />
                     </Layer>
-                    <FastLayer key="lights-out-piece-layer">
+                    <FastLayer key="lighting-puzzle-piece-layer">
                         {coordinates.map((coordinate) => (
                             <Rect
-                                x={cellWidth * coordinate.x + strokeWidth}
-                                y={cellHeight * coordinate.y + strokeWidth}
-                                width={cellWidth}
-                                height={cellHeight}
-                                fillPriority="linear-gradient"
-                                fillLinearGradientStartPoint={{ x: 0, y: 0 }}
-                                fillLinearGradientEndPoint={{ x: cellWidth, y: cellHeight }}
-                                fillLinearGradientColorStops={[0, coordinate.innerColorStart, 1, coordinate.innerColorEnd]}
+                                fill={coordinate.color}
+                                x={cellWidth * coordinate.x + strokeWidth + margin}
+                                y={cellHeight * coordinate.y + strokeWidth + margin}
+                                width={cellWidth - margin * 2}
+                                height={cellHeight - margin * 2}
                             />
                         ))}
                     </FastLayer>
-                    <FastLayer key="lights-out-text-layer">
+                    <FastLayer key="lighting-puzzle-text-layer">
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -120,21 +135,10 @@ const LightsOut = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={`Step ${lightsOutManager.step}`}
+                            text={oneStrokeWritingManager.result === Result.succeeded ? 'クリア！' : ''}
                             x={0}
                             y={height + textAreaMargin}
-                            width={width / 2}
-                            height={textAreaHeight}
-                            fill="black"
-                            fontSize={small ? 22 : 32}
-                            align="center"
-                            verticalAlign="middle"
-                        />
-                        <Text
-                            text={lightsOutManager.isCompleted ? 'クリア！' : ''}
-                            x={width / 2}
-                            y={height + textAreaMargin}
-                            width={width / 2}
+                            width={width}
                             height={textAreaHeight}
                             fill="#FF2200"
                             fontSize={small ? 22 : 32}
@@ -196,15 +200,15 @@ const LightsOut = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="warning"
+                        color="success"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
                                 return;
                             }
 
-                            lightsOutManager.initialize();
-                            setCoordinates(() => convertCellsToCoordinates(lightsOutManager.board.cells));
+                            oneStrokeWritingManager.initialize();
+                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
                         }}
                     >
                         リセット
@@ -215,23 +219,23 @@ const LightsOut = (): JSX.Element => {
     );
 };
 
-function convertCellsToCoordinates(cells: LightsOutBoardCell[][]): Coordinate[] {
+function convertCellsToCoordinates(manager: OneStrokeWritingManager): Coordinate[] {
+    const cells = manager.board.cells;
     const coordinates: Coordinate[] = [];
     for (let y = 0; y < cells.length; y++) {
         for (let x = 0; x < cells[y].length; x++) {
             let coordinate: Coordinate;
 
-            switch (cells[y][x]) {
-                case LightsOutBoardCell.on:
-                    coordinate = { x, y, innerColorStart: '#CCCC00', innerColorEnd: '#FFFF00' };
-                    break;
-
-                case LightsOutBoardCell.off:
-                    coordinate = { x, y, innerColorStart: '#606060', innerColorEnd: '#A0A0A0' };
-                    break;
-
-                default:
-                    continue;
+            if (manager.result === Result.succeeded || (manager.currentPosition?.x === x && manager.currentPosition?.y === y)) {
+                coordinate = { x, y, color: '#00BB00' };
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.on) {
+                coordinate = { x, y, color: '#CCCC00' };
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.off) {
+                coordinate = { x, y, color: '#909090' };
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.block) {
+                coordinate = { x, y, color: '#FF3333' };
+            } else {
+                coordinate = { x, y, color: '#CCCC00' };
             }
 
             coordinates.push(coordinate);
@@ -241,4 +245,4 @@ function convertCellsToCoordinates(cells: LightsOutBoardCell[][]): Coordinate[] 
     return coordinates;
 }
 
-export default LightsOut;
+export default OneStrokeWriting;
