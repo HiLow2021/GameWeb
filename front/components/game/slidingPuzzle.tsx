@@ -4,9 +4,9 @@ import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { FastLayer, Group, Layer, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/slidingPuzzle/coordinate';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/slidingPuzzle/coordinate';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
 const SlidingPuzzle = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();

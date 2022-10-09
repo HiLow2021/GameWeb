@@ -9,11 +9,11 @@ import { OthelloBoard } from 'shared/game/othello/othelloBoard';
 import { OthelloManager } from 'shared/game/othello/othelloManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/othello/coordinate';
-import { Level } from '../shared/game/othello/level';
-import { Player } from '../shared/game/othello/player';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/othello/coordinate';
+import { Level } from '../../shared/game/othello/level';
+import { Player } from '../../shared/game/othello/player';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
 const Othello = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();

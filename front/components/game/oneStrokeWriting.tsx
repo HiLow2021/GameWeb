@@ -7,9 +7,9 @@ import { Result } from 'shared/game/oneStrokeWriting/enum/result';
 import { OneStrokeWritingManager } from 'shared/game/oneStrokeWriting/oneStrokeWritingManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/oneStrokeWriting/coordinate';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/oneStrokeWriting/coordinate';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
 const OneStrokeWriting = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();

@@ -5,9 +5,9 @@ import { Stage, Text, Layer, Rect, FastLayer } from 'react-konva';
 import { LightsOutBoardCell } from 'shared/game/lightsOut/enum/lightsOutBoardCell';
 import { LightsOutManager } from 'shared/game/lightsOut/lightsOutManager';
 import useSound from 'use-sound';
-import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/lightsOut/coordinate';
-import { getGameComponentSize } from '../shared/utility/componentUtility';
+import SoundStateContext from '../../contexts/soundStateContext';
+import { Coordinate } from '../../shared/game/lightsOut/coordinate';
+import { getGameComponentSize } from '../../shared/utility/componentUtility';
 
 const LightsOut = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
