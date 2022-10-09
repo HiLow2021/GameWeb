@@ -14,13 +14,14 @@ const LightsOut = (): JSX.Element => {
 
     const strokeWidth = small ? 10 : 20;
     const strokeWidthHalf = strokeWidth / 2;
+    const margin = 2;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [widthSize, setWidthSize] = useState(5);
-    const [heightSize, setHeightSize] = useState(5);
+    const [widthSize, setWidthSize] = useState(3);
+    const [heightSize, setHeightSize] = useState(3);
     const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / widthSize);
     const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / heightSize);
     const [lightsOutManager, setLightsOutManager] = useState<LightsOutManager>(new LightsOutManager(widthSize, heightSize));
@@ -89,23 +90,20 @@ const LightsOut = (): JSX.Element => {
                         <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
-                            x={strokeWidthHalf}
-                            y={strokeWidthHalf}
-                            width={width - strokeWidth}
-                            height={height - strokeWidth}
+                            x={strokeWidthHalf - margin}
+                            y={strokeWidthHalf - margin}
+                            width={width - strokeWidth + margin * 2}
+                            height={height - strokeWidth + margin * 2}
                         />
                     </Layer>
                     <FastLayer key="lights-out-piece-layer">
                         {coordinates.map((coordinate) => (
                             <Rect
-                                x={cellWidth * coordinate.x + strokeWidth}
-                                y={cellHeight * coordinate.y + strokeWidth}
-                                width={cellWidth}
-                                height={cellHeight}
-                                fillPriority="linear-gradient"
-                                fillLinearGradientStartPoint={{ x: 0, y: 0 }}
-                                fillLinearGradientEndPoint={{ x: cellWidth, y: cellHeight }}
-                                fillLinearGradientColorStops={[0, coordinate.innerColorStart, 1, coordinate.innerColorEnd]}
+                                fill={coordinate.color}
+                                x={cellWidth * coordinate.x + strokeWidth + margin}
+                                y={cellHeight * coordinate.y + strokeWidth + margin}
+                                width={cellWidth - margin * 2}
+                                height={cellHeight - margin * 2}
                             />
                         ))}
                     </FastLayer>
@@ -162,7 +160,7 @@ const LightsOut = (): JSX.Element => {
                                 setWidthSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(7)].map((_, i) => (
+                            {[...Array(5)].map((_, i) => (
                                 <MenuItem value={i + 3}>{i + 3}</MenuItem>
                             ))}
                         </Select>
@@ -185,7 +183,7 @@ const LightsOut = (): JSX.Element => {
                                 setHeightSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(7)].map((_, i) => (
+                            {[...Array(5)].map((_, i) => (
                                 <MenuItem value={i + 3}>{i + 3}</MenuItem>
                             ))}
                         </Select>
@@ -223,11 +221,11 @@ function convertCellsToCoordinates(cells: LightsOutBoardCell[][]): Coordinate[] 
 
             switch (cells[y][x]) {
                 case LightsOutBoardCell.on:
-                    coordinate = { x, y, innerColorStart: '#CCCC00', innerColorEnd: '#FFFF00' };
+                    coordinate = { x, y, color: '#CCCC00' };
                     break;
 
                 case LightsOutBoardCell.off:
-                    coordinate = { x, y, innerColorStart: '#606060', innerColorEnd: '#A0A0A0' };
+                    coordinate = { x, y, color: '#909090' };
                     break;
 
                 default:

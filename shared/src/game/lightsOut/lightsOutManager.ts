@@ -49,7 +49,7 @@ export class LightsOutManager {
         return true;
     }
 
-    private shuffle(step = 1000): void {
+    private shuffle(step = 100): void {
         while (step-- > 0) {
             const x = RandomUtility.random(0, this.board.width);
             const y = RandomUtility.random(0, this.board.height);
