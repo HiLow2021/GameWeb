@@ -73,7 +73,7 @@ const LightingPuzzle = (): JSX.Element => {
         if (lightingPuzzleManager.result === Result.failed) {
             await CommonUtility.delay(200);
 
-            lightingPuzzleManager.initialize();
+            lightingPuzzleManager.reset();
         }
 
         setCoordinates(() => convertCellsToCoordinates(lightingPuzzleManager));

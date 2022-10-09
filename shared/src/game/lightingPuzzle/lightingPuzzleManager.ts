@@ -1,11 +1,13 @@
 import { CommonUtility } from '../../utility/commonUtility';
-import { RandomUtility } from '../../utility/randomUtility';
 import { LightingPuzzleBoardCell } from './enum/lightingPuzzleBoardCell';
 import { Result } from './enum/result';
 import { LightingPuzzleBoard } from './lightingPuzzleBoard';
+import { LightingPuzzleGenerator } from './lightingPuzzleGenerator';
 import { Vector } from './vector';
 
 export class LightingPuzzleManager {
+    private readonly _generator: LightingPuzzleGenerator;
+
     private _startPosition: Vector | undefined;
 
     private _currentPosition: Vector | undefined;
@@ -29,6 +31,7 @@ export class LightingPuzzleManager {
     }
 
     public constructor(width: number, height: number, straightMode = true) {
+        this._generator = new LightingPuzzleGenerator(width, height, straightMode);
         this.board = new LightingPuzzleBoard(width, height);
         this.straightMode = straightMode;
 
@@ -36,11 +39,15 @@ export class LightingPuzzleManager {
     }
 
     public initialize(): void {
+        this._generator.generate(1, 4);
+        this.reset();
+    }
+
+    public reset(): void {
         this._startPosition = undefined;
         this._currentPosition = undefined;
         this._result = Result.undecided;
-        this.board.initialize();
-        this.setRandomBlock();
+        CommonUtility.copy2Array(this._generator.board.cells, this.board.cells);
     }
 
     public next(x: number, y: number): boolean {
@@ -137,14 +144,5 @@ export class LightingPuzzleManager {
         }
 
         return true;
-    }
-
-    private setRandomBlock(count = 2): void {
-        while (count-- > 0) {
-            const x = RandomUtility.random(0, this.board.width);
-            const y = RandomUtility.random(0, this.board.height);
-
-            this.board.set(x, y, LightingPuzzleBoardCell.block);
-        }
     }
 }
