@@ -1,17 +1,17 @@
-import { FormControl, FormLabel, Select, MenuItem, Button } from '@mui/material';
+import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Stage, Layer, Text, Rect, FastLayer } from 'react-konva';
-import { LightingPuzzleBoardCell } from 'shared/game/lightingPuzzle/enum/lightingPuzzleBoardCell';
-import { LightingPuzzleManager } from 'shared/game/lightingPuzzle/lightingPuzzleManager';
-import { Result } from 'shared/game/lightingPuzzle/enum/result';
+import { FastLayer, Layer, Rect, Stage, Text } from 'react-konva';
+import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
+import { Result } from 'shared/game/oneStrokeWriting/enum/result';
+import { OneStrokeWritingManager } from 'shared/game/oneStrokeWriting/oneStrokeWritingManager';
+import { CommonUtility } from 'shared/utility/commonUtility';
 import useSound from 'use-sound';
 import SoundStateContext from '../contexts/soundStateContext';
-import { Coordinate } from '../shared/game/lightingPuzzle/coordinate';
+import { Coordinate } from '../shared/game/oneStrokeWriting/coordinate';
 import { getGameComponentSize } from '../shared/utility/componentUtility';
-import { CommonUtility } from 'shared/utility/commonUtility';
 
-const LightingPuzzle = (): JSX.Element => {
+const OneStrokeWriting = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
 
     const strokeWidth = small ? 10 : 20;
@@ -26,15 +26,15 @@ const LightingPuzzle = (): JSX.Element => {
     const [heightSize, setHeightSize] = useState(6);
     const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / widthSize);
     const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / heightSize);
-    const [lightingPuzzleManager, setLightingPuzzleManager] = useState<LightingPuzzleManager>(
-        new LightingPuzzleManager(widthSize, heightSize)
+    const [oneStrokeWritingManager, setOneStrokeWritingManager] = useState<OneStrokeWritingManager>(
+        new OneStrokeWritingManager(widthSize, heightSize)
     );
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(lightingPuzzleManager));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(oneStrokeWritingManager));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
     const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/lightingPuzzle/sound.mp3');
+    const [sound] = useSound('game/oneStrokeWriting/sound.mp3');
     const startSound = () => {
         if (currentSoundState) {
             sound();
@@ -47,10 +47,10 @@ const LightingPuzzle = (): JSX.Element => {
         }
 
         const [x, y] = convert(e);
-        if (lightingPuzzleManager.next(x, y)) {
+        if (oneStrokeWritingManager.next(x, y)) {
             setCanClick(() => false);
 
-            setCoordinates(() => convertCellsToCoordinates(lightingPuzzleManager));
+            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
             startSound();
 
             setCanClick(() => true);
@@ -70,13 +70,13 @@ const LightingPuzzle = (): JSX.Element => {
         }
     };
     const result = async () => {
-        if (lightingPuzzleManager.result === Result.failed) {
+        if (oneStrokeWritingManager.result === Result.failed) {
             await CommonUtility.delay(200);
 
-            lightingPuzzleManager.reset();
+            oneStrokeWritingManager.reset();
         }
 
-        setCoordinates(() => convertCellsToCoordinates(lightingPuzzleManager));
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
     };
 
     useEffect(() => {
@@ -86,18 +86,18 @@ const LightingPuzzle = (): JSX.Element => {
             return;
         }
 
-        setLightingPuzzleManager(new LightingPuzzleManager(widthSize, heightSize));
+        setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
     }, [widthSize, heightSize]);
 
     useEffect(() => {
         result();
-    }, [lightingPuzzleManager.result]);
+    }, [oneStrokeWritingManager.result]);
 
     useLayoutEffect(() => {
         setCellWidth((width - strokeWidth * 2) / widthSize);
         setCellHeight((height - strokeWidth * 2) / heightSize);
-        setCoordinates(() => convertCellsToCoordinates(lightingPuzzleManager));
-    }, [lightingPuzzleManager, width, height]);
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+    }, [oneStrokeWritingManager, width, height]);
 
     return (
         <>
@@ -135,7 +135,7 @@ const LightingPuzzle = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={lightingPuzzleManager.result === Result.succeeded ? 'クリア！' : ''}
+                            text={oneStrokeWritingManager.result === Result.succeeded ? 'クリア！' : ''}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}
@@ -207,8 +207,8 @@ const LightingPuzzle = (): JSX.Element => {
                                 return;
                             }
 
-                            lightingPuzzleManager.initialize();
-                            setCoordinates(() => convertCellsToCoordinates(lightingPuzzleManager));
+                            oneStrokeWritingManager.initialize();
+                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
                         }}
                     >
                         リセット
@@ -219,7 +219,7 @@ const LightingPuzzle = (): JSX.Element => {
     );
 };
 
-function convertCellsToCoordinates(manager: LightingPuzzleManager): Coordinate[] {
+function convertCellsToCoordinates(manager: OneStrokeWritingManager): Coordinate[] {
     const cells = manager.board.cells;
     const coordinates: Coordinate[] = [];
     for (let y = 0; y < cells.length; y++) {
@@ -228,11 +228,11 @@ function convertCellsToCoordinates(manager: LightingPuzzleManager): Coordinate[]
 
             if (manager.result === Result.succeeded || (manager.currentPosition?.x === x && manager.currentPosition?.y === y)) {
                 coordinate = { x, y, color: '#00BB00' };
-            } else if (cells[y][x] === LightingPuzzleBoardCell.on) {
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.on) {
                 coordinate = { x, y, color: '#CCCC00' };
-            } else if (cells[y][x] === LightingPuzzleBoardCell.off) {
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.off) {
                 coordinate = { x, y, color: '#909090' };
-            } else if (cells[y][x] === LightingPuzzleBoardCell.block) {
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.block) {
                 coordinate = { x, y, color: '#FF3333' };
             } else {
                 coordinate = { x, y, color: '#CCCC00' };
@@ -245,4 +245,4 @@ function convertCellsToCoordinates(manager: LightingPuzzleManager): Coordinate[]
     return coordinates;
 }
 
-export default LightingPuzzle;
+export default OneStrokeWriting;

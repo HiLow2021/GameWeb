@@ -1,12 +1,12 @@
 import { CommonUtility } from '../../utility/commonUtility';
-import { LightingPuzzleBoardCell } from './enum/lightingPuzzleBoardCell';
+import { OneStrokeWritingBoardCell } from './enum/oneStrokeWritingBoardCell';
 import { Result } from './enum/result';
-import { LightingPuzzleBoard } from './lightingPuzzleBoard';
-import { LightingPuzzleGenerator } from './lightingPuzzleGenerator';
+import { OneStrokeWritingBoard } from './oneStrokeWritingBoard';
+import { OneStrokeWritingGenerator } from './oneStrokeWritingGenerator';
 import { Vector } from './vector';
 
-export class LightingPuzzleManager {
-    private readonly _generator: LightingPuzzleGenerator;
+export class OneStrokeWritingManager {
+    private readonly _generator: OneStrokeWritingGenerator;
 
     private _startPosition: Vector | undefined;
 
@@ -14,7 +14,7 @@ export class LightingPuzzleManager {
 
     private _result: Result = Result.undecided;
 
-    public readonly board: LightingPuzzleBoard;
+    public readonly board: OneStrokeWritingBoard;
 
     public readonly straightMode: boolean;
 
@@ -31,8 +31,8 @@ export class LightingPuzzleManager {
     }
 
     public constructor(width: number, height: number, straightMode = true) {
-        this._generator = new LightingPuzzleGenerator(width, height, straightMode);
-        this.board = new LightingPuzzleBoard(width, height);
+        this._generator = new OneStrokeWritingGenerator(width, height, straightMode);
+        this.board = new OneStrokeWritingBoard(width, height);
         this.straightMode = straightMode;
 
         this.initialize();
@@ -65,7 +65,7 @@ export class LightingPuzzleManager {
     }
 
     private updateResult(): void {
-        const succeeded = this.board.cells.flat().every((x) => x !== LightingPuzzleBoardCell.off);
+        const succeeded = this.board.cells.flat().every((x) => x !== OneStrokeWritingBoardCell.off);
         if (succeeded) {
             this._result = Result.succeeded;
 
@@ -80,7 +80,7 @@ export class LightingPuzzleManager {
             const x = this._currentPosition.x + direction.x;
             const y = this._currentPosition.y + direction.y;
 
-            return this.board.get(x, y) !== LightingPuzzleBoardCell.off;
+            return this.board.get(x, y) !== OneStrokeWritingBoardCell.off;
         });
         if (failed) {
             this._result = Result.failed;
@@ -99,7 +99,7 @@ export class LightingPuzzleManager {
         if (!this._currentPosition) {
             this._startPosition = new Vector(x1, y1);
             this._currentPosition = this._startPosition;
-            this.board.set(x1, y1, LightingPuzzleBoardCell.on);
+            this.board.set(x1, y1, OneStrokeWritingBoardCell.on);
 
             return true;
         }
@@ -112,8 +112,8 @@ export class LightingPuzzleManager {
         do {
             x2 += dx;
             y2 += dy;
-            this.board.set(x2, y2, LightingPuzzleBoardCell.on);
-        } while (this.straightMode ? this.board.get(x2 + dx, y2 + dy) === LightingPuzzleBoardCell.off : !(x1 === x2 && y1 === y2));
+            this.board.set(x2, y2, OneStrokeWritingBoardCell.on);
+        } while (this.straightMode ? this.board.get(x2 + dx, y2 + dy) === OneStrokeWritingBoardCell.off : !(x1 === x2 && y1 === y2));
 
         this._currentPosition = new Vector(x2, y2);
 
@@ -121,7 +121,7 @@ export class LightingPuzzleManager {
     }
 
     private canMove(x1: number, y1: number): boolean {
-        if (this.board.get(x1, y1) !== LightingPuzzleBoardCell.off) {
+        if (this.board.get(x1, y1) !== OneStrokeWritingBoardCell.off) {
             return false;
         }
 
@@ -138,7 +138,7 @@ export class LightingPuzzleManager {
             do {
                 x2 += dx;
                 y2 += dy;
-            } while (!(x1 === x2 && y1 === y2) && this.board.get(x2, y2) === LightingPuzzleBoardCell.off);
+            } while (!(x1 === x2 && y1 === y2) && this.board.get(x2, y2) === OneStrokeWritingBoardCell.off);
 
             return x1 === x2 && y1 === y2;
         }

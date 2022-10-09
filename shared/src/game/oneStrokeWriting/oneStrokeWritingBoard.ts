@@ -1,13 +1,13 @@
-import { LightingPuzzleBoardCell } from './enum/lightingPuzzleBoardCell';
+import { OneStrokeWritingBoardCell } from './enum/oneStrokeWritingBoardCell';
 
-export class LightingPuzzleBoard {
-    private _cells: LightingPuzzleBoardCell[][];
+export class OneStrokeWritingBoard {
+    private _cells: OneStrokeWritingBoardCell[][];
 
     public readonly width: number;
 
     public readonly height: number;
 
-    get cells(): LightingPuzzleBoardCell[][] {
+    get cells(): OneStrokeWritingBoardCell[][] {
         return this._cells;
     }
 
@@ -26,20 +26,20 @@ export class LightingPuzzleBoard {
     public initialize(): void {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
-                this._cells[y][x] = LightingPuzzleBoardCell.off;
+                this._cells[y][x] = OneStrokeWritingBoardCell.off;
             }
         }
     }
 
-    public get(x: number, y: number): LightingPuzzleBoardCell {
+    public get(x: number, y: number): OneStrokeWritingBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return LightingPuzzleBoardCell.outOfRange;
+            return OneStrokeWritingBoardCell.outOfRange;
         }
 
         return this._cells[y][x];
     }
 
-    public set(x: number, y: number, cell: LightingPuzzleBoardCell): void {
+    public set(x: number, y: number, cell: OneStrokeWritingBoardCell): void {
         if (!this.isWithinRange(x, y)) {
             return;
         }
