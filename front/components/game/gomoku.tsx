@@ -261,11 +261,11 @@ function convertCellsToCoordinates(cells: GomokuBoardCell[][]): Coordinate[] {
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case 'black':
+                case GomokuBoardCell.black:
                     coordinate = { x, y, color: 'black' };
                     break;
 
-                case 'white':
+                case GomokuBoardCell.white:
                     coordinate = { x, y, color: 'white' };
                     break;
 

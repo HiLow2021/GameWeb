@@ -323,15 +323,15 @@ function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case 'black':
+                case OthelloBoardCell.black:
                     coordinate = { x, y, color: 'black', stone: true };
                     break;
 
-                case 'white':
+                case OthelloBoardCell.white:
                     coordinate = { x, y, color: 'white', stone: true };
                     break;
 
-                case 'highLight':
+                case OthelloBoardCell.highLight:
                     coordinate = { x, y, color: 'orange', stone: false };
                     break;
 
