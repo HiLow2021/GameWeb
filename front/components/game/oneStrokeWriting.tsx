@@ -70,6 +70,10 @@ const OneStrokeWriting = (): JSX.Element => {
         }
     };
     const result = async () => {
+        if (oneStrokeWritingManager.result === Result.undecided) {
+            return;
+        }
+
         if (oneStrokeWritingManager.result === Result.failed) {
             await CommonUtility.delay(200);
 
