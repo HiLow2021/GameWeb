@@ -49,19 +49,14 @@ export class GomokuAIManager extends GomokuManagerBase {
     }
 
     public basicMethod(): Vector {
-        const backupTurn = this._currentTurn;
         for (let i = this.winCount; i > 2; i--) {
-            for (let j = 0; j < 2; j++) {
-                const candidates = this.searchCandidates(this.currentStone, i);
+            for (const chip of [this.currentStone, this.opponentStone]) {
+                const candidates = this.searchCandidates(chip, i);
                 if (candidates.length > 0) {
                     return candidates[RandomUtility.random(0, candidates.length)];
                 }
-
-                this.rotateTurn();
             }
         }
-
-        this._currentTurn = backupTurn;
 
         return this.improvedRandomMethod();
     }
