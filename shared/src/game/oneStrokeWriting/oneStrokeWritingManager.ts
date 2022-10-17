@@ -39,7 +39,7 @@ export class OneStrokeWritingManager {
     }
 
     public initialize(): void {
-        this._generator.generate(1, 4);
+        this._generator.generate(2);
         this.reset();
     }
 

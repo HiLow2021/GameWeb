@@ -13,10 +13,10 @@ export class OneStrokeWritingGenerator {
         this.straightMode = straightMode;
     }
 
-    public generate(minBlock: number, maxBlock: number, tryCount = 1000): boolean {
+    public generate(blockCount: number, tryCount = 1000): boolean {
         for (let index = 0; index < tryCount; index++) {
             this.board.initialize();
-            this.setRandomBlock(minBlock, maxBlock);
+            this.setRandomBlock(blockCount);
 
             if (this.checkAll()) {
                 return true;
@@ -82,15 +82,14 @@ export class OneStrokeWritingGenerator {
         return result;
     }
 
-    private setRandomBlock(minBlock: number, maxBlock: number): void {
-        let count = RandomUtility.random(minBlock, maxBlock + 1);
-        while (count > 0) {
+    private setRandomBlock(blockCount: number): void {
+        while (blockCount > 0) {
             const x = RandomUtility.random(0, this.board.width);
             const y = RandomUtility.random(0, this.board.height);
 
             if (this.board.get(x, y) !== OneStrokeWritingBoardCell.block) {
                 this.board.set(x, y, OneStrokeWritingBoardCell.block);
-                count--;
+                blockCount--;
             }
         }
     }
