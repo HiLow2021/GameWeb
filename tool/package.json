@@ -1,0 +1,12 @@
+{
+  "name": "tool",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "create-one-strike-writing-question": "node ./create-one-strike-writing-question.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
