@@ -6,7 +6,7 @@ const width = { min: 4, max: 4 };
 const height = { min: 4, max: 4 };
 const block = { min: 1, max: 1 };
 const straight = [true];
-const count = 10;
+const count = 1;
 const tryCount = 100;
 const questions = [];
 
@@ -21,7 +21,10 @@ for (const s of straight) {
                     if (result) {
                         const cells = CommonUtility.create2Array(x, y);
                         CommonUtility.copy2Array(generator.board.cells, cells);
-                        questions.push({ width: x, height: y, block: b, straight: s, cells });
+
+                        if (!checkDuplication(questions, cells)) {
+                            questions.push({ width: x, height: y, block: b, straight: s, cells })
+                        }
                     }
                 }
             }
@@ -30,3 +33,12 @@ for (const s of straight) {
 }
 
 writeFile(getFileNameWithoutExtension(import.meta.url) + '.json', JSON.stringify(questions, null, 4));
+
+function checkDuplication(questions, target) {
+    const questionCells = questions.map((x) => JSON.stringify(x.cells.flat()));
+    const cells = JSON.stringify(target.flat());
+
+    questionCells.push(cells);
+
+    return new Set(questionCells).size !== questionCells.length;
+}
