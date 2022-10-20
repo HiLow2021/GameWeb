@@ -5,8 +5,8 @@ import { getFileNameWithoutExtension, readFile, appendFile, writeFile } from './
 const baseFileName = getFileNameWithoutExtension(import.meta.url);
 let total = 0;
 
-const width = { min: 4, max: 4 };
-const height = { min: 4, max: 4 };
+const width = { min: 4, max: 10 };
+const height = { min: 4, max: 10 };
 const straight = [true];
 const count = 20;
 const tryCount = 100;
