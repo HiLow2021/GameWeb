@@ -41,6 +41,11 @@ const OneStrokeWriting = (): JSX.Element => {
         }
     };
 
+    const initialize = async (): Promise<void> => {
+        await oneStrokeWritingManager.initialize();
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+    };
+
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick) {
             return;
@@ -69,7 +74,8 @@ const OneStrokeWriting = (): JSX.Element => {
             return [x, y];
         }
     };
-    const result = async () => {
+
+    const result = async (): Promise<void> => {
         if (oneStrokeWritingManager.result === Result.undecided) {
             return;
         }
@@ -86,11 +92,13 @@ const OneStrokeWriting = (): JSX.Element => {
     useEffect(() => {
         if (initial) {
             setInitial(false);
+            initialize();
 
             return;
         }
 
         setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
+        initialize();
     }, [widthSize, heightSize]);
 
     useEffect(() => {
@@ -206,13 +214,12 @@ const OneStrokeWriting = (): JSX.Element => {
                         variant="contained"
                         color="success"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
-                        onClick={() => {
+                        onClick={async () => {
                             if (!canClick) {
                                 return;
                             }
 
-                            oneStrokeWritingManager.initialize();
-                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+                            initialize();
                         }}
                     >
                         リセット
