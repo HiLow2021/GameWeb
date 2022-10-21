@@ -41,6 +41,11 @@ const OneStrokeWriting = (): JSX.Element => {
         }
     };
 
+    const initialize = async () => {
+        await oneStrokeWritingManager.initialize();
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+    };
+
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick) {
             return;
@@ -88,35 +93,32 @@ const OneStrokeWriting = (): JSX.Element => {
         if (initial) {
             return;
         }
-        (async () => {
-            setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
-            await oneStrokeWritingManager.initialize();
-            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-        })();
-        
+
+        setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
     }, [widthSize, heightSize]);
+
+    useEffect(() => {
+        if (initial) {
+            return;
+        }
+
+        initialize();
+    }, [oneStrokeWritingManager]);
 
     useEffect(() => {
         result();
     }, [oneStrokeWritingManager.result]);
 
+    useEffect(() => {
+        setInitial(false);
+        initialize();
+    }, []);
+
     useLayoutEffect(() => {
         setCellWidth((width - strokeWidth * 2) / widthSize);
         setCellHeight((height - strokeWidth * 2) / heightSize);
         setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-    }, [width, height]);
-
-    useLayoutEffect(() => {
-        if (initial) {
-            setInitial(false);
-            return;
-        }
-
-        (async () => {
-            await oneStrokeWritingManager.initialize();
-            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-        })();
-    }, [initial]);
+    }, [oneStrokeWritingManager, width, height]);
 
     return (
         <>
@@ -221,13 +223,12 @@ const OneStrokeWriting = (): JSX.Element => {
                         variant="contained"
                         color="success"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
-                        onClick={async () => {
+                        onClick={() => {
                             if (!canClick) {
                                 return;
                             }
 
-                            await oneStrokeWritingManager.initialize();
-                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+                            initialize();
                         }}
                     >
                         リセット
