@@ -216,7 +216,24 @@ const OneStrokeWriting = (): JSX.Element => {
                         </Select>
                     </FormControl>
                 </div>
-                <div className="flex justify-center sm:justify-end">
+                <div className="flex justify-center gap-4 sm:justify-end">
+                    <Button
+                        className="h-10 w-32 sm:h-12 sm:w-48"
+                        fullWidth={false}
+                        variant="contained"
+                        color="success"
+                        style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
+                        onClick={() => {
+                            if (!canClick) {
+                                return;
+                            }
+
+                            oneStrokeWritingManager.reset();
+                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+                        }}
+                    >
+                        リセット
+                    </Button>
                     <Button
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
@@ -231,7 +248,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             initialize();
                         }}
                     >
-                        リセット
+                        別の問題
                     </Button>
                 </div>
             </div>
