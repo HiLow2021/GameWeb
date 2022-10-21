@@ -41,11 +41,6 @@ const OneStrokeWriting = (): JSX.Element => {
         }
     };
 
-    const initialize = async (): Promise<void> => {
-        await oneStrokeWritingManager.initialize();
-        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-    };
-
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick) {
             return;
@@ -91,14 +86,14 @@ const OneStrokeWriting = (): JSX.Element => {
 
     useEffect(() => {
         if (initial) {
-            setInitial(false);
-            initialize();
-
             return;
         }
-
-        setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
-        initialize();
+        (async () => {
+            setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
+            await oneStrokeWritingManager.initialize();
+            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+        })();
+        
     }, [widthSize, heightSize]);
 
     useEffect(() => {
@@ -109,7 +104,19 @@ const OneStrokeWriting = (): JSX.Element => {
         setCellWidth((width - strokeWidth * 2) / widthSize);
         setCellHeight((height - strokeWidth * 2) / heightSize);
         setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-    }, [oneStrokeWritingManager, width, height]);
+    }, [width, height]);
+
+    useLayoutEffect(() => {
+        if (initial) {
+            setInitial(false);
+            return;
+        }
+
+        (async () => {
+            await oneStrokeWritingManager.initialize();
+            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+        })();
+    }, [initial]);
 
     return (
         <>
@@ -179,7 +186,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -202,7 +209,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -219,7 +226,8 @@ const OneStrokeWriting = (): JSX.Element => {
                                 return;
                             }
 
-                            initialize();
+                            await oneStrokeWritingManager.initialize();
+                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
                         }}
                     >
                         リセット
@@ -246,7 +254,7 @@ function convertCellsToCoordinates(manager: OneStrokeWritingManager): Coordinate
             } else if (cells[y][x] === OneStrokeWritingBoardCell.block) {
                 coordinate = { x, y, color: '#FF3333' };
             } else {
-                coordinate = { x, y, color: '#CCCC00' };
+                coordinate = { x, y, color: '#909090' };
             }
 
             coordinates.push(coordinate);

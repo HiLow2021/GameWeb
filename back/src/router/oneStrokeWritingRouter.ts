@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import express, { NextFunction, Request, Response, Router } from 'express';
+import { RandomUtility } from 'shared/utility/randomUtility';
 
 const oneStrokeWritingRouter: Router = express.Router();
 const prisma = new PrismaClient();
@@ -14,21 +15,23 @@ oneStrokeWritingRouter.get('/oneStrokeWriting/question', async (req: Request, re
         const height = Number(req.query['height']);
         const straight = Boolean(req.query['straight']);
 
-        const question = await prisma.t_game_one_stroke_writing_question.findFirst({
-            where: {
-                width,
-                height,
-                straight
-            }
+        const condition = {width, height, straight}
+        const count = await prisma.t_game_one_stroke_writing_question.count({
+            where: condition
+        })
+        const question = await prisma.t_game_one_stroke_writing_question.findMany({
+            take: 1,
+            skip: RandomUtility.random(0, count),
+            where: condition
         });
 
-        if (!question) {
+        if (question.length === 0) {
             res.status(500).json({ result: 'question nothing' });
 
             return;
         }
 
-        const response = { cells: JSON.parse(question.cells) } as ResponseData;
+        const response = { cells: JSON.parse(question[0].cells) } as ResponseData;
 
         res.status(200).json(response);
     } catch (error) {
