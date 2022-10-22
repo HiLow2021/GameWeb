@@ -1,8 +1,9 @@
+import { environment } from '../../environment';
 import { ConnectFourManagerBase } from './connectFourManagerBase';
 import { ConnectFourBoardCell } from './enums/connectFourBoardCell';
 
 export class ConnectFourManager extends ConnectFourManagerBase {
-    private readonly _apiUrl = 'http://localhost:5000/api/connectFour/next';
+    private readonly _apiUrl = `${environment.baseUrl}/api/connectFour/next`;
 
     public initialize(): void {
         super.initialize();
