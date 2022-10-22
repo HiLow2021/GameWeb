@@ -27,7 +27,7 @@ export class SlidingPuzzleManager {
 
     public initialize(): void {
         this.board.initialize();
-        this.shuffle();
+        this.shuffle(this.board.square * this.board.square);
         this._step = 0;
     }
 

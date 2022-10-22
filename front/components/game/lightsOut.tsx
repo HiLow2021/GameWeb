@@ -1,13 +1,12 @@
-import { FormControl, FormLabel, Select, MenuItem, Button } from '@mui/material';
+import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Stage, Text, Layer, Rect, FastLayer } from 'react-konva';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { Layer, Rect, Stage, Text } from 'react-konva';
 import { LightsOutBoardCell } from 'shared/game/lightsOut/enum/lightsOutBoardCell';
 import { LightsOutManager } from 'shared/game/lightsOut/lightsOutManager';
-import useSound from 'use-sound';
-import SoundStateContext from '../../contexts/soundStateContext';
 import { Coordinate } from '../../shared/game/lightsOut/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const LightsOut = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -20,22 +19,15 @@ const LightsOut = (): JSX.Element => {
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [widthSize, setWidthSize] = useState(3);
-    const [heightSize, setHeightSize] = useState(3);
-    const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / widthSize);
-    const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / heightSize);
-    const [lightsOutManager, setLightsOutManager] = useState<LightsOutManager>(new LightsOutManager(widthSize, heightSize));
+    const [size, setSize] = useState(3);
+    const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / size);
+    const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / size);
+    const [lightsOutManager, setLightsOutManager] = useState<LightsOutManager>(new LightsOutManager(size, size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(lightsOutManager.board.cells));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
-    const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/lightsOut/sound.mp3');
-    const startSound = () => {
-        if (currentSoundState) {
-            sound();
-        }
-    };
+    const startSound = useContextSound('game/lightsOut/sound.mp3');
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick || lightsOutManager.isCompleted) {
@@ -73,12 +65,12 @@ const LightsOut = (): JSX.Element => {
             return;
         }
 
-        setLightsOutManager(new LightsOutManager(widthSize, heightSize));
-    }, [widthSize, heightSize]);
+        setLightsOutManager(new LightsOutManager(size, size));
+    }, [size, size]);
 
     useLayoutEffect(() => {
-        setCellWidth((width - strokeWidth * 2) / widthSize);
-        setCellHeight((height - strokeWidth * 2) / heightSize);
+        setCellWidth((width - strokeWidth * 2) / size);
+        setCellHeight((height - strokeWidth * 2) / size);
         setCoordinates(() => convertCellsToCoordinates(lightsOutManager.board.cells));
     }, [lightsOutManager, width, height]);
 
@@ -96,7 +88,7 @@ const LightsOut = (): JSX.Element => {
                             height={height - strokeWidth + margin * 2}
                         />
                     </Layer>
-                    <FastLayer key="lights-out-piece-layer">
+                    <Layer key="lights-out-piece-layer" listening={false}>
                         {coordinates.map((coordinate) => (
                             <Rect
                                 fill={coordinate.color}
@@ -106,8 +98,8 @@ const LightsOut = (): JSX.Element => {
                                 height={cellHeight - margin * 2}
                             />
                         ))}
-                    </FastLayer>
-                    <FastLayer key="lights-out-text-layer">
+                    </Layer>
+                    <Layer key="lights-out-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -139,48 +131,25 @@ const LightsOut = (): JSX.Element => {
                             align="center"
                             verticalAlign="middle"
                         />
-                    </FastLayer>
+                    </Layer>
                 </Stage>
-                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 pt-2 pb-3 sm:gap-12 sm:border-4 sm:py-4">
-                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
+                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-3 sm:gap-12 sm:border-4 sm:py-6">
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
                         <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
-                            横サイズ
+                            サイズ
                         </FormLabel>
                         <Select
                             labelId="simple-select-label"
                             id="simple-select"
                             size={small ? 'small' : 'medium'}
                             sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
-                            value={widthSize}
+                            value={size}
                             onChange={async (e) => {
                                 if (!canClick) {
                                     return;
                                 }
 
-                                setWidthSize(e.target.value as number);
-                            }}
-                        >
-                            {[...Array(5)].map((_, i) => (
-                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
-                            縦サイズ
-                        </FormLabel>
-                        <Select
-                            labelId="simple-select-label"
-                            id="simple-select"
-                            size={small ? 'small' : 'medium'}
-                            sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
-                            value={heightSize}
-                            onChange={async (e) => {
-                                if (!canClick) {
-                                    return;
-                                }
-
-                                setHeightSize(e.target.value as number);
+                                setSize(e.target.value as number);
                             }}
                         >
                             {[...Array(5)].map((_, i) => (
