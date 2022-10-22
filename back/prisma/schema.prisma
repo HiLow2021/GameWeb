@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model GameOneStrokeWritingQuestion {
+  id       Int     @id @default(autoincrement())
+  width    Int     @db.SmallInt
+  height   Int     @db.SmallInt
+  block    Int     @db.SmallInt
+  straight Boolean
+  cells    String  @db.VarChar(1024)
+
+  @@map("t_game_one_stroke_writing_question")
+}

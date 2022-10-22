@@ -41,6 +41,11 @@ const OneStrokeWriting = (): JSX.Element => {
         }
     };
 
+    const initialize = async () => {
+        await oneStrokeWritingManager.initialize();
+        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+    };
+
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick) {
             return;
@@ -69,7 +74,8 @@ const OneStrokeWriting = (): JSX.Element => {
             return [x, y];
         }
     };
-    const result = async () => {
+
+    const result = async (): Promise<void> => {
         if (oneStrokeWritingManager.result === Result.undecided) {
             return;
         }
@@ -85,8 +91,6 @@ const OneStrokeWriting = (): JSX.Element => {
 
     useEffect(() => {
         if (initial) {
-            setInitial(false);
-
             return;
         }
 
@@ -94,8 +98,21 @@ const OneStrokeWriting = (): JSX.Element => {
     }, [widthSize, heightSize]);
 
     useEffect(() => {
+        if (initial) {
+            return;
+        }
+
+        initialize();
+    }, [oneStrokeWritingManager]);
+
+    useEffect(() => {
         result();
     }, [oneStrokeWritingManager.result]);
+
+    useEffect(() => {
+        setInitial(false);
+        initialize();
+    }, []);
 
     useLayoutEffect(() => {
         setCellWidth((width - strokeWidth * 2) / widthSize);
@@ -171,7 +188,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -194,12 +211,12 @@ const OneStrokeWriting = (): JSX.Element => {
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
+                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </div>
-                <div className="flex justify-center sm:justify-end">
+                <div className="flex justify-center gap-4 sm:justify-end">
                     <Button
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
@@ -211,11 +228,27 @@ const OneStrokeWriting = (): JSX.Element => {
                                 return;
                             }
 
-                            oneStrokeWritingManager.initialize();
+                            oneStrokeWritingManager.reset();
                             setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
                         }}
                     >
                         リセット
+                    </Button>
+                    <Button
+                        className="h-10 w-32 sm:h-12 sm:w-48"
+                        fullWidth={false}
+                        variant="contained"
+                        color="success"
+                        style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
+                        onClick={() => {
+                            if (!canClick) {
+                                return;
+                            }
+
+                            initialize();
+                        }}
+                    >
+                        別の問題
                     </Button>
                 </div>
             </div>
@@ -239,7 +272,7 @@ function convertCellsToCoordinates(manager: OneStrokeWritingManager): Coordinate
             } else if (cells[y][x] === OneStrokeWritingBoardCell.block) {
                 coordinate = { x, y, color: '#FF3333' };
             } else {
-                coordinate = { x, y, color: '#CCCC00' };
+                coordinate = { x, y, color: '#909090' };
             }
 
             coordinates.push(coordinate);
