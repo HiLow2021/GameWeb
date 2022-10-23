@@ -1,11 +1,13 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
+import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
+import { CommonUtility } from 'shared/utility/commonUtility';
 import { RandomUtility } from 'shared/utility/randomUtility';
 import prisma from '../prisma';
 
 const oneStrokeWritingRouter: Router = express.Router();
 
 type ResponseData = {
-    cells: string[][];
+    cells: OneStrokeWritingBoardCell[][];
 };
 
 oneStrokeWritingRouter.get('/oneStrokeWriting/question', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -30,7 +32,8 @@ oneStrokeWritingRouter.get('/oneStrokeWriting/question', async (req: Request, re
             return;
         }
 
-        const response = { cells: JSON.parse(question[0].cells) } as ResponseData;
+        const cells = randomTransformation(JSON.parse(question[0].cells));
+        const response = { cells } as ResponseData;
 
         res.status(200).json(response);
     } catch (error) {
@@ -39,5 +42,40 @@ oneStrokeWritingRouter.get('/oneStrokeWriting/question', async (req: Request, re
 
     next();
 });
+
+function randomTransformation(source: OneStrokeWritingBoardCell[][]): OneStrokeWritingBoardCell[][] {
+    let result = CommonUtility.create2Array<OneStrokeWritingBoardCell>(source[0].length, source.length);
+    CommonUtility.copy2Array(source, result);
+
+    const rotate = RandomUtility.random(0, 4);
+    switch (rotate) {
+        case 0:
+            result = CommonUtility.rotate90(result);
+            break;
+
+        case 1:
+            result = CommonUtility.rotate180(result);
+            break;
+
+        case 2:
+            result = CommonUtility.rotate270(result);
+            break;
+
+        default:
+            break;
+    }
+
+    const transpose = RandomUtility.random(0, 2);
+    switch (transpose) {
+        case 0:
+            result = CommonUtility.transpose(result);
+            break;
+
+        default:
+            break;
+    }
+
+    return result;
+}
 
 export default oneStrokeWritingRouter;
