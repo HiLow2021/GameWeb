@@ -1,3 +1,3 @@
 export const environment = {
-    baseUrl: "http://localhost:5000"
+    baseUrl: process.env.BASE_URL
 } as const;
