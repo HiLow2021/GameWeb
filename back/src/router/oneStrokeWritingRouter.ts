@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
-import { CommonUtility } from 'shared/utility/commonUtility';
+import { ArrayUtility } from 'shared/utility/arrayUtility';
 import { RandomUtility } from 'shared/utility/randomUtility';
 import prisma from '../prisma';
 
@@ -44,21 +44,21 @@ oneStrokeWritingRouter.get('/oneStrokeWriting/question', async (req: Request, re
 });
 
 function randomTransformation(source: OneStrokeWritingBoardCell[][]): OneStrokeWritingBoardCell[][] {
-    let result = CommonUtility.create2Array<OneStrokeWritingBoardCell>(source[0].length, source.length);
-    CommonUtility.copy2Array(source, result);
+    let result = ArrayUtility.create2Array<OneStrokeWritingBoardCell>(source[0].length, source.length);
+    ArrayUtility.copy2Array(source, result);
 
     const rotate = RandomUtility.random(0, 4);
     switch (rotate) {
         case 0:
-            result = CommonUtility.rotate90(result);
+            result = ArrayUtility.rotate90(result);
             break;
 
         case 1:
-            result = CommonUtility.rotate180(result);
+            result = ArrayUtility.rotate180(result);
             break;
 
         case 2:
-            result = CommonUtility.rotate270(result);
+            result = ArrayUtility.rotate270(result);
             break;
 
         default:
@@ -68,7 +68,7 @@ function randomTransformation(source: OneStrokeWritingBoardCell[][]): OneStrokeW
     const transpose = RandomUtility.random(0, 2);
     switch (transpose) {
         case 0:
-            result = CommonUtility.transpose(result);
+            result = ArrayUtility.transpose(result);
             break;
 
         default:

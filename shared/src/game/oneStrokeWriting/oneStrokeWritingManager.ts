@@ -1,4 +1,5 @@
 import { environment } from '../../environment';
+import { ArrayUtility } from '../../utility/arrayUtility';
 import { CommonUtility } from '../../utility/commonUtility';
 import { OneStrokeWritingBoardCell } from './enum/oneStrokeWritingBoardCell';
 import { Result } from './enum/result';
@@ -35,8 +36,8 @@ export class OneStrokeWritingManager {
     public constructor(width: number, height: number, straightMode = true) {
         this.board = new OneStrokeWritingBoard(width, height);
         this.straightMode = straightMode;
-        this._question = CommonUtility.create2Array(width, height);
-        CommonUtility.copy2Array(this.board.cells, this._question);
+        this._question = ArrayUtility.create2Array(width, height);
+        ArrayUtility.copy2Array(this.board.cells, this._question);
     }
 
     public async initialize(): Promise<void> {
@@ -53,7 +54,7 @@ export class OneStrokeWritingManager {
         });
         const json = await response.json();
 
-        CommonUtility.copy2Array(json.cells, this._question);
+        ArrayUtility.copy2Array(json.cells, this._question);
         this.reset();
     }
 
@@ -61,7 +62,7 @@ export class OneStrokeWritingManager {
         this._startPosition = undefined;
         this._currentPosition = undefined;
         this._result = Result.undecided;
-        CommonUtility.copy2Array(this._question, this.board.cells);
+        ArrayUtility.copy2Array(this._question, this.board.cells);
     }
 
     public next(x: number, y: number): boolean {

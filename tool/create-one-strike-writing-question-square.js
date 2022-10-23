@@ -1,5 +1,5 @@
 import { OneStrokeWritingGenerator } from 'shared/game/oneStrokeWriting/oneStrokeWritingGenerator';
-import { CommonUtility } from 'shared/utility/commonUtility';
+import { ArrayUtility } from 'shared/utility/arrayUtility';
 import { getFileNameWithoutExtension, readFile, appendFile, writeFile } from './shared.js';
 
 const baseFileName = getFileNameWithoutExtension(import.meta.url);
@@ -22,8 +22,8 @@ for (const s of straight) {
             for (let i = 0; i < count; i++) {
                 const result = generator.generate(b, tryCount);
                 if (result) {
-                    const cells = CommonUtility.create2Array(ss, ss);
-                    CommonUtility.copy2Array(generator.board.cells, cells);
+                    const cells = ArrayUtility.create2Array(ss, ss);
+                    ArrayUtility.copy2Array(generator.board.cells, cells);
 
                     if (!checkDuplication(questions, cells)) {
                         const question = { width: ss, height: ss, block: b, straight: s, cells };
@@ -49,13 +49,13 @@ function checkDuplication(questions, target) {
     const questionCells = questions.map((x) => JSON.stringify(x.cells.flat()));
 
     result ||= check(questionCells, target);
-    result ||= check(questionCells, CommonUtility.rotate90(target));
-    result ||= check(questionCells, CommonUtility.rotate180(target));
-    result ||= check(questionCells, CommonUtility.rotate270(target));
-    result ||= check(questionCells, CommonUtility.transpose(target));
-    result ||= check(questionCells, CommonUtility.rotate90(CommonUtility.transpose(target)));
-    result ||= check(questionCells, CommonUtility.rotate180(CommonUtility.transpose(target)));
-    result ||= check(questionCells, CommonUtility.rotate270(CommonUtility.transpose(target)));
+    result ||= check(questionCells, ArrayUtility.rotate90(target));
+    result ||= check(questionCells, ArrayUtility.rotate180(target));
+    result ||= check(questionCells, ArrayUtility.rotate270(target));
+    result ||= check(questionCells, ArrayUtility.transpose(target));
+    result ||= check(questionCells, ArrayUtility.rotate90(ArrayUtility.transpose(target)));
+    result ||= check(questionCells, ArrayUtility.rotate180(ArrayUtility.transpose(target)));
+    result ||= check(questionCells, ArrayUtility.rotate270(ArrayUtility.transpose(target)));
 
     return result;
 
