@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "create-one-strike-writing-question": "node ./create-one-strike-writing-question.js"
+    "create-one-strike-writing-question": "node ./create-one-strike-writing-question.js",
+    "create-one-strike-writing-question-square": "node ./create-one-strike-writing-question-square.js"
   },
   "keywords": [],
   "author": "",
