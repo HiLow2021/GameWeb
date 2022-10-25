@@ -1,18 +1,17 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useContext, useEffect, useState } from 'react';
-import { FastLayer, Group, Layer, Rect, Stage, Text } from 'react-konva';
+import { useEffect, useState } from 'react';
+import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 import { ConnectFourManager } from 'shared/game/connectFour/connectFourManager';
 import { ConnectFourBoardCell } from 'shared/game/connectFour/enums/connectFourBoardCell';
 import { Result } from 'shared/game/connectFour/enums/result';
 import { Turn } from 'shared/game/connectFour/enums/turn';
 import { CommonUtility } from 'shared/utility/commonUtility';
-import useSound from 'use-sound';
-import SoundStateContext from '../../contexts/soundStateContext';
 import { Coordinate } from '../../shared/game/connectFour/coordinate';
 import { Level } from '../../shared/game/connectFour/level';
 import { Player } from '../../shared/game/connectFour/player';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const ConnectFour = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -37,13 +36,7 @@ const ConnectFour = (): JSX.Element => {
     const [player, setPlayer] = useState<Player>(Player.black);
     const [level, setLevel] = useState<Level>(Level.normal);
 
-    const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/connectFour/sound.mp3');
-    const startSound = () => {
-        if (currentSoundState) {
-            sound();
-        }
-    };
+    const startSound = useContextSound('game/connectFour/sound.mp3');
 
     const initialize = async () => {
         connectFourManager.initialize();
@@ -111,7 +104,7 @@ const ConnectFour = (): JSX.Element => {
                             height={height - outerStrokeWidth}
                         />
                     </Layer>
-                    <FastLayer key="connect-four-cell-layer">
+                    <Layer key="connect-four-cell-layer" listening={false}>
                         {coordinates.map((coordinate) =>
                             coordinate.stone ? (
                                 <Group>
@@ -148,8 +141,8 @@ const ConnectFour = (): JSX.Element => {
                                 <></>
                             )
                         )}
-                    </FastLayer>
-                    <FastLayer key="connect-four-text-layer">
+                    </Layer>
+                    <Layer key="connect-four-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -170,7 +163,7 @@ const ConnectFour = (): JSX.Element => {
                             align="center"
                             verticalAlign="middle"
                         />
-                    </FastLayer>
+                    </Layer>
                 </Stage>
                 <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-2 sm:gap-12 sm:border-4 sm:py-4">
                     <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: small ? '0.25rem' : '1rem' }}>

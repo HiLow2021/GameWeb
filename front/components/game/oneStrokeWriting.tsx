@@ -1,15 +1,14 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { FastLayer, Layer, Rect, Stage, Text } from 'react-konva';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { Layer, Rect, Stage, Text } from 'react-konva';
 import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
 import { Result } from 'shared/game/oneStrokeWriting/enum/result';
 import { OneStrokeWritingManager } from 'shared/game/oneStrokeWriting/oneStrokeWritingManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
-import useSound from 'use-sound';
-import SoundStateContext from '../../contexts/soundStateContext';
 import { Coordinate } from '../../shared/game/oneStrokeWriting/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const OneStrokeWriting = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -22,24 +21,17 @@ const OneStrokeWriting = (): JSX.Element => {
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [widthSize, setWidthSize] = useState(6);
-    const [heightSize, setHeightSize] = useState(6);
-    const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / widthSize);
-    const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / heightSize);
+    const [size, setSize] = useState(6);
+    const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / size);
+    const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / size);
     const [oneStrokeWritingManager, setOneStrokeWritingManager] = useState<OneStrokeWritingManager>(
-        new OneStrokeWritingManager(widthSize, heightSize)
+        new OneStrokeWritingManager(size, size)
     );
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(oneStrokeWritingManager));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
-    const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/oneStrokeWriting/sound.mp3');
-    const startSound = () => {
-        if (currentSoundState) {
-            sound();
-        }
-    };
+    const startSound = useContextSound('game/oneStrokeWriting/sound.mp3');
 
     const initialize = async () => {
         await oneStrokeWritingManager.initialize();
@@ -94,8 +86,8 @@ const OneStrokeWriting = (): JSX.Element => {
             return;
         }
 
-        setOneStrokeWritingManager(new OneStrokeWritingManager(widthSize, heightSize));
-    }, [widthSize, heightSize]);
+        setOneStrokeWritingManager(new OneStrokeWritingManager(size, size));
+    }, [size, size]);
 
     useEffect(() => {
         if (initial) {
@@ -115,8 +107,8 @@ const OneStrokeWriting = (): JSX.Element => {
     }, []);
 
     useLayoutEffect(() => {
-        setCellWidth((width - strokeWidth * 2) / widthSize);
-        setCellHeight((height - strokeWidth * 2) / heightSize);
+        setCellWidth((width - strokeWidth * 2) / size);
+        setCellHeight((height - strokeWidth * 2) / size);
         setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
     }, [oneStrokeWritingManager, width, height]);
 
@@ -134,7 +126,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             height={height - strokeWidth + margin * 2}
                         />
                     </Layer>
-                    <FastLayer key="lighting-puzzle-piece-layer">
+                    <Layer key="lighting-puzzle-piece-layer" listening={false}>
                         {coordinates.map((coordinate) => (
                             <Rect
                                 fill={coordinate.color}
@@ -144,8 +136,8 @@ const OneStrokeWriting = (): JSX.Element => {
                                 height={cellHeight - margin * 2}
                             />
                         ))}
-                    </FastLayer>
-                    <FastLayer key="lighting-puzzle-text-layer">
+                    </Layer>
+                    <Layer key="lighting-puzzle-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -166,48 +158,25 @@ const OneStrokeWriting = (): JSX.Element => {
                             align="center"
                             verticalAlign="middle"
                         />
-                    </FastLayer>
+                    </Layer>
                 </Stage>
-                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 pt-2 pb-3 sm:gap-12 sm:border-4 sm:py-4">
-                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
+                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-3 sm:gap-12 sm:border-4 sm:py-4">
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
                         <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
-                            横サイズ
+                            サイズ
                         </FormLabel>
                         <Select
                             labelId="simple-select-label"
                             id="simple-select"
                             size={small ? 'small' : 'medium'}
                             sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
-                            value={widthSize}
+                            value={size}
                             onChange={async (e) => {
                                 if (!canClick) {
                                     return;
                                 }
 
-                                setWidthSize(e.target.value as number);
-                            }}
-                        >
-                            {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
-                            縦サイズ
-                        </FormLabel>
-                        <Select
-                            labelId="simple-select-label"
-                            id="simple-select"
-                            size={small ? 'small' : 'medium'}
-                            sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
-                            value={heightSize}
-                            onChange={async (e) => {
-                                if (!canClick) {
-                                    return;
-                                }
-
-                                setHeightSize(e.target.value as number);
+                                setSize(e.target.value as number);
                             }}
                         >
                             {[...Array(7)].map((_, i) => (
@@ -248,7 +217,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             initialize();
                         }}
                     >
-                        別の問題
+                        次の問題
                     </Button>
                 </div>
             </div>
