@@ -1,4 +1,4 @@
-import { Result } from "./result";
+import { Result } from './result';
 
 export type PostGomokuNextResponse = {
     x: number;
