@@ -10,7 +10,7 @@ const straight = [true];
 const count = 20;
 const tryCount = 1000;
 
-saveQuestionSql('insert into table_name(width,height,block,straight,cells) values \n');
+saveQuestionSql('INSERT INTO table_name(width,height,block,straight,cells) VALUES \n');
 
 for (const s of straight) {
     for (let ss = size.min; ss <= size.max; ss++) {
