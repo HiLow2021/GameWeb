@@ -1,7 +1,8 @@
+import { environment } from '../../environment';
 import { GomokuManagerBase } from './gomokuManagerBase';
 
 export class GomokuManager extends GomokuManagerBase {
-    private readonly _apiUrl = 'http://localhost:5000/api/gomoku/next';
+    private readonly _apiUrl = `${environment.baseUrl}/api/gomoku/next`;
 
     public async nextByAI(): Promise<boolean> {
         if (this.isFinished) {

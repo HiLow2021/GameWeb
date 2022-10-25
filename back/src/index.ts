@@ -1,7 +1,7 @@
 import express from 'express';
-import corsHandler from './middleware/corsHandler';
-import errorHandler from './middleware/errorHandler';
-import routers from './router/routers';
+import corsHandler from './presentation/middleware/corsHandler';
+import errorHandler from './presentation/middleware/errorHandler';
+import routers from './presentation/routers';
 
 const app: express.Express = express();
 const port = 5000;

@@ -1,12 +1,11 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { FastLayer, Group, Layer, Rect, Stage, Text } from 'react-konva';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
-import useSound from 'use-sound';
-import SoundStateContext from '../../contexts/soundStateContext';
 import { Coordinate } from '../../shared/game/slidingPuzzle/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const SlidingPuzzle = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -20,22 +19,15 @@ const SlidingPuzzle = (): JSX.Element => {
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [widthSize, setWidthSize] = useState(4);
-    const [heightSize, setHeightSize] = useState(4);
-    const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / widthSize);
-    const [cellHeight, setCellHeight] = useState((height - outerStrokeWidth * 2) / heightSize);
-    const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(widthSize, heightSize));
+    const [size, setSize] = useState(4);
+    const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / size);
+    const [cellHeight, setCellHeight] = useState((height - outerStrokeWidth * 2) / size);
+    const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(size, size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
-    const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/slidingPuzzle/sound.mp3');
-    const startSound = () => {
-        if (currentSoundState) {
-            sound();
-        }
-    };
+    const startSound = useContextSound('game/slidingPuzzle/sound.mp3');
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
         if (!canClick || slidingPuzzleManager.isSorted) {
@@ -73,12 +65,12 @@ const SlidingPuzzle = (): JSX.Element => {
             return;
         }
 
-        setSlidingPuzzleManager(new SlidingPuzzleManager(widthSize, heightSize));
-    }, [widthSize, heightSize]);
+        setSlidingPuzzleManager(new SlidingPuzzleManager(size, size));
+    }, [size, size]);
 
     useLayoutEffect(() => {
-        setCellWidth((width - outerStrokeWidth * 2) / widthSize);
-        setCellHeight((height - outerStrokeWidth * 2) / heightSize);
+        setCellWidth((width - outerStrokeWidth * 2) / size);
+        setCellHeight((height - outerStrokeWidth * 2) / size);
         setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     }, [slidingPuzzleManager, width, height]);
 
@@ -96,7 +88,7 @@ const SlidingPuzzle = (): JSX.Element => {
                             height={height - outerStrokeWidth}
                         />
                     </Layer>
-                    <FastLayer key="sliding-puzzle-piece-layer">
+                    <Layer key="sliding-puzzle-piece-layer" listening={false}>
                         {coordinates.map((coordinate) =>
                             coordinate.number !== slidingPuzzleManager.missingNumber ? (
                                 <Group>
@@ -134,8 +126,8 @@ const SlidingPuzzle = (): JSX.Element => {
                                 <></>
                             )
                         )}
-                    </FastLayer>
-                    <FastLayer key="sliding-puzzle-text-layer">
+                    </Layer>
+                    <Layer key="sliding-puzzle-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -167,48 +159,25 @@ const SlidingPuzzle = (): JSX.Element => {
                             align="center"
                             verticalAlign="middle"
                         />
-                    </FastLayer>
+                    </Layer>
                 </Stage>
-                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 pt-2 pb-3 sm:gap-12 sm:border-4 sm:py-4">
-                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
+                <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-3 sm:gap-12 sm:border-4 sm:py-4">
+                    <FormControl sx={{ flexDirection: 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
                         <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
-                            横サイズ
+                            サイズ
                         </FormLabel>
                         <Select
                             labelId="simple-select-label"
                             id="simple-select"
                             size={small ? 'small' : 'medium'}
                             sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
-                            value={widthSize}
+                            value={size}
                             onChange={async (e) => {
                                 if (!canClick) {
                                     return;
                                 }
 
-                                setWidthSize(e.target.value as number);
-                            }}
-                        >
-                            {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: '1rem', minWidth: 100 }}>
-                        <FormLabel id="radio-buttons-group-label" sx={{ fontWeight: 'bold', fontSize: small ? 16 : 20 }}>
-                            縦サイズ
-                        </FormLabel>
-                        <Select
-                            labelId="simple-select-label"
-                            id="simple-select"
-                            size={small ? 'small' : 'medium'}
-                            sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
-                            value={heightSize}
-                            onChange={async (e) => {
-                                if (!canClick) {
-                                    return;
-                                }
-
-                                setHeightSize(e.target.value as number);
+                                setSize(e.target.value as number);
                             }}
                         >
                             {[...Array(7)].map((_, i) => (

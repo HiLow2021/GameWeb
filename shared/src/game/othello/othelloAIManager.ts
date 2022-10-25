@@ -1,4 +1,4 @@
-import { CommonUtility } from '../../utility/commonUtility';
+import { ArrayUtility } from '../../utility/arrayUtility';
 import { RandomUtility } from '../../utility/randomUtility';
 import { OthelloBoardCell } from './enums/othelloBoardCell';
 import { Result } from './enums/result';
@@ -24,12 +24,12 @@ export class OthelloAIManager extends OthelloManagerBase {
     }
 
     public monteCarloMethod(repeatCount: number): Vector {
-        const winCells = CommonUtility.create2Array<number>(this.board.size, this.board.size);
-        const backCells = CommonUtility.create2Array<OthelloBoardCell>(this.board.size, this.board.size);
+        const winCells = ArrayUtility.create2Array<number>(this.board.size, this.board.size);
+        const backCells = ArrayUtility.create2Array<OthelloBoardCell>(this.board.size, this.board.size);
         const backTurn = this._currentTurn;
         const result = this.randomMethod();
 
-        CommonUtility.copy2Array(this.board.cells, backCells);
+        ArrayUtility.copy2Array(this.board.cells, backCells);
 
         for (let index = 0; index < repeatCount; index++) {
             const first = this.randomMethod();
@@ -44,7 +44,7 @@ export class OthelloAIManager extends OthelloManagerBase {
                 winCells[first.y][first.x]++;
             }
 
-            CommonUtility.copy2Array(backCells, this.board.cells);
+            ArrayUtility.copy2Array(backCells, this.board.cells);
             this._currentTurn = backTurn;
         }
 

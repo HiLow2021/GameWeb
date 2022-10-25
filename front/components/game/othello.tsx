@@ -1,19 +1,18 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useContext, useEffect, useState } from 'react';
-import { Ellipse, FastLayer, Layer, Line, Rect, Stage, Text } from 'react-konva';
+import { useEffect, useState } from 'react';
+import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { OthelloBoardCell } from 'shared/game/othello/enums/othelloBoardCell';
 import { Result } from 'shared/game/othello/enums/result';
 import { Turn } from 'shared/game/othello/enums/turn';
 import { OthelloBoard } from 'shared/game/othello/othelloBoard';
 import { OthelloManager } from 'shared/game/othello/othelloManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
-import useSound from 'use-sound';
-import SoundStateContext from '../../contexts/soundStateContext';
 import { Coordinate } from '../../shared/game/othello/coordinate';
 import { Level } from '../../shared/game/othello/level';
 import { Player } from '../../shared/game/othello/player';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const Othello = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -34,13 +33,7 @@ const Othello = (): JSX.Element => {
     const [player, setPlayer] = useState<Player>(Player.black);
     const [level, setLevel] = useState<Level>(Level.normal);
 
-    const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/othello/sound.mp3');
-    const startSound = () => {
-        if (currentSoundState) {
-            sound();
-        }
-    };
+    const startSound = useContextSound('game/othello/sound.mp3');
 
     const initialize = async () => {
         othelloManager.initialize();
@@ -144,7 +137,7 @@ const Othello = (): JSX.Element => {
                             ))
                         )}
                     </Layer>
-                    <FastLayer key="othello-cell-layer">
+                    <Layer key="othello-cell-layer" listening={false}>
                         {coordinates.map((coordinate) =>
                             coordinate.stone ? (
                                 <Ellipse
@@ -167,8 +160,8 @@ const Othello = (): JSX.Element => {
                                 <></>
                             )
                         )}
-                    </FastLayer>
-                    <FastLayer key="othello-mouse-layer">
+                    </Layer>
+                    <Layer key="othello-mouse-layer" listening={false}>
                         {mouseCoordinate && mouseCoordinate.y < size ? (
                             <Rect
                                 stroke={mouseCoordinate.color}
@@ -181,8 +174,8 @@ const Othello = (): JSX.Element => {
                         ) : (
                             <></>
                         )}
-                    </FastLayer>
-                    <FastLayer key="othello-text-layer">
+                    </Layer>
+                    <Layer key="othello-text-layer" listening={false}>
                         <Rect fill="#505050" x={0} y={height + strokeWidth} width={width + strokeWidth} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -240,7 +233,7 @@ const Othello = (): JSX.Element => {
                             align="center"
                             verticalAlign="middle"
                         />
-                    </FastLayer>
+                    </Layer>
                 </Stage>
                 <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-2 sm:gap-12 sm:border-4 sm:py-4">
                     <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: small ? '0.25rem' : '1rem' }}>
@@ -323,15 +316,15 @@ function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case 'black':
+                case OthelloBoardCell.black:
                     coordinate = { x, y, color: 'black', stone: true };
                     break;
 
-                case 'white':
+                case OthelloBoardCell.white:
                     coordinate = { x, y, color: 'white', stone: true };
                     break;
 
-                case 'highLight':
+                case OthelloBoardCell.highLight:
                     coordinate = { x, y, color: 'orange', stone: false };
                     break;
 

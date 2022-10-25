@@ -3,3 +3,6 @@ tsconfig.tsbuildinfo
 
 build
 node_modules
+tool/out
+
+.env*

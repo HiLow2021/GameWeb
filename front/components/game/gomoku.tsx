@@ -1,18 +1,17 @@
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { useContext, useEffect, useState } from 'react';
-import { Ellipse, FastLayer, Layer, Line, Rect, Stage, Text } from 'react-konva';
+import { useEffect, useState } from 'react';
+import { Ellipse, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { GomokuBoardCell } from 'shared/game/gomoku/enums/gomokuBoardCell';
 import { Result } from 'shared/game/gomoku/enums/result';
 import { Turn } from 'shared/game/gomoku/enums/turn';
 import { GomokuManager } from 'shared/game/gomoku/gomokuManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
-import useSound from 'use-sound';
-import SoundStateContext from '../../contexts/soundStateContext';
 import { Coordinate } from '../../shared/game/gomoku/coordinate';
 import { Level } from '../../shared/game/gomoku/level';
 import { Player } from '../../shared/game/gomoku/player';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const Gomoku = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -36,13 +35,7 @@ const Gomoku = (): JSX.Element => {
     const [player, setPlayer] = useState<Player>(Player.black);
     const [level, setLevel] = useState<Level>(Level.normal);
 
-    const { currentSoundState } = useContext(SoundStateContext);
-    const [sound] = useSound('game/gomoku/sound.mp3');
-    const startSound = () => {
-        if (currentSoundState) {
-            sound();
-        }
-    };
+    const startSound = useContextSound('game/gomoku/sound.mp3');
 
     const initialize = async () => {
         gomokuManager.initialize();
@@ -146,7 +139,7 @@ const Gomoku = (): JSX.Element => {
                             ))
                         )}
                     </Layer>
-                    <FastLayer key="gomoku-cell-layer">
+                    <Layer key="gomoku-cell-layer" listening={false}>
                         {coordinates.map((coordinate) => (
                             <Ellipse
                                 fill={coordinate.color}
@@ -156,8 +149,8 @@ const Gomoku = (): JSX.Element => {
                                 radiusY={cellHeight / 2.5}
                             />
                         ))}
-                    </FastLayer>
-                    <FastLayer key="gomoku-text-layer">
+                    </Layer>
+                    <Layer key="gomoku-text-layer" listening={false}>
                         <Rect fill="#606060" x={0} y={height} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -179,7 +172,7 @@ const Gomoku = (): JSX.Element => {
                             align="center"
                             verticalAlign="middle"
                         />
-                    </FastLayer>
+                    </Layer>
                 </Stage>
                 <div className="flex justify-center border-2 border-gray-600 bg-gray-300 py-2 sm:gap-12 sm:border-4 sm:py-4">
                     <FormControl sx={{ flexDirection: small ? 'column' : 'row', alignItems: 'center', gap: small ? '0.25rem' : '1rem' }}>
@@ -261,11 +254,11 @@ function convertCellsToCoordinates(cells: GomokuBoardCell[][]): Coordinate[] {
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case 'black':
+                case GomokuBoardCell.black:
                     coordinate = { x, y, color: 'black' };
                     break;
 
-                case 'white':
+                case GomokuBoardCell.white:
                     coordinate = { x, y, color: 'white' };
                     break;
 

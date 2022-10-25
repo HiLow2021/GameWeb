@@ -1,12 +1,15 @@
+import { environment } from '../../environment';
+import { ArrayUtility } from '../../utility/arrayUtility';
 import { CommonUtility } from '../../utility/commonUtility';
 import { OneStrokeWritingBoardCell } from './enum/oneStrokeWritingBoardCell';
 import { Result } from './enum/result';
 import { OneStrokeWritingBoard } from './oneStrokeWritingBoard';
-import { OneStrokeWritingGenerator } from './oneStrokeWritingGenerator';
 import { Vector } from './vector';
 
 export class OneStrokeWritingManager {
-    private readonly _generator: OneStrokeWritingGenerator;
+    private readonly _apiUrl = `${environment.baseUrl}/api/oneStrokeWriting/question`;
+
+    private _question: OneStrokeWritingBoardCell[][];
 
     private _startPosition: Vector | undefined;
 
@@ -31,15 +34,27 @@ export class OneStrokeWritingManager {
     }
 
     public constructor(width: number, height: number, straightMode = true) {
-        this._generator = new OneStrokeWritingGenerator(width, height, straightMode);
         this.board = new OneStrokeWritingBoard(width, height);
         this.straightMode = straightMode;
-
-        this.initialize();
+        this._question = ArrayUtility.create2Array(width, height);
+        ArrayUtility.copy2Array(this.board.cells, this._question);
     }
 
-    public initialize(): void {
-        this._generator.generate(1, 4);
+    public async initialize(): Promise<void> {
+        const params = new URLSearchParams({
+            width: String(this.board.width),
+            height: String(this.board.height),
+            straight: String(this.straightMode)
+        });
+        const response = await fetch(`${this._apiUrl}?${params}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
+
+        ArrayUtility.copy2Array(json.cells, this._question);
         this.reset();
     }
 
@@ -47,7 +62,7 @@ export class OneStrokeWritingManager {
         this._startPosition = undefined;
         this._currentPosition = undefined;
         this._result = Result.undecided;
-        CommonUtility.copy2Array(this._generator.board.cells, this.board.cells);
+        ArrayUtility.copy2Array(this._question, this.board.cells);
     }
 
     public next(x: number, y: number): boolean {
