@@ -7,7 +7,7 @@ export const Environment = {
     /**
      * サイトの名前
      */
-    siteTitle: 'Game Web',
+    siteTitle: 'Deploy Test Web',
 
     /**
      * サイトのアイコン
