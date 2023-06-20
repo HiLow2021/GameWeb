@@ -5,6 +5,7 @@
         "datasource",
         "Gomoku",
         "konva",
+        "mydb",
         "tailwindcss",
         "tsbuildinfo"
     ],

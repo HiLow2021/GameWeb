@@ -1,4 +1,4 @@
-USE mysql;
+USE mydb;
 
 CREATE TABLE IF NOT EXISTS t_game_one_stroke_writing_question( 
     id INT PRIMARY KEY AUTO_INCREMENT, 
