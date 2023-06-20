@@ -1,4 +1,4 @@
-USE mysql; 
+USE mydb; 
 
 DELETE 
     FROM

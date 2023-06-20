@@ -1,14 +1,14 @@
 import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
 import { ArrayUtility } from 'shared/utility/arrayUtility';
 import { RandomUtility } from 'shared/utility/randomUtility';
-import { OneStrokeWritingQuestionDao } from '../../dataAccess/oneStrokeWritingQuestionDao';
+import { OneStrokeWritingQuestionJsonDao } from '../../dataAccess/oneStrokeWritingQuestionJsonDao';
 import { OneStrokeWritingQuestionDto } from '../queries/oneStrokeWritingQuestionDto';
 
 export class GetOneStrokeWritingQuestionQueryProcessor {
-    private readonly _dao: OneStrokeWritingQuestionDao;
+    private readonly _dao: OneStrokeWritingQuestionJsonDao;
 
     public constructor() {
-        this._dao = new OneStrokeWritingQuestionDao();
+        this._dao = new OneStrokeWritingQuestionJsonDao();
     }
 
     public async execute(width: number, height: number, straight: boolean): Promise<OneStrokeWritingQuestionDto> {
