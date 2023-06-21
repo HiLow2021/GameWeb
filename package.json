@@ -4,6 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
+    "build": "npm run build --workspace=shared && npm run build --workspace=front && npm run build --workspace=back",
     "eslint": "npx eslint ./**/*.{ts,tsx}",
     "prettier": "npx prettier --write ./**/*.{ts,tsx}"
   },
