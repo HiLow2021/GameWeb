@@ -3,7 +3,7 @@ import { ConnectFourManagerBase } from './connectFourManagerBase';
 import { ConnectFourBoardCell } from './enums/connectFourBoardCell';
 
 export class ConnectFourManager extends ConnectFourManagerBase {
-    private readonly _apiUrl = `${environment.baseUrl}/api/connectFour/next`;
+    private readonly _apiUrl = `${environment.apiUrl}/api/connectFour/next`;
 
     public initialize(): void {
         super.initialize();

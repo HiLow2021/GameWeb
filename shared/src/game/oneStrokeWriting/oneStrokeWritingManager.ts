@@ -7,7 +7,7 @@ import { OneStrokeWritingBoard } from './oneStrokeWritingBoard';
 import { Vector } from './vector';
 
 export class OneStrokeWritingManager {
-    private readonly _apiUrl = `${environment.baseUrl}/api/oneStrokeWriting/question`;
+    private readonly _apiUrl = `${environment.apiUrl}/api/oneStrokeWriting/question`;
 
     private _question: OneStrokeWritingBoardCell[][];
 
