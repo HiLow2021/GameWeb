@@ -8,8 +8,8 @@ const nextConfig = {
     output: 'standalone',
     env: {
         API_URL: process.env.API_URL || '',
-        GOOGLE_SEARCH_CONSOLE_ID: process.env.GOOGLE_SEARCH_CONSOLE_ID || '',
-        GOOGLE_ANALYTICS_TRACKING_ID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || ''
+        NEXT_PUBLIC_GOOGLE_SEARCH_CONSOLE_ID: process.env.NEXT_PUBLIC_GOOGLE_SEARCH_CONSOLE_ID || '',
+        NEXT_PUBLIC_GOOGLE_ANALYTICS_TRACKING_ID: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TRACKING_ID || ''
     }
 };
 
