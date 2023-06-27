@@ -24,10 +24,10 @@ export const Environment = {
     /**
      * サイトのURL
      */
-    siteUrl: '',
+    siteUrl: 'https://game-web-ggvhemkhnq-an.a.run.app',
 
     /**
      * サイトの著作権
      */
-    siteCopyright: '© 2022 Game Web'
+    siteCopyright: '© 2022-2023 HiLow'
 } as const;
