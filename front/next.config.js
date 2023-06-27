@@ -7,7 +7,9 @@ const nextConfig = {
     swcMinify: true,
     output: 'standalone',
     env: {
-        API_URL: process.env.API_URL || ''
+        API_URL: process.env.API_URL || '',
+        GOOGLE_SEARCH_CONSOLE_ID: process.env.GOOGLE_SEARCH_CONSOLE_ID || '',
+        GOOGLE_ANALYTICS_TRACKING_ID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || ''
     }
 };
 

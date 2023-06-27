@@ -1,5 +1,7 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { GoogleAnalytics } from '../components/google/googleAnalytics';
+import { GoogleSearchConsole } from '../components/google/googleSearchConsole';
 import SoundStateProvider from '../components/soundStateProvider';
 import { Environment } from '../shared/environment';
 import '../styles/globals.css';
@@ -18,7 +20,9 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
                 <meta property="og:description" content={Environment.siteDescription} />
                 <meta property="og:type" content="website" />
                 <meta name="twitter:card" content="summary_large_image" />
+                <GoogleSearchConsole />
             </Head>
+            <GoogleAnalytics />
             <SoundStateProvider>
                 <Component {...pageProps} />
             </SoundStateProvider>
