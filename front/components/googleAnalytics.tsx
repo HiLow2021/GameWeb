@@ -1,5 +1,5 @@
 import Script from 'next/script';
-import { existsGoogleAnalyticsTrackingId, googleAnalyticsTrackingId } from '../../shared/utility/googleUtility';
+import { existsGoogleAnalyticsTrackingId, googleAnalyticsTrackingId } from '../shared/utility/googleUtility';
 
 export const GoogleAnalytics = (): JSX.Element => (
     <>

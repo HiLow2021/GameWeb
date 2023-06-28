@@ -7,10 +7,10 @@ export type Event = {
     label: string;
 };
 
-export const googleSearchConsoleId = process.env.GOOGLE_SEARCH_CONSOLE_ID || '';
+export const googleSearchConsoleId = process.env.NEXT_PUBLIC_GOOGLE_SEARCH_CONSOLE_ID || '';
 export const existsGoogleSearchConsoleId = googleSearchConsoleId !== '';
 
-export const googleAnalyticsTrackingId = process.env.GOOGLE_ANALYTICS_TRACKING_ID || '';
+export const googleAnalyticsTrackingId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TRACKING_ID || '';
 export const existsGoogleAnalyticsTrackingId = googleAnalyticsTrackingId !== '';
 
 export const invokeEventTrackingTag = ({ action, category, label }: Event) => {
