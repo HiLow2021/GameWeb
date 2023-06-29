@@ -1,10 +1,11 @@
+import { SitePage } from '../sitePage';
 import { Game } from './game';
 
 export const GameList: Readonly<Game[]> = [
-    { title: 'オセロ', path: '/othello', thumbnail: 'game/othello/thumbnail.png' },
-    { title: '五目並べ', path: '/gomoku', thumbnail: 'game/gomoku/thumbnail.png' },
-    { title: 'コネクトフォー', path: '/connectFour', thumbnail: 'game/connectFour/thumbnail.png' },
-    { title: 'スライドパズル', path: '/slidingPuzzle', thumbnail: 'game/slidingPuzzle/thumbnail.png' },
-    { title: '一筆書きパズル', path: '/oneStrokeWriting', thumbnail: 'game/oneStrokeWriting/thumbnail.png' },
-    { title: 'ライツアウト', path: '/lightsOut', thumbnail: 'game/lightsOut/thumbnail.png' }
+    { title: SitePage.othello.title, path: SitePage.othello.url, thumbnail: SitePage.othello.image },
+    { title: SitePage.gomoku.title, path: SitePage.gomoku.url, thumbnail: SitePage.gomoku.image },
+    { title: SitePage.connectFour.title, path: SitePage.connectFour.url, thumbnail: SitePage.connectFour.image },
+    { title: SitePage.slidingPuzzle.title, path: SitePage.slidingPuzzle.url, thumbnail: SitePage.slidingPuzzle.image },
+    { title: SitePage.oneStrokeWriting.title, path: SitePage.oneStrokeWriting.url, thumbnail: SitePage.oneStrokeWriting.image },
+    { title: SitePage.lightsOut.title, path: SitePage.lightsOut.url, thumbnail: SitePage.lightsOut.image }
 ] as const;
