@@ -1,4 +1,4 @@
-export const Environment = {
+export const Config = {
     /**
      * サイトの製作者
      */
@@ -17,8 +17,8 @@ export const Environment = {
     /**
      * サイトの説明
      */
-    siteDescription: `AIとオセロができるサイトです。
-                      ウェブアプリの学習の一環として製作してみました
+    siteDescription: `色々なミニゲームが遊べるサイトです。
+                      ウェブアプリの学習の一環として製作してみました。
                       もし良ければ、遊んでみてくださいね😊`,
 
     /**

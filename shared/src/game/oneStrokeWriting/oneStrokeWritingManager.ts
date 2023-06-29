@@ -1,4 +1,4 @@
-import { environment } from '../../environment';
+import { Config } from '../../config';
 import { ArrayUtility } from '../../utility/arrayUtility';
 import { CommonUtility } from '../../utility/commonUtility';
 import { OneStrokeWritingBoardCell } from './enum/oneStrokeWritingBoardCell';
@@ -7,7 +7,7 @@ import { OneStrokeWritingBoard } from './oneStrokeWritingBoard';
 import { Vector } from './vector';
 
 export class OneStrokeWritingManager {
-    private readonly _apiUrl = `${environment.apiUrl}/api/oneStrokeWriting/question`;
+    private readonly _apiUrl = `${Config.apiUrl}/api/oneStrokeWriting/question`;
 
     private _question: OneStrokeWritingBoardCell[][];
 
