@@ -1,3 +1,3 @@
-export const environment = {
+export const Config = {
     apiUrl: process.env.API_URL
 } as const;

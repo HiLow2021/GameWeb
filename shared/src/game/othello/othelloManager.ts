@@ -1,9 +1,9 @@
-import { environment } from '../../environment';
+import { Config } from '../../config';
 import { OthelloBoardCell } from './enums/othelloBoardCell';
 import { OthelloManagerBase } from './othelloManagerBase';
 
 export class OthelloManager extends OthelloManagerBase {
-    private readonly _apiUrl = `${environment.apiUrl}/api/othello/next`;
+    private readonly _apiUrl = `${Config.apiUrl}/api/othello/next`;
 
     public initialize(): void {
         super.initialize();
