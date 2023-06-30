@@ -1,12 +1,17 @@
 import { Site } from '../shared/site';
+import BackButton from './backButton';
+import HomeButton from './homeButton';
 import SoundToggleButton from './soundToggleButton';
 
-export const Layout = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const Layout = ({ children, title, top }: { children: React.ReactNode; title: string; top: boolean }): JSX.Element => {
     return (
         <>
-            <header className="h-18 top-0 flex items-center justify-center bg-black p-3 text-gray-300">
-                <p className="text-center text-3xl sm:text-4xl">{Site.title}</p>
+            <header className="h-18 top-0 flex items-center justify-center bg-black p-4 text-gray-300">
+                <p className="text-center text-3xl sm:text-4xl">{title}</p>
                 <div className="absolute left-4 sm:left-8">
+                    <>{top ? <HomeButton /> : <BackButton />}</>
+                </div>
+                <div className="absolute right-4 sm:right-8">
                     <SoundToggleButton />
                 </div>
             </header>

@@ -18,6 +18,11 @@ export const Site = {
     url: SitePath.baseUrl,
 
     /**
+     * 開発者サイトURL
+     */
+    developerUrl: SitePath.developerUrl,
+
+    /**
      * サイトのページ
      */
     page: SitePage,

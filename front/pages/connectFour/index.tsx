@@ -6,7 +6,7 @@ import { SitePage } from '../../shared/sitePage';
 
 const Index: NextPage = (): JSX.Element => {
     return (
-        <Layout>
+        <Layout title={SitePage.connectFour.title} top={false}>
             <Head>
                 <title>{SitePage.connectFour.title}</title>
                 <meta name="description" content={SitePage.connectFour.description} />

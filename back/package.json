@@ -8,7 +8,6 @@
     "build-watch": "npx tsc --watch",
     "debug": "npx ts-node ./src/index.ts",
     "start": "node ./build/index.js",
-    "start-watch": "nodemon ./build/index.js",
     "eslint": "npx eslint ./src/**/*.ts",
     "prettier": "npx prettier --write ./src/**/*.ts"
   },
@@ -27,7 +26,6 @@
     "@typescript-eslint/parser": "^5.35.1",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
-    "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
     "prisma": "^4.5.0",
     "ts-node": "^10.9.1",
