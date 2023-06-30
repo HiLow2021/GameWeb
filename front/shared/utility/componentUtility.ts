@@ -17,7 +17,7 @@ export const getGameComponentSize = (): ComponentSize => {
     return { width, height, small };
 };
 
-export const getSvgSize = (): ComponentSize => {
+export const getIconSize = (): ComponentSize => {
     const small = IsSmallSize();
     const width = small ? 36 : 48;
     const height = small ? 36 : 48;

@@ -10,6 +10,11 @@ export const SitePath = {
     baseUrl: 'https://game-web-ggvhemkhnq-an.a.run.app',
 
     /**
+     * 開発者サイトURL
+     */
+    developerUrl: 'https://hilow-web.vercel.app',
+
+    /**
      * 相対URL
      */
     relativeUrl: {
