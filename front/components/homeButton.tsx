@@ -1,6 +1,5 @@
 import HomeIcon from '@mui/icons-material/Home';
 import { IconButton } from '@mui/material';
-import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import { Site } from '../shared/site';
 import { getIconSize } from '../shared/utility/componentUtility';
@@ -11,12 +10,12 @@ const HomeButton = (): JSX.Element => {
 
     const handleClick = async () => {
         invokeEventTrackingTag({
-            action: 'menu_developer_click',
+            action: 'menu_home_click',
             category: 'web',
             label: 'HiLow Web にアクセス'
         });
 
-        await Router.push(Site.developerUrl);
+        window.open(Site.developerUrl, '_blank');
     };
 
     const [mounted, setMounted] = useState(false);

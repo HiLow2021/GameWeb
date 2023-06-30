@@ -17,7 +17,7 @@ const BackButton = (): JSX.Element => {
 
     return mounted ? (
         <>
-            <IconButton aria-label="home-button" onClick={handleClick}>
+            <IconButton aria-label="back-button" onClick={handleClick}>
                 <ArrowBackIcon style={{ color: 'white', width, height }} />
             </IconButton>
         </>
