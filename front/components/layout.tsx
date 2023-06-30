@@ -1,11 +1,11 @@
 import { Site } from '../shared/site';
 import SoundToggleButton from './soundToggleButton';
 
-export const Layout = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const Layout = ({ children, title }: { children: React.ReactNode; title: string }): JSX.Element => {
     return (
         <>
             <header className="h-18 top-0 flex items-center justify-center bg-black p-3 text-gray-300">
-                <p className="text-center text-3xl sm:text-4xl">{Site.title}</p>
+                <p className="text-center text-3xl sm:text-4xl">{title}</p>
                 <div className="absolute left-4 sm:left-8">
                     <SoundToggleButton />
                 </div>

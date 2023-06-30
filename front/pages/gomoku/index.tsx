@@ -6,7 +6,7 @@ import { SitePage } from '../../shared/sitePage';
 
 const Index: NextPage = (): JSX.Element => {
     return (
-        <Layout>
+        <Layout title={SitePage.gomoku.title}>
             <Head>
                 <title>{SitePage.gomoku.title}</title>
                 <meta name="description" content={SitePage.gomoku.description} />
