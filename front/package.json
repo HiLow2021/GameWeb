@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.10.2",
     "canvas": "^2.9.3",
     "konva": "^8.3.11",
