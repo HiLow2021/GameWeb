@@ -1,9 +1,9 @@
-import { detectWindowSizeSync } from './windowUtility';
+import { detectWindowSize } from './windowUtility';
 
 type ComponentSize = { width: number; height: number; small: boolean };
 
 export const IsSmallSize = (): boolean => {
-    const windowSize = detectWindowSizeSync();
+    const windowSize = detectWindowSize();
     const conditionWidth = 640;
 
     return windowSize.width == undefined || windowSize.width < conditionWidth;
