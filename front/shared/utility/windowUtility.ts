@@ -2,16 +2,17 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 
 type WindowSize = { width?: number; height?: number };
 
-const detectWindowSizeInner = (useSync: boolean): WindowSize => {
+export const detectWindowSize = (): WindowSize => {
     const [windowSize, setWindowSize] = useState<WindowSize>({ width: undefined, height: undefined });
+    const useSync = typeof window !== 'undefined';
 
     const effectCallback = () => {
         if (typeof window !== 'undefined') {
             const handleResize = () => {
-                setWindowSize(() => ({
+                setWindowSize({
                     width: window.innerWidth,
                     height: window.innerHeight
-                }));
+                });
             };
 
             window.addEventListener('resize', handleResize);
@@ -29,6 +30,3 @@ const detectWindowSizeInner = (useSync: boolean): WindowSize => {
 
     return windowSize;
 };
-
-export const detectWindowSize = (): WindowSize => detectWindowSizeInner(false);
-export const detectWindowSizeSync = (): WindowSize => detectWindowSizeInner(true);

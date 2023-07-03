@@ -66,7 +66,16 @@ export const SitePath = {
             /**
              * サムネイル
              */
-            thumbnail: 'thumbnail.webp'
+            thumbnail: 'thumbnail.webp',
+
+            /**
+             * 音量アイコン
+             */
+            volume: {
+                on: '/volume-on.svg',
+
+                off: '/volume-off.svg'
+            }
         }
     }
 } as const;
