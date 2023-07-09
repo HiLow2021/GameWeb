@@ -1,4 +1,4 @@
-export type ConnectFourBoardCell = 'outOfRange' | 'empty' | 'black' | 'white' | 'highLight';
+export type ConnectFourBoardCell = typeof ConnectFourBoardCell[keyof typeof ConnectFourBoardCell];
 
 export const ConnectFourBoardCell = {
     outOfRange: 'outOfRange',

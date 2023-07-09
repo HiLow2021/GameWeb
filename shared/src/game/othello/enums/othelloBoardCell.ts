@@ -1,4 +1,4 @@
-export type OthelloBoardCell = 'outOfRange' | 'empty' | 'black' | 'white' | 'highLight';
+export type OthelloBoardCell = typeof OthelloBoardCell[keyof typeof OthelloBoardCell];
 
 export const OthelloBoardCell = {
     outOfRange: 'outOfRange',

@@ -9,7 +9,7 @@ import { OthelloBoard } from 'shared/game/othello/othelloBoard';
 import { OthelloManager } from 'shared/game/othello/othelloManager';
 import { CommonUtility } from 'shared/utility/commonUtility';
 import { Coordinate } from '../../shared/game/othello/coordinate';
-import { Level } from '../../shared/game/othello/level';
+import { Level, toLogicValue } from '../../shared/game/othello/level';
 import { Player } from '../../shared/game/othello/player';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
 import { useContextSound } from '../../shared/utility/soundUtility';
@@ -39,7 +39,7 @@ const Othello = (): JSX.Element => {
         othelloManager.initialize();
 
         if (player === Player.white) {
-            await othelloManager.nextByAI(Level.toLogicValue(level));
+            await othelloManager.nextByAI(toLogicValue(level));
             startSound();
         }
 
@@ -59,7 +59,7 @@ const Othello = (): JSX.Element => {
 
             while (!othelloManager.isFinished && isOpponent(player, othelloManager.currentTurn)) {
                 await CommonUtility.delay(500);
-                await othelloManager.nextByAI(Level.toLogicValue(level));
+                await othelloManager.nextByAI(toLogicValue(level));
 
                 setCoordinates(() => convertCellsToCoordinates(othelloManager.board.cells));
                 startSound();

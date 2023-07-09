@@ -1,4 +1,4 @@
-export type Turn = 'black' | 'white';
+export type Turn = typeof Turn[keyof typeof Turn];
 
 export const Turn = {
     black: 'black',

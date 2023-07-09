@@ -1,4 +1,4 @@
-export type Level = 'normal';
+export type Level = typeof Level[keyof typeof Level];
 
 export const Level = {
     normal: 'normal'
