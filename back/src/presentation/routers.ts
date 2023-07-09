@@ -3,8 +3,8 @@ import connectFourRouter from './connectFourRouter';
 import gomokuRouter from './gomokuRouter';
 import oneStrokeWritingRouter from './oneStrokeWritingRouter';
 import othelloRouter from './othelloRouter';
-import testRouter from './testRouter';
+import pingRouter from './pingRouter';
 
-const routers: Router[] = [othelloRouter, gomokuRouter, connectFourRouter, oneStrokeWritingRouter, testRouter];
+const routers: Router[] = [pingRouter, othelloRouter, gomokuRouter, connectFourRouter, oneStrokeWritingRouter];
 
 export default routers;
