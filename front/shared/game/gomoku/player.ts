@@ -1,4 +1,4 @@
-export type Player = 'black' | 'white';
+export type Player = typeof Player[keyof typeof Player];
 
 export const Player = {
     black: 'black',

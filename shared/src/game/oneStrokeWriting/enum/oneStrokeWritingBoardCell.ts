@@ -1,4 +1,4 @@
-export type OneStrokeWritingBoardCell = 'outOfRange' | 'on' | 'off' | 'block';
+export type OneStrokeWritingBoardCell = typeof OneStrokeWritingBoardCell[keyof typeof OneStrokeWritingBoardCell];
 
 export const OneStrokeWritingBoardCell = {
     outOfRange: 'outOfRange',

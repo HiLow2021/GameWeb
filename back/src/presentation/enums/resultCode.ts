@@ -1,4 +1,4 @@
-export type ResultCode = 'succeeded' | 'failed';
+export type ResultCode = typeof ResultCode[keyof typeof ResultCode];
 
 export const ResultCode = {
     Succeeded: 'succeeded',

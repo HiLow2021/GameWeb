@@ -1,4 +1,4 @@
-export type Result = 'black' | 'white' | 'draw' | 'undecided';
+export type Result = typeof Result[keyof typeof Result];
 
 export const Result = {
     black: 'black',

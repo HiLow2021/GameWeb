@@ -1,4 +1,4 @@
-export type LightsOutBoardCell = 'outOfRange' | 'on' | 'off';
+export type LightsOutBoardCell = typeof LightsOutBoardCell[keyof typeof LightsOutBoardCell];
 
 export const LightsOutBoardCell = {
     outOfRange: 'outOfRange',

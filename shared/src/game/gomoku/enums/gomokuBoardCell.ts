@@ -1,4 +1,4 @@
-export type GomokuBoardCell = 'outOfRange' | 'empty' | 'black' | 'white';
+export type GomokuBoardCell = typeof GomokuBoardCell[keyof typeof GomokuBoardCell];
 
 export const GomokuBoardCell = {
     outOfRange: 'outOfRange',

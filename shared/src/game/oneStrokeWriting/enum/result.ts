@@ -1,4 +1,4 @@
-export type Result = 'succeeded' | 'failed' | 'undecided';
+export type Result = typeof Result[keyof typeof Result];
 
 export const Result = {
     succeeded: 'succeeded',
