@@ -1,16 +1,12 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
-import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Layer, Rect, Stage, Text } from 'react-konva';
-import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
-import { Result } from 'shared/game/oneStrokeWriting/enum/result';
-import { OneStrokeWritingManager } from 'shared/game/oneStrokeWriting/oneStrokeWritingManager';
-import { CommonUtility } from 'shared/utility/commonUtility';
-import { Coordinate } from '../../shared/game/oneStrokeWriting/coordinate';
+import { NumberLinkManager } from 'shared/game/numberLink/numberLinkManager';
+import { Coordinate } from '../../shared/game/numberLink/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
-import { useContextSound } from '../../shared/utility/soundUtility';
+import { NumberLinkBoardCellType } from 'shared/game/numberLink/enum/numberLinkBoardCellType';
 
-const OneStrokeWriting = (): JSX.Element => {
+const NumberLink = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
 
     const strokeWidth = small ? 10 : 20;
@@ -21,64 +17,17 @@ const OneStrokeWriting = (): JSX.Element => {
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [size, setSize] = useState(6);
+    const [size, setSize] = useState(5);
     const [cellWidth, setCellWidth] = useState((width - strokeWidth * 2) / size);
     const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / size);
-    const [oneStrokeWritingManager, setOneStrokeWritingManager] = useState<OneStrokeWritingManager>(
-        new OneStrokeWritingManager(size, size)
-    );
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(oneStrokeWritingManager));
+    const [numberLinkManager, setNumberLinkManager] = useState<NumberLinkManager>(new NumberLinkManager(size, size));
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(numberLinkManager));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
-    const startSound = useContextSound('game/oneStrokeWriting/sound.mp3');
-
     const initialize = async () => {
-        await oneStrokeWritingManager.initialize();
-        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-    };
-
-    const select = async (e: KonvaEventObject<Event>): Promise<void> => {
-        if (!canClick) {
-            return;
-        }
-
-        const [x, y] = convert(e);
-        if (oneStrokeWritingManager.next(x, y)) {
-            setCanClick(() => false);
-
-            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-            startSound();
-
-            setCanClick(() => true);
-        }
-
-        function convert(e: KonvaEventObject<Event>): number[] {
-            const stage = e.target.getStage();
-            const position = stage?.getPointerPosition();
-            if (!position) {
-                return [-1, -1];
-            }
-
-            const x = Math.floor((position.x - strokeWidth) / cellWidth);
-            const y = Math.floor((position.y - strokeWidth) / cellHeight);
-
-            return [x, y];
-        }
-    };
-
-    const result = async (): Promise<void> => {
-        if (oneStrokeWritingManager.result === Result.undecided) {
-            return;
-        }
-
-        if (oneStrokeWritingManager.result === Result.failed) {
-            await CommonUtility.delay(200);
-
-            oneStrokeWritingManager.reset();
-        }
-
-        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+        await numberLinkManager.initialize();
+        setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
     };
 
     useEffect(() => {
@@ -86,7 +35,7 @@ const OneStrokeWriting = (): JSX.Element => {
             return;
         }
 
-        setOneStrokeWritingManager(new OneStrokeWritingManager(size, size));
+        setNumberLinkManager(new NumberLinkManager(size, size));
     }, [size]);
 
     useEffect(() => {
@@ -95,11 +44,7 @@ const OneStrokeWriting = (): JSX.Element => {
         }
 
         initialize();
-    }, [oneStrokeWritingManager]);
-
-    useEffect(() => {
-        result();
-    }, [oneStrokeWritingManager.result]);
+    }, [numberLinkManager]);
 
     useEffect(() => {
         setInitial(false);
@@ -109,14 +54,14 @@ const OneStrokeWriting = (): JSX.Element => {
     useLayoutEffect(() => {
         setCellWidth((width - strokeWidth * 2) / size);
         setCellHeight((height - strokeWidth * 2) / size);
-        setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
-    }, [oneStrokeWritingManager, width, height]);
+        setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
+    }, [numberLinkManager, width, height]);
 
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTouchStart={select}>
-                    <Layer key="one-stroke-writing-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
+                <Stage width={width} height={height + textAreaHeight + textAreaMargin}>
+                    <Layer key="number-link-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
@@ -126,10 +71,10 @@ const OneStrokeWriting = (): JSX.Element => {
                             height={height - strokeWidth + margin * 2}
                         />
                     </Layer>
-                    <Layer key="one-stroke-writing-piece-layer" listening={false}>
+                    <Layer key="number-link-piece-layer" listening={false}>
                         {coordinates.map((coordinate) => (
                             <Rect
-                                fill={coordinate.color}
+                                // fill={coordinate.color}
                                 x={cellWidth * coordinate.x + strokeWidth + margin}
                                 y={cellHeight * coordinate.y + strokeWidth + margin}
                                 width={cellWidth - margin * 2}
@@ -137,7 +82,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             />
                         ))}
                     </Layer>
-                    <Layer key="one-stroke-writing-text-layer" listening={false}>
+                    <Layer key="number-link-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -148,7 +93,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={oneStrokeWritingManager.result === Result.succeeded ? 'クリア！' : ''}
+                            text={numberLinkManager.isFinished ? 'クリア！' : ''}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}
@@ -190,15 +135,15 @@ const OneStrokeWriting = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="success"
+                        color="secondary"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
                                 return;
                             }
 
-                            oneStrokeWritingManager.reset();
-                            setCoordinates(() => convertCellsToCoordinates(oneStrokeWritingManager));
+                            numberLinkManager.reset();
+                            setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
                         }}
                     >
                         リセット
@@ -207,7 +152,7 @@ const OneStrokeWriting = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="success"
+                        color="secondary"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
@@ -225,30 +170,22 @@ const OneStrokeWriting = (): JSX.Element => {
     );
 };
 
-function convertCellsToCoordinates(manager: OneStrokeWritingManager): Coordinate[] {
-    const cells = manager.board.cells;
+function convertCellsToCoordinates(manager: NumberLinkManager): Coordinate[] {
     const coordinates: Coordinate[] = [];
-    for (let y = 0; y < cells.length; y++) {
-        for (let x = 0; x < cells[y].length; x++) {
-            let coordinate: Coordinate;
 
-            if (manager.result === Result.succeeded || (manager.currentPosition?.x === x && manager.currentPosition?.y === y)) {
-                coordinate = { x, y, color: '#00BB00' };
-            } else if (cells[y][x] === OneStrokeWritingBoardCell.on) {
-                coordinate = { x, y, color: '#CCCC00' };
-            } else if (cells[y][x] === OneStrokeWritingBoardCell.off) {
-                coordinate = { x, y, color: '#909090' };
-            } else if (cells[y][x] === OneStrokeWritingBoardCell.block) {
-                coordinate = { x, y, color: '#FF3333' };
-            } else {
-                coordinate = { x, y, color: '#909090' };
+    for (let y = 0; y < manager.board.height; y++) {
+        for (let x = 0; x < manager.board.width; x++) {
+            const cell = manager.board.get(x, y);
+            if (cell?.type === NumberLinkBoardCellType.number) {
+                const connectedCoordinates = manager.getConnectedPositions(x, y).flat();
+                const number = cell.number ?? -1;
+
+                
             }
-
-            coordinates.push(coordinate);
         }
     }
 
     return coordinates;
 }
 
-export default OneStrokeWriting;
+export default NumberLink;
