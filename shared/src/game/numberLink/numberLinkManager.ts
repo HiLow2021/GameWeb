@@ -33,6 +33,7 @@ export class NumberLinkManager {
         ];
         const convertedCells: NumberLinkBoardCell[][] = cells.map((y, i) =>
             y.map((x, j) => ({
+                id: i * cells[0].length + j,
                 x: j,
                 y: i,
                 number: x ? x : undefined,

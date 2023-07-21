@@ -238,7 +238,7 @@ const NumberLink = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={debug}
+                            text={numberLinkManager.isFinished ? 'クリア！' : ''}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}
@@ -319,44 +319,53 @@ function convertCellsToCoordinates(manager: NumberLinkManager): Coordinate[] {
     const coordinates: Coordinate[] = [];
     const ids = new Set();
 
-    for (let y = 0; y < manager.board.height; y++) {
-        for (let x = 0; x < manager.board.width; x++) {
-            const cell = manager.board.get(x, y);
-            if (cell && cell.number) {
-                const id1 = cell.y * manager.board.height + cell.x;
-                if (!ids.has(id1)) {
-                    coordinates.push({
-                        x: cell.x,
-                        y: cell.y,
-                        number: cell.number,
-                        routes: cell.routes,
-                        color: getColor(cell.number)
-                    });
-                    ids.add(id1);
-                }
+    const numberCells = manager.board.cells.flat().filter(x => x.number);
+    for (const cell1 of numberCells) {
+        if (!ids.has(cell1.id)) {
+            coordinates.push({
+                x: cell1.x,
+                y: cell1.y,
+                number: cell1.number,
+                routes: cell1.routes,
+                color: getColor(cell1.number)
+            });
+            ids.add(cell1.id);
+        }
 
-                const cells = manager.getConnectedCells(x, y).flat();
-
-                for (const item of cells) {
-                    const id2 = item.y * manager.board.height + item.x;
-                    if (!ids.has(id2)) {
-                        coordinates.push({
-                            x: item.x,
-                            y: item.y,
-                            routes: item.routes,
-                            color: getColor(cell.number)
-                        });
-                        ids.add(id2);
-                    }
-                }
+        const connectedCells = manager.getConnectedCells(cell1.x, cell1.y).flat();
+        for (const cell2 of connectedCells) {
+            if (!ids.has(cell2.id)) {
+                coordinates.push({
+                    x: cell2.x,
+                    y: cell2.y,
+                    number: cell2.number ? cell2.number : undefined,
+                    routes: cell2.routes,
+                    color: getColor(cell1.number)
+                });
+                ids.add(cell2.id);
             }
         }
+    }
+
+    const remainCells = manager.board.cells.flat().filter((x) => x.routes.length > 0 && !ids.has(x.id));
+    for (const cell of remainCells) {
+        coordinates.push({
+            x: cell.x,
+            y: cell.y,
+            routes: cell.routes,
+            color: getColor()
+        });
+        ids.add(cell.id);
     }
 
     return coordinates;
 }
 
-function getColor(index: number): string {
+function getColor(index?: number): string {
+    if (!index) {
+        return '#AAAAAA';
+    }
+
     switch (index % 7) {
         case 0:
             return '#BB0000';
@@ -367,7 +376,7 @@ function getColor(index: number): string {
         case 3:
             return '#00BBCC';
         default:
-            return '#00DD00';
+            return '#AAAAAA';
     }
 }
 
