@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { OneStrokeWritingQuestionDto } from '../businessLogic/queries/oneStrokeWritingQuestionDto';
-import { GameOneStrokeWritingQuestion } from './models/gameOneStrokeWritingQuestion';
+import { OneStrokeWritingQuestion } from './models/oneStrokeWritingQuestion';
 
 export class OneStrokeWritingQuestionJsonDao {
     private readonly _path: string = '../db/json/one-stroke-writing-question.json';
@@ -20,9 +20,9 @@ export class OneStrokeWritingQuestionJsonDao {
         return questions[index].cells;
     }
 
-    private async getQuestions(width: number, height: number, straight: boolean): Promise<GameOneStrokeWritingQuestion[]> {
+    private async getQuestions(width: number, height: number, straight: boolean): Promise<OneStrokeWritingQuestion[]> {
         const jsonString = await fs.readFile(this._path, 'utf8');
-        const questions: GameOneStrokeWritingQuestion[] = JSON.parse(jsonString);
+        const questions: OneStrokeWritingQuestion[] = JSON.parse(jsonString);
 
         return questions.filter((question) => question.width === width && question.height === height && question.straight === straight);
     }
