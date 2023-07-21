@@ -17,12 +17,12 @@ export class NumberLinkQuestionJsonDao {
             return undefined;
         }
 
-        return questions[index].question.map((y, i) =>
-            y.map((x, j) => ({
-                id: i * questions[index].question[0].length + j,
+        return questions[index].question.map((x, i) =>
+            x.map((y, j) => ({
+                id: i * x.length + j,
                 x: j,
                 y: i,
-                number: x ? x : undefined,
+                number: y ? y : undefined,
                 routes: []
             }))
         );

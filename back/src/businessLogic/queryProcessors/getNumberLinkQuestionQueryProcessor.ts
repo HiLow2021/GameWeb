@@ -18,7 +18,15 @@ export class GetNumberLinkQuestionQueryProcessor {
             throw new Error('number link question not found.');
         }
 
-        const transformedCells = RandomUtility.transformation(cells);
+        const transformedCells = RandomUtility.transformation(cells).map((x, i) =>
+            x.map((y, j) => ({
+                id: i * x.length + j,
+                x: j,
+                y: i,
+                number: y.number,
+                routes: y.routes
+            }))
+        );
 
         return transformedCells;
     }
