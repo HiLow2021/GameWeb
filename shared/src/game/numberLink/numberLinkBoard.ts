@@ -23,14 +23,15 @@ export class NumberLinkBoard {
         this.validate();
     }
 
-    public initialize(): void {
+    public initialize(cells: NumberLinkBoardCell[][]): void {
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
                 this._cells[y][x] = {
-                    id: y * this.height + x,
-                    x,
-                    y,
-                    routes: []
+                    id: cells[y][x].id,
+                    x: cells[y][x].x,
+                    y: cells[y][x].y,
+                    number: cells[y][x].number,
+                    routes: [...cells[y][x].routes]
                 };
             }
         }

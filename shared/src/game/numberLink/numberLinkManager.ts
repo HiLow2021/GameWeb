@@ -20,7 +20,6 @@ export class NumberLinkManager {
     public constructor(width: number, height: number) {
         this.board = new NumberLinkBoard(width, height);
         this._question = ArrayUtility.create2Array(width, height);
-        ArrayUtility.copy2Array(this.board.cells, this._question);
     }
 
     public async initialize(): Promise<void> {
@@ -47,7 +46,7 @@ export class NumberLinkManager {
 
     public reset(): void {
         this._isFinished = false;
-        ArrayUtility.copy2Array(this._question, this.board.cells);
+        this.board.initialize(this._question);
     }
 
     // x と y は画面のマスにタッチした場所
@@ -127,6 +126,10 @@ export class NumberLinkManager {
     }
 
     private canRouting(x: number, y: number, direction: Vector): boolean {
+        if (!Vector.all.some((vector) => vector.isSame(direction))) {
+            return false;
+        }
+
         const cell1 = this.board.get(x, y);
         const cell2 = this.board.get(x + direction.x, y + direction.y);
         if (!cell1 || !cell2) {

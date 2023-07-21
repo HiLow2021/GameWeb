@@ -1,11 +1,11 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
+import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Ellipse, Layer, Rect, Stage, Text } from 'react-konva';
 import { NumberLinkManager } from 'shared/game/numberLink/numberLinkManager';
+import { Vector } from 'shared/game/numberLink/vector';
 import { Coordinate } from '../../shared/game/numberLink/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
-import { KonvaEventObject } from 'konva/lib/Node';
-import { Vector } from 'shared/game/numberLink/vector';
 
 const NumberLink = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -28,13 +28,6 @@ const NumberLink = (): JSX.Element => {
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
-    const [debug, setDebug] = useState('テスト');
-
-    const displayDebug = (text: string) => {
-        setDebug(text);
-        setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
-    };
-
     const initialize = async () => {
         await numberLinkManager.initialize();
         setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
@@ -55,17 +48,15 @@ const NumberLink = (): JSX.Element => {
             return;
         }
 
-        const direction = new Vector(x - slidePosition[0], y - slidePosition[1]);
-        setSlidePosition([x, y]);
-        if (numberLinkManager.next(slidePosition[0], slidePosition[1], direction)) {
+        if (numberLinkManager.next(slidePosition[0], slidePosition[1], new Vector(x - slidePosition[0], y - slidePosition[1]))) {
             setCanClick(() => false);
-
-            displayDebug(`通った`);
 
             setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
 
             setCanClick(() => true);
         }
+
+        setSlidePosition([x, y]);
 
         function convert(e: KonvaEventObject<Event>): number[] {
             const stage = e.target.getStage();
@@ -115,21 +106,28 @@ const NumberLink = (): JSX.Element => {
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage
-                    width={width}
-                    height={height + textAreaHeight + textAreaMargin}
-                    onMouseDown={() => setMouseDown(true)}
-                    onMouseUp={() => {
-                        slideEnd();
-                        setMouseDown(false);
-                    }}
-                    onMouseMove={async (e) => {
-                        if (mouseDown) {
+                <Stage width={width} height={height + textAreaHeight + textAreaMargin}>
+                    <Layer
+                        key="number-link-board-layer"
+                        onMouseDown={() => setMouseDown(true)}
+                        onMouseUp={() => {
+                            slideEnd();
+                            setMouseDown(false);
+                        }}
+                        onMouseMove={async (e) => {
+                            if (mouseDown) {
+                                await slide(e);
+                            }
+                        }}
+                        onMouseLeave={() => {
+                            slideEnd();
+                            setMouseDown(false);
+                        }}
+                        onTouchMove={async (e) => {
+                            e.evt.preventDefault();
                             await slide(e);
-                        }
-                    }}
-                >
-                    <Layer key="number-link-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
+                        }}
+                    >
                         <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
@@ -163,7 +161,7 @@ const NumberLink = (): JSX.Element => {
                                     radiusY={cellHeight / 5.35}
                                 />
                                 {coordinate.routes.map((route) => {
-                                    if (route.x === Vector.left.x && route.y === Vector.left.y) {
+                                    if (route.isSame(Vector.left)) {
                                         return (
                                             <Rect
                                                 fill={coordinate.color}
@@ -171,10 +169,9 @@ const NumberLink = (): JSX.Element => {
                                                 y={cellHeight * coordinate.y + cellHeight / 3 + strokeWidth - margin}
                                                 width={cellWidth / 2 + margin * 2}
                                                 height={cellHeight / 3 + margin * 2}
-                                                cornerRadius={0}
                                             />
                                         );
-                                    } else if (route.x === Vector.right.x && route.y === Vector.right.y) {
+                                    } else if (route.isSame(Vector.right)) {
                                         return (
                                             <Rect
                                                 fill={coordinate.color}
@@ -182,10 +179,9 @@ const NumberLink = (): JSX.Element => {
                                                 y={cellHeight * coordinate.y + cellHeight / 3 + strokeWidth - margin}
                                                 width={cellWidth / 2 + margin * 2}
                                                 height={cellHeight / 3 + margin * 2}
-                                                cornerRadius={0}
                                             />
                                         );
-                                    } else if (route.x === Vector.up.x && route.y === Vector.up.y) {
+                                    } else if (route.isSame(Vector.up)) {
                                         return (
                                             <Rect
                                                 fill={coordinate.color}
@@ -193,7 +189,6 @@ const NumberLink = (): JSX.Element => {
                                                 y={cellHeight * coordinate.y + strokeWidth - margin}
                                                 width={cellWidth / 3 + margin * 2}
                                                 height={cellHeight / 2 + margin * 2}
-                                                cornerRadius={0}
                                             />
                                         );
                                     } else {
@@ -204,7 +199,6 @@ const NumberLink = (): JSX.Element => {
                                                 y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidth - margin}
                                                 width={cellWidth / 3 + margin * 2}
                                                 height={cellHeight / 2 + margin * 2}
-                                                cornerRadius={0}
                                             />
                                         );
                                     }
@@ -261,7 +255,7 @@ const NumberLink = (): JSX.Element => {
                             size={small ? 'small' : 'medium'}
                             sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
                             value={size}
-                            onChange={async (e) => {
+                            onChange={(e) => {
                                 if (!canClick) {
                                     return;
                                 }
@@ -269,8 +263,8 @@ const NumberLink = (): JSX.Element => {
                                 setSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
+                            {[...Array(6)].map((_, i) => (
+                                <MenuItem value={i + 5}>{i + 5}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -319,7 +313,7 @@ function convertCellsToCoordinates(manager: NumberLinkManager): Coordinate[] {
     const coordinates: Coordinate[] = [];
     const ids = new Set();
 
-    const numberCells = manager.board.cells.flat().filter(x => x.number);
+    const numberCells = manager.board.cells.flat().filter((x) => x.number);
     for (const cell1 of numberCells) {
         if (!ids.has(cell1.id)) {
             coordinates.push({

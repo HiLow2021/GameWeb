@@ -171,7 +171,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             size={small ? 'small' : 'medium'}
                             sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
                             value={size}
-                            onChange={async (e) => {
+                            onChange={(e) => {
                                 if (!canClick) {
                                     return;
                                 }
