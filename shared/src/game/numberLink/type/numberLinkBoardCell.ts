@@ -1,8 +1,8 @@
-import { NumberLinkBoardCellType } from '../enum/numberLinkBoardCellType';
 import { Vector } from '../vector';
 
 export type NumberLinkBoardCell = {
-    type: NumberLinkBoardCellType;
+    x: number;
+    y: number;
     number?: number;
     routes: Vector[];
 };

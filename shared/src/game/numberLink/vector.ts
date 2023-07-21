@@ -12,6 +12,10 @@ export class Vector {
         return this.x === vector.x * -1 && this.y === vector.y * -1;
     }
 
+    public isSame(vector: Vector): boolean {
+        return this.x === vector.x && this.y === vector.y;
+    }
+
     public opposite(): Vector {
         return new Vector(this.x * -1, this.y * -1);
     }

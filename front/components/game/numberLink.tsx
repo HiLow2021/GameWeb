@@ -1,10 +1,11 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Layer, Rect, Stage, Text } from 'react-konva';
+import { Ellipse, Layer, Rect, Stage, Text } from 'react-konva';
 import { NumberLinkManager } from 'shared/game/numberLink/numberLinkManager';
 import { Coordinate } from '../../shared/game/numberLink/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
-import { NumberLinkBoardCellType } from 'shared/game/numberLink/enum/numberLinkBoardCellType';
+import { KonvaEventObject } from 'konva/lib/Node';
+import { Vector } from 'shared/game/numberLink/vector';
 
 const NumberLink = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
@@ -22,12 +23,66 @@ const NumberLink = (): JSX.Element => {
     const [cellHeight, setCellHeight] = useState((height - strokeWidth * 2) / size);
     const [numberLinkManager, setNumberLinkManager] = useState<NumberLinkManager>(new NumberLinkManager(size, size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(numberLinkManager));
+    const [slidePosition, setSlidePosition] = useState<[number, number]>();
+    const [mouseDown, setMouseDown] = useState(false);
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
+
+    const [debug, setDebug] = useState('テスト');
+
+    const displayDebug = (text: string) => {
+        setDebug(text);
+        setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
+    };
 
     const initialize = async () => {
         await numberLinkManager.initialize();
         setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
+    };
+
+    const slide = async (e: KonvaEventObject<Event>): Promise<void> => {
+        if (!canClick || numberLinkManager.isFinished) {
+            return;
+        }
+
+        const [x, y] = convert(e);
+        if (!slidePosition) {
+            setSlidePosition([x, y]);
+
+            return;
+        }
+        if (slidePosition[0] === x && slidePosition[1] === y) {
+            return;
+        }
+
+        const direction = new Vector(x - slidePosition[0], y - slidePosition[1]);
+        setSlidePosition([x, y]);
+        if (numberLinkManager.next(slidePosition[0], slidePosition[1], direction)) {
+            setCanClick(() => false);
+
+            displayDebug(`通った`);
+
+            setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
+
+            setCanClick(() => true);
+        }
+
+        function convert(e: KonvaEventObject<Event>): number[] {
+            const stage = e.target.getStage();
+            const position = stage?.getPointerPosition();
+            if (!position) {
+                return [-1, -1];
+            }
+
+            const x = Math.floor((position.x - strokeWidth) / cellWidth);
+            const y = Math.floor((position.y - strokeWidth) / cellHeight);
+
+            return [x, y];
+        }
+    };
+
+    const slideEnd = (): void => {
+        setSlidePosition(undefined);
     };
 
     useEffect(() => {
@@ -60,7 +115,20 @@ const NumberLink = (): JSX.Element => {
     return (
         <>
             <div className="flex flex-col justify-center gap-4">
-                <Stage width={width} height={height + textAreaHeight + textAreaMargin}>
+                <Stage
+                    width={width}
+                    height={height + textAreaHeight + textAreaMargin}
+                    onMouseDown={() => setMouseDown(true)}
+                    onMouseUp={() => {
+                        slideEnd();
+                        setMouseDown(false);
+                    }}
+                    onMouseMove={async (e) => {
+                        if (mouseDown) {
+                            await slide(e);
+                        }
+                    }}
+                >
                     <Layer key="number-link-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect
                             stroke="black"
@@ -72,15 +140,92 @@ const NumberLink = (): JSX.Element => {
                         />
                     </Layer>
                     <Layer key="number-link-piece-layer" listening={false}>
+                        {coordinates.map((coordinate) => {
+                            if (coordinate.number) {
+                                return (
+                                    <Ellipse
+                                        fill={coordinate.color}
+                                        x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidth}
+                                        y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidth}
+                                        radiusX={cellWidth / 2.5}
+                                        radiusY={cellHeight / 2.5}
+                                    />
+                                );
+                            }
+                        })}
                         {coordinates.map((coordinate) => (
-                            <Rect
-                                // fill={coordinate.color}
-                                x={cellWidth * coordinate.x + strokeWidth + margin}
-                                y={cellHeight * coordinate.y + strokeWidth + margin}
-                                width={cellWidth - margin * 2}
-                                height={cellHeight - margin * 2}
-                            />
+                            <>
+                                <Ellipse
+                                    fill={coordinate.color}
+                                    x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidth}
+                                    y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidth}
+                                    radiusX={cellWidth / 5.35}
+                                    radiusY={cellHeight / 5.35}
+                                />
+                                {coordinate.routes.map((route) => {
+                                    if (route.x === Vector.left.x && route.y === Vector.left.y) {
+                                        return (
+                                            <Rect
+                                                fill={coordinate.color}
+                                                x={cellWidth * coordinate.x + strokeWidth - margin}
+                                                y={cellHeight * coordinate.y + cellHeight / 3 + strokeWidth - margin}
+                                                width={cellWidth / 2 + margin * 2}
+                                                height={cellHeight / 3 + margin * 2}
+                                                cornerRadius={0}
+                                            />
+                                        );
+                                    } else if (route.x === Vector.right.x && route.y === Vector.right.y) {
+                                        return (
+                                            <Rect
+                                                fill={coordinate.color}
+                                                x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidth - margin}
+                                                y={cellHeight * coordinate.y + cellHeight / 3 + strokeWidth - margin}
+                                                width={cellWidth / 2 + margin * 2}
+                                                height={cellHeight / 3 + margin * 2}
+                                                cornerRadius={0}
+                                            />
+                                        );
+                                    } else if (route.x === Vector.up.x && route.y === Vector.up.y) {
+                                        return (
+                                            <Rect
+                                                fill={coordinate.color}
+                                                x={cellWidth * coordinate.x + cellHeight / 3 + strokeWidth - margin}
+                                                y={cellHeight * coordinate.y + strokeWidth - margin}
+                                                width={cellWidth / 3 + margin * 2}
+                                                height={cellHeight / 2 + margin * 2}
+                                                cornerRadius={0}
+                                            />
+                                        );
+                                    } else {
+                                        return (
+                                            <Rect
+                                                fill={coordinate.color}
+                                                x={cellWidth * coordinate.x + cellHeight / 3 + strokeWidth - margin}
+                                                y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidth - margin}
+                                                width={cellWidth / 3 + margin * 2}
+                                                height={cellHeight / 2 + margin * 2}
+                                                cornerRadius={0}
+                                            />
+                                        );
+                                    }
+                                })}
+                            </>
                         ))}
+                        {coordinates
+                            .filter((coordinate) => coordinate.number)
+                            .map((coordinate) => (
+                                <Text
+                                    text={coordinate.number?.toString()}
+                                    x={cellWidth * coordinate.x + strokeWidth + margin}
+                                    y={cellHeight * coordinate.y + strokeWidth + margin}
+                                    width={cellWidth - margin * 2}
+                                    height={cellHeight - margin * 2}
+                                    fill="white"
+                                    fontSize={small ? 24 : 48}
+                                    align="center"
+                                    verticalAlign="middle"
+                                />
+                            ))}
                     </Layer>
                     <Layer key="number-link-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
@@ -93,7 +238,7 @@ const NumberLink = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={numberLinkManager.isFinished ? 'クリア！' : ''}
+                            text={debug}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}
@@ -172,20 +317,58 @@ const NumberLink = (): JSX.Element => {
 
 function convertCellsToCoordinates(manager: NumberLinkManager): Coordinate[] {
     const coordinates: Coordinate[] = [];
+    const ids = new Set();
 
     for (let y = 0; y < manager.board.height; y++) {
         for (let x = 0; x < manager.board.width; x++) {
             const cell = manager.board.get(x, y);
-            if (cell?.type === NumberLinkBoardCellType.number) {
-                const connectedCoordinates = manager.getConnectedPositions(x, y).flat();
-                const number = cell.number ?? -1;
+            if (cell && cell.number) {
+                const id1 = cell.y * manager.board.height + cell.x;
+                if (!ids.has(id1)) {
+                    coordinates.push({
+                        x: cell.x,
+                        y: cell.y,
+                        number: cell.number,
+                        routes: cell.routes,
+                        color: getColor(cell.number)
+                    });
+                    ids.add(id1);
+                }
 
-                
+                const cells = manager.getConnectedCells(x, y).flat();
+
+                for (const item of cells) {
+                    const id2 = item.y * manager.board.height + item.x;
+                    if (!ids.has(id2)) {
+                        coordinates.push({
+                            x: item.x,
+                            y: item.y,
+                            routes: item.routes,
+                            color: getColor(cell.number)
+                        });
+                        ids.add(id2);
+                    }
+                }
             }
         }
     }
 
     return coordinates;
+}
+
+function getColor(index: number): string {
+    switch (index % 7) {
+        case 0:
+            return '#BB0000';
+        case 1:
+            return '#DD0000';
+        case 2:
+            return '#00BB00';
+        case 3:
+            return '#00BBCC';
+        default:
+            return '#00DD00';
+    }
 }
 
 export default NumberLink;

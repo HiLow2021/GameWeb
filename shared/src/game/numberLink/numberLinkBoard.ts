@@ -1,4 +1,3 @@
-import { NumberLinkBoardCellType } from './enum/numberLinkBoardCellType';
 import { NumberLinkBoardCell } from './type/numberLinkBoardCell';
 
 export class NumberLinkBoard {
@@ -28,7 +27,8 @@ export class NumberLinkBoard {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
                 this._cells[y][x] = {
-                    type: NumberLinkBoardCellType.none,
+                    x,
+                    y,
                     routes: []
                 };
             }
@@ -41,14 +41,6 @@ export class NumberLinkBoard {
         }
 
         return this._cells[y][x];
-    }
-
-    public setType(x: number, y: number, type: NumberLinkBoardCellType): void {
-        if (!this.isWithinRange(x, y)) {
-            return;
-        }
-
-        this._cells[y][x].type = type;
     }
 
     private isWithinRange(x: number, y: number): boolean {

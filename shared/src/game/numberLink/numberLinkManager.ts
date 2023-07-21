@@ -1,6 +1,5 @@
 import { Config } from '../../config';
 import { ArrayUtility } from '../../utility/arrayUtility';
-import { NumberLinkBoardCellType } from './enum/numberLinkBoardCellType';
 import { NumberLinkBoard } from './numberLinkBoard';
 import { NumberLinkBoardCell } from './type/numberLinkBoardCell';
 import { Vector } from './vector';
@@ -32,10 +31,11 @@ export class NumberLinkManager {
             [null, 2, null, null, 1],
             [null, null, null, null, 3]
         ];
-        const convertedCells: NumberLinkBoardCell[][] = cells.map((x) =>
-            x.map((y) => ({
-                type: y ? NumberLinkBoardCellType.number : NumberLinkBoardCellType.none,
-                number: y ? y : undefined,
+        const convertedCells: NumberLinkBoardCell[][] = cells.map((y, i) =>
+            y.map((x, j) => ({
+                x: j,
+                y: i,
+                number: x ? x : undefined,
                 routes: []
             }))
         );
@@ -65,44 +65,35 @@ export class NumberLinkManager {
         return false;
     }
 
-    public getConnectedPositions(x: number, y: number): Vector[][] {
-        const result: Vector[][] = [];
+    public getConnectedCells(x: number, y: number): NumberLinkBoardCell[][] {
+        const result: NumberLinkBoardCell[][] = [];
         const startCell = this.board.get(x, y);
         if (!startCell) {
             return result;
         }
 
-        for (let i = 0; i < startCell.routes.length; i++) {
-            const positions = [];
-            const currentPosition = new Vector(x, y);
-            positions.push(currentPosition);
-            let nextRoute: Vector | undefined = startCell.routes[i];
-            while (nextRoute) {
-                currentPosition.x += nextRoute.x;
-                currentPosition.y += nextRoute.y;
-                const nextCell = this.board.get(currentPosition.x, currentPosition.y);
-                if (!nextCell) {
+        for (const route of startCell.routes) {
+            const cells = [startCell];
+            let nextRoute: Vector | undefined = route;
+            let nextCell = this.board.get(startCell.x + nextRoute.x, startCell.y + nextRoute.y);
+            while (nextRoute && nextCell) {
+                cells.push(nextCell);
+                nextRoute = nextCell.routes.find((x) => (nextRoute ? !nextRoute.isOpposite(x) : false));
+                if (!nextRoute) {
                     break;
                 }
 
-                const isConnected = nextCell.routes.some((x) => nextRoute?.isOpposite(x) ?? false);
-                if (isConnected) {
-                    positions.push(new Vector(currentPosition.x, currentPosition.y));
-                    nextRoute = nextCell.routes.find((x) => !nextRoute?.isOpposite(x));
-                } else {
-                    break;
-                }
+                nextCell = this.board.get(nextCell.x + nextRoute.x, nextCell.y + nextRoute.y);
             }
 
-            result.push(positions);
+            result.push(cells);
         }
 
         return result;
     }
 
     private updateResult(): void {
-        const cells = this.board.cells.flat();
-        const count = cells.filter((x) => x.type === NumberLinkBoardCellType.number).map((x) => x.number).length;
+        const count = this.board.cells.flat().filter((x) => x.number != undefined).length;
 
         let i = 0;
         for (let y = 0; y < this.board.height; y++) {
@@ -120,58 +111,71 @@ export class NumberLinkManager {
 
     private checkNumberConnection(x: number, y: number): boolean {
         const cell = this.board.get(x, y);
-        if (!cell || cell.type !== NumberLinkBoardCellType.number) {
+        if (!cell || !cell.number) {
             return false;
         }
 
-        const connectedRoutes = this.getConnectedPositions(x, y);
+        const connectedRoutes = this.getConnectedCells(x, y);
         if (connectedRoutes.length !== 1 || connectedRoutes[0].length <= 1) {
             return false;
         }
 
         const target = connectedRoutes[0][connectedRoutes[0].length - 1];
-        const targetCell = this.board.get(target.x, target.y);
-        if (!cell.number || !targetCell?.number) {
-            return false;
-        }
 
-        return cell.number === targetCell.number;
+        return cell.number === target.number;
     }
 
-    private routing(x1: number, y1: number, direction: Vector): boolean {
-        const x2 = x1 + direction.x;
-        const y2 = y1 + direction.y;
-        if (!this.canRouting(x1, y1) || !this.canRouting(x2, y2)) {
+    private canRouting(x: number, y: number, direction: Vector): boolean {
+        const cell1 = this.board.get(x, y);
+        const cell2 = this.board.get(x + direction.x, y + direction.y);
+        if (!cell1 || !cell2) {
             return false;
         }
 
-        return this.doRouting(x1, y1, direction) && this.doRouting(x2, y2, direction.opposite());
-    }
-
-    private canRouting(x: number, y: number): boolean {
-        const cell = this.board.get(x, y);
-        if (!cell) {
+        const isConnected = cell1.routes.some((route) => route.isSame(direction));
+        const count1 = cell1.routes.length;
+        const count2 = cell2.routes.length;
+        if (!isConnected && ((cell1.number ? count1 === 1 : count1 === 2) || (cell2.number ? count2 === 1 : count2 === 2))) {
             return false;
         }
 
-        const count = cell.routes.length;
+        const getNumber = (x: number, y: number): number | undefined => {
+            const cells = this.getConnectedCells(x, y).flat();
+            const numberCells = cells.filter((x) => x.number != undefined);
 
-        return cell.type === NumberLinkBoardCellType.number ? count < 1 : count < 2;
-    }
+            return numberCells.length > 0 ? numberCells[0].number : undefined;
+        };
 
-    private doRouting(x: number, y: number, direction: Vector): boolean {
-        const cell = this.board.get(x, y);
-        if (!cell) {
+        const number1 = cell1.number ? cell1.number : getNumber(x, y);
+        const number2 = cell2.number ? cell2.number : getNumber(x + direction.x, y + direction.y);
+        if (number1 && number2 && number1 !== number2) {
             return false;
-        }
-
-        const index = cell.routes.findIndex((route) => route.x === direction.x && route.x === direction.y);
-        if (index !== -1) {
-            cell.routes.splice(index, 1);
-        } else {
-            cell.routes.push(direction);
         }
 
         return true;
+    }
+
+    private routing(x: number, y: number, direction: Vector): boolean {
+        if (!this.canRouting(x, y, direction)) {
+            return false;
+        }
+
+        const routingInner = (x: number, y: number, direction: Vector): boolean => {
+            const cell = this.board.get(x, y);
+            if (!cell) {
+                return false;
+            }
+
+            const index = cell.routes.findIndex((route) => route.isSame(direction));
+            if (index !== -1) {
+                cell.routes.splice(index, 1);
+            } else {
+                cell.routes.push(direction);
+            }
+
+            return true;
+        };
+
+        return routingInner(x, y, direction) && routingInner(x + direction.x, y + direction.y, direction.opposite());
     }
 }
