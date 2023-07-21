@@ -40,5 +40,47 @@
                 3
             ]
         ]
+    },
+    {
+        "width": 5,
+        "height": 5,
+        "number": 4,
+        "question": [
+            [
+                null,
+                null,
+                null,
+                1,
+                4
+            ],
+            [
+                null,
+                2,
+                null,
+                null,
+                null
+            ],
+            [
+                null,
+                null,
+                3,
+                null,
+                null
+            ],
+            [
+                1,
+                null,
+                4,
+                2,
+                null
+            ],
+            [
+                3,
+                null,
+                null,
+                null,
+                null
+            ]
+        ]
     }
 ]
