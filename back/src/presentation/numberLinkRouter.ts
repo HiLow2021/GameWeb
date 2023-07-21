@@ -3,7 +3,7 @@ import NumberLinkController from './numberLinkController';
 
 const numberLinkRouter: Router = express.Router();
 
-numberLinkRouter.post('/numberLink/next', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+numberLinkRouter.get('/numberLink/question', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const width = Number(req.query['width']);
         const height = Number(req.query['height']);

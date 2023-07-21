@@ -17,9 +17,9 @@ export class NumberLinkQuestionJsonDao {
             return undefined;
         }
 
-        return questions[index].cells.map((y, i) =>
+        return questions[index].question.map((y, i) =>
             y.map((x, j) => ({
-                id: i * questions[index].cells[0].length + j,
+                id: i * questions[index].question[0].length + j,
                 x: j,
                 y: i,
                 number: x ? x : undefined,

@@ -23,24 +23,19 @@ export class NumberLinkManager {
     }
 
     public async initialize(): Promise<void> {
-        const cells = [
-            [2, null, null, null, null],
-            [1, null, null, 3, null],
-            [null, null, null, null, null],
-            [null, 2, null, null, 1],
-            [null, null, null, null, 3]
-        ];
-        const convertedCells: NumberLinkBoardCell[][] = cells.map((y, i) =>
-            y.map((x, j) => ({
-                id: i * cells[0].length + j,
-                x: j,
-                y: i,
-                number: x ? x : undefined,
-                routes: []
-            }))
-        );
+        const params = new URLSearchParams({
+            width: String(this.board.width),
+            height: String(this.board.height)
+        });
+        const response = await fetch(`${this._apiUrl}?${params}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
 
-        ArrayUtility.copy2Array(convertedCells, this._question);
+        ArrayUtility.copy2Array(json.cells, this._question);
         this.reset();
     }
 
