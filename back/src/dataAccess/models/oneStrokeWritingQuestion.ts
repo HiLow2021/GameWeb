@@ -1,6 +1,6 @@
 import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
 
-export type GameOneStrokeWritingQuestion = {
+export type OneStrokeWritingQuestion = {
     width: number;
     height: number;
     block: number;
