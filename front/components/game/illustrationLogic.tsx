@@ -1,26 +1,38 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Layer, Rect, Stage, Text } from 'react-konva';
+import { Group, Layer, Rect, Stage, Text } from 'react-konva';
+import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/illustrationLogicBoardCell';
 import { IllustrationLogicManager } from 'shared/game/illustrationLogic/illustrationLogicManager';
 import { Coordinate } from '../../shared/game/illustrationLogic/coordinate';
 import { Level } from '../../shared/game/illustrationLogic/level';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
+import { useContextSound } from '../../shared/utility/soundUtility';
 
 const IllustrationLogic = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
 
     const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
-    const margin = 2;
+    const margin = 4;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
-    const [size, setSize] = useState(5);
-    const [cellWidth, setCellWidth] = useState(width / size);
-    const [cellHeight, setCellHeight] = useState(height / size);
+    const mainGroup = { width: width / 1.33, height: height / 1.33 };
+    const descriptionGroup = { width: width / 4, height: height / 4 };
+    const hintHorizontalGroup = { width: width / 4, height: height / 1.33 };
+    const hintVerticalGroup = { width: width / 1.33, height: height / 4 };
+
+    const [size, setSize] = useState(10);
+    const [cellMainWidth, setCellMainWidth] = useState((mainGroup.width - margin) / size);
+    const [cellMainHeight, setCellMainHeight] = useState((mainGroup.height - margin) / size);
+    const [cellHintHorizontalWidth, setCellHintHorizontalWidth] = useState((hintHorizontalGroup.width - margin) / size / 2);
+    const [cellHintHorizontalHeight, setCellHintHorizontalHeight] = useState((hintHorizontalGroup.height - margin) / size);
+    const [cellHintVerticalWidth, setCellHintVerticalWidth] = useState((hintVerticalGroup.width - margin) / size);
+    const [cellHintVerticalHeight, setCellHintVerticalHeight] = useState((hintVerticalGroup.height - margin) / size / 2);
+
     const [illustrationLogicManager, setIllustrationLogicManager] = useState<IllustrationLogicManager>(
         new IllustrationLogicManager(size, size)
     );
@@ -28,6 +40,13 @@ const IllustrationLogic = (): JSX.Element => {
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
     const [level, setLevel] = useState<Level>(Level.normal);
+
+    const startSound = useContextSound('game/illustrationLogic/sound.mp3');
+
+    const [debug, setDebug] = useState('');
+    const displayDebug = (text: string) => {
+        setDebug(text);
+    };
 
     const initialize = async () => {
         await illustrationLogicManager.initialize();
@@ -44,6 +63,7 @@ const IllustrationLogic = (): JSX.Element => {
             setCanClick(() => false);
 
             setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
+            startSound();
 
             setCanClick(() => true);
         }
@@ -55,8 +75,8 @@ const IllustrationLogic = (): JSX.Element => {
                 return [-1, -1];
             }
 
-            const x = Math.floor((position.x - strokeWidth) / cellWidth);
-            const y = Math.floor((position.y - strokeWidth) / cellHeight);
+            const x = Math.floor((position.x - strokeWidth - hintHorizontalGroup.width) / cellMainWidth);
+            const y = Math.floor((position.y - strokeWidth - hintVerticalGroup.height) / cellMainHeight);
 
             return [x, y];
         }
@@ -84,8 +104,12 @@ const IllustrationLogic = (): JSX.Element => {
     }, []);
 
     useLayoutEffect(() => {
-        setCellWidth((width - strokeWidth * 2) / size);
-        setCellHeight((height - strokeWidth * 2) / size);
+        setCellMainWidth((mainGroup.width - margin) / size);
+        setCellMainHeight((mainGroup.height - margin) / size);
+        setCellHintHorizontalWidth((hintHorizontalGroup.width - margin) / size);
+        setCellHintHorizontalHeight((hintHorizontalGroup.height - margin) / size);
+        setCellHintVerticalWidth((hintVerticalGroup.width - margin) / size);
+        setCellHintVerticalHeight((hintVerticalGroup.height - margin) / size);
         setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
     }, [illustrationLogicManager, width, height]);
 
@@ -98,7 +122,83 @@ const IllustrationLogic = (): JSX.Element => {
                     onClick={select}
                     onTouchStart={select}
                 >
-                    <Layer key="illustration-logic-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
+                    <Layer key="illustration-logic-board-layer">
+                        <Group
+                            key="illustration-logic-description-group"
+                            x={strokeWidth}
+                            y={strokeWidth}
+                            width={descriptionGroup.width}
+                            height={descriptionGroup.height}
+                        >
+                            <Rect fill="black" x={0} y={0} width={descriptionGroup.width} height={descriptionGroup.height} />
+                        </Group>
+                        <Group
+                            key="illustration-logic-hint-horizontal-group"
+                            x={strokeWidth}
+                            y={descriptionGroup.height}
+                            width={hintHorizontalGroup.width}
+                            height={hintHorizontalGroup.height}
+                        >
+                            <Rect fill="white" x={0} y={0} width={hintHorizontalGroup.width} height={hintHorizontalGroup.height} />
+                            {convertHintsToStrings(illustrationLogicManager)[0].map((hint, i) => (
+                                <Text
+                                    text={hint}
+                                    x={0}
+                                    y={cellHintHorizontalHeight * i}
+                                    width={hintHorizontalGroup.width}
+                                    height={cellHintHorizontalHeight}
+                                    offsetX={12}
+                                    offsetY={-4}
+                                    fill="black"
+                                    fontSize={small ? 15 : 28}
+                                    align="right"
+                                    verticalAlign="middle"
+                                />
+                            ))}
+                        </Group>
+                        <Group
+                            key="illustration-logic-hint-vertical-group"
+                            x={descriptionGroup.width}
+                            y={strokeWidth}
+                            width={hintVerticalGroup.width}
+                            height={hintVerticalGroup.height}
+                        >
+                            <Rect fill="white" x={0} y={0} width={hintVerticalGroup.width} height={hintVerticalGroup.height} />
+                            {convertHintsToStrings(illustrationLogicManager)[1].map((hint, i) => (
+                                <Text
+                                    text={hint}
+                                    x={cellHintVerticalWidth * i}
+                                    y={0}
+                                    width={cellHintVerticalWidth - margin * 2}
+                                    height={hintVerticalGroup.height}
+                                    offsetX={-cellHintVerticalWidth / 2.75}
+                                    offsetY={4}
+                                    fill="black"
+                                    fontSize={small ? 15 : 28}
+                                    align="middle"
+                                    verticalAlign="bottom"
+                                />
+                            ))}
+                        </Group>
+                        <Group
+                            key="illustration-logic-main-group"
+                            x={hintHorizontalGroup.width}
+                            y={hintVerticalGroup.height}
+                            width={mainGroup.width}
+                            height={mainGroup.height}
+                            onTouchMove={(e) => e.evt.preventDefault()}
+                        >
+                            <Rect fill="white" x={0} y={0} width={mainGroup.width} height={mainGroup.height} />
+                            {coordinates.map((coordinate) => (
+                                <Rect
+                                    fill={coordinate.color}
+                                    x={cellMainWidth * coordinate.x + margin}
+                                    y={cellMainHeight * coordinate.y + margin}
+                                    width={cellMainWidth - margin}
+                                    height={cellMainHeight - margin}
+                                />
+                            ))}
+                        </Group>
                         <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
@@ -107,17 +207,6 @@ const IllustrationLogic = (): JSX.Element => {
                             width={width}
                             height={height}
                         />
-                    </Layer>
-                    <Layer key="illustration-logic-piece-layer" listening={false}>
-                        {coordinates.map((coordinate) => (
-                            <Rect
-                                fill={'#BBBBBB'}
-                                x={cellWidth * coordinate.x + strokeWidth + margin * 2}
-                                y={cellHeight * coordinate.y + strokeWidth + margin * 2}
-                                width={cellWidth - margin * 2}
-                                height={cellHeight - margin * 2}
-                            />
-                        ))}
                     </Layer>
                     <Layer key="illustration-logic-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
@@ -208,16 +297,29 @@ const IllustrationLogic = (): JSX.Element => {
 function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinate[] {
     const coordinates: Coordinate[] = [];
 
-    for (let y = 0; y < 5; y++) {
-        for (let x = 0; x < 5; x++) {
-            coordinates.push({
-                x,
-                y
-            });
+    for (let y = 0; y < manager.board.height; y++) {
+        for (let x = 0; x < manager.board.width; x++) {
+            const cell = manager.board.get(x, y);
+            if (cell) {
+                coordinates.push({
+                    x,
+                    y,
+                    color: cell === IllustrationLogicBoardCell.on ? '#CCCC00' : '#909090'
+                });
+            }
         }
     }
 
     return coordinates;
+}
+
+function convertHintsToStrings(manager: IllustrationLogicManager): [string[], string[]] {
+    const [rows, columns] = manager.hint;
+    const separator = ' ';
+    const rowHints = rows.map((x) => x.join(separator));
+    const columnHints = columns.map((x) => x.join(separator));
+
+    return [rowHints, columnHints];
 }
 
 export default IllustrationLogic;

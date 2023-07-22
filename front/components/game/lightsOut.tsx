@@ -66,7 +66,7 @@ const LightsOut = (): JSX.Element => {
         }
 
         setLightsOutManager(new LightsOutManager(size, size));
-    }, [size, size]);
+    }, [size]);
 
     useLayoutEffect(() => {
         setCellWidth((width - strokeWidth * 2) / size);
