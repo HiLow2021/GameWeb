@@ -6,6 +6,7 @@ export const GameList: Readonly<Game[]> = [
     { title: SitePage.gomoku.title, path: SitePage.gomoku.url, thumbnail: SitePage.gomoku.image },
     { title: SitePage.connectFour.title, path: SitePage.connectFour.url, thumbnail: SitePage.connectFour.image },
     { title: SitePage.slidingPuzzle.title, path: SitePage.slidingPuzzle.url, thumbnail: SitePage.slidingPuzzle.image },
+    { title: SitePage.illustrationLogic.title, path: SitePage.illustrationLogic.url, thumbnail: SitePage.illustrationLogic.image },
     { title: SitePage.numberLink.title, path: SitePage.numberLink.url, thumbnail: SitePage.numberLink.image },
     { title: SitePage.oneStrokeWriting.title, path: SitePage.oneStrokeWriting.url, thumbnail: SitePage.oneStrokeWriting.image },
     { title: SitePage.lightsOut.title, path: SitePage.lightsOut.url, thumbnail: SitePage.lightsOut.image }

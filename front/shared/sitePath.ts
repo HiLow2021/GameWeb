@@ -28,6 +28,8 @@ export const SitePath = {
 
         slidingPuzzle: '/slidingPuzzle/',
 
+        illustrationLogic: '/illustrationLogic/',
+
         numberLink: '/numberLink/',
 
         oneStrokeWriting: '/oneStrokeWriting/',
@@ -50,6 +52,8 @@ export const SitePath = {
             connectFour: `${gameDirectory}connectFour/`,
 
             slidingPuzzle: `${gameDirectory}slidingPuzzle/`,
+
+            illustrationLogic: `${gameDirectory}illustrationLogic/`,
 
             numberLink: `${gameDirectory}numberLink/`,
 
