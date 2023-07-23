@@ -1,9 +1,10 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Group, Layer, Rect, Stage, Text } from 'react-konva';
+import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
 import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/illustrationLogicBoardCell';
 import { IllustrationLogicManager } from 'shared/game/illustrationLogic/illustrationLogicManager';
+import useImage from 'use-image';
 import { Coordinate } from '../../shared/game/illustrationLogic/coordinate';
 import { Level } from '../../shared/game/illustrationLogic/level';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
@@ -14,7 +15,7 @@ const IllustrationLogic = (): JSX.Element => {
 
     const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
-    const margin = 4;
+    const margin = small ? 2 : 4;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
@@ -24,28 +25,31 @@ const IllustrationLogic = (): JSX.Element => {
     const descriptionGroup = { width: width / 4, height: height / 4 };
     const hintHorizontalGroup = { width: width / 4, height: height / 1.33 };
     const hintVerticalGroup = { width: width / 1.33, height: height / 4 };
+    const hintHorizontalOffset = { x: small ? 8 : 16, y: small ? -2 : -2 };
+    const hintVerticalOffset = { x: small ? 0 : 0, y: small ? 6 : 8 };
 
     const [size, setSize] = useState(10);
     const [cellMainWidth, setCellMainWidth] = useState((mainGroup.width - margin) / size);
     const [cellMainHeight, setCellMainHeight] = useState((mainGroup.height - margin) / size);
-    const [cellHintHorizontalWidth, setCellHintHorizontalWidth] = useState((hintHorizontalGroup.width - margin) / size / 2);
     const [cellHintHorizontalHeight, setCellHintHorizontalHeight] = useState((hintHorizontalGroup.height - margin) / size);
     const [cellHintVerticalWidth, setCellHintVerticalWidth] = useState((hintVerticalGroup.width - margin) / size);
-    const [cellHintVerticalHeight, setCellHintVerticalHeight] = useState((hintVerticalGroup.height - margin) / size / 2);
 
     const [illustrationLogicManager, setIllustrationLogicManager] = useState<IllustrationLogicManager>(
         new IllustrationLogicManager(size, size)
     );
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(illustrationLogicManager));
+    const [hints, setHints] = useState<[string[], string[]]>(convertHintsToStrings(illustrationLogicManager));
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
     const [level, setLevel] = useState<Level>(Level.normal);
 
+    const [image] = useImage('game/illustrationLogic/background.png');
     const startSound = useContextSound('game/illustrationLogic/sound.mp3');
 
     const initialize = async () => {
         await illustrationLogicManager.initialize();
         setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
+        setHints(() => convertHintsToStrings(illustrationLogicManager));
     };
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
@@ -101,11 +105,10 @@ const IllustrationLogic = (): JSX.Element => {
     useLayoutEffect(() => {
         setCellMainWidth((mainGroup.width - margin) / size);
         setCellMainHeight((mainGroup.height - margin) / size);
-        setCellHintHorizontalWidth((hintHorizontalGroup.width - margin) / size);
         setCellHintHorizontalHeight((hintHorizontalGroup.height - margin) / size);
         setCellHintVerticalWidth((hintVerticalGroup.width - margin) / size);
-        setCellHintVerticalHeight((hintVerticalGroup.height - margin) / size);
         setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
+        setHints(() => convertHintsToStrings(illustrationLogicManager));
     }, [illustrationLogicManager, width, height]);
 
     return (
@@ -118,15 +121,14 @@ const IllustrationLogic = (): JSX.Element => {
                     onTouchStart={select}
                 >
                     <Layer key="illustration-logic-board-layer">
+                        <Image image={image} x={0} y={0} width={width} height={height} />
                         <Group
                             key="illustration-logic-description-group"
                             x={strokeWidth}
                             y={strokeWidth}
                             width={descriptionGroup.width}
                             height={descriptionGroup.height}
-                        >
-                            <Rect fill="black" x={0} y={0} width={descriptionGroup.width} height={descriptionGroup.height} />
-                        </Group>
+                        ></Group>
                         <Group
                             key="illustration-logic-hint-horizontal-group"
                             x={strokeWidth}
@@ -134,18 +136,17 @@ const IllustrationLogic = (): JSX.Element => {
                             width={hintHorizontalGroup.width}
                             height={hintHorizontalGroup.height}
                         >
-                            <Rect fill="white" x={0} y={0} width={hintHorizontalGroup.width} height={hintHorizontalGroup.height} />
-                            {convertHintsToStrings(illustrationLogicManager)[0].map((hint, i) => (
+                            {hints[0].map((hint, i) => (
                                 <Text
                                     text={hint}
                                     x={0}
                                     y={cellHintHorizontalHeight * i}
                                     width={hintHorizontalGroup.width}
                                     height={cellHintHorizontalHeight}
-                                    offsetX={12}
-                                    offsetY={-4}
+                                    offsetX={hintHorizontalOffset.x}
+                                    offsetY={hintHorizontalOffset.y}
                                     fill="black"
-                                    fontSize={small ? 15 : 28}
+                                    fontSize={small ? 14 : 26}
                                     align="right"
                                     verticalAlign="middle"
                                 />
@@ -158,19 +159,18 @@ const IllustrationLogic = (): JSX.Element => {
                             width={hintVerticalGroup.width}
                             height={hintVerticalGroup.height}
                         >
-                            <Rect fill="white" x={0} y={0} width={hintVerticalGroup.width} height={hintVerticalGroup.height} />
-                            {convertHintsToStrings(illustrationLogicManager)[1].map((hint, i) => (
+                            {hints[1].map((hint, i) => (
                                 <Text
                                     text={hint}
                                     x={cellHintVerticalWidth * i}
                                     y={0}
-                                    width={cellHintVerticalWidth - margin * 2}
+                                    width={cellHintVerticalWidth}
                                     height={hintVerticalGroup.height}
-                                    offsetX={-cellHintVerticalWidth / 2.75}
-                                    offsetY={4}
+                                    offsetX={hintVerticalOffset.x}
+                                    offsetY={hintVerticalOffset.y}
                                     fill="black"
-                                    fontSize={small ? 15 : 28}
-                                    align="middle"
+                                    fontSize={small ? 14 : 26}
+                                    align="center"
                                     verticalAlign="bottom"
                                 />
                             ))}
@@ -183,7 +183,7 @@ const IllustrationLogic = (): JSX.Element => {
                             height={mainGroup.height}
                             onTouchMove={(e) => e.evt.preventDefault()}
                         >
-                            <Rect fill="white" x={0} y={0} width={mainGroup.width} height={mainGroup.height} />
+                            <Rect fill={'#707070'} x={0} y={0} width={mainGroup.width} height={mainGroup.height} cornerRadius={4} />
                             {coordinates.map((coordinate) => (
                                 <Rect
                                     fill={coordinate.color}
@@ -191,6 +191,7 @@ const IllustrationLogic = (): JSX.Element => {
                                     y={cellMainHeight * coordinate.y + margin}
                                     width={cellMainWidth - margin}
                                     height={cellMainHeight - margin}
+                                    cornerRadius={4}
                                 />
                             ))}
                         </Group>
@@ -294,13 +295,12 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
     for (let y = 0; y < manager.board.height; y++) {
         for (let x = 0; x < manager.board.width; x++) {
             const cell = manager.board.get(x, y);
-            if (cell) {
-                coordinates.push({
-                    x,
-                    y,
-                    color: cell === IllustrationLogicBoardCell.on ? '#CCCC00' : '#909090'
-                });
-            }
+            const even = (x + y) % 2 === 0;
+            coordinates.push({
+                x,
+                y,
+                color: cell === IllustrationLogicBoardCell.on ? '#FFB601' : even ? '#CCCCCC' : '#DDDDDD'
+            });
         }
     }
 
@@ -309,9 +309,8 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
 
 function convertHintsToStrings(manager: IllustrationLogicManager): [string[], string[]] {
     const [rows, columns] = manager.hint;
-    const separator = ' ';
-    const rowHints = rows.map((x) => x.join(separator));
-    const columnHints = columns.map((x) => x.join(separator));
+    const rowHints = rows.map((x) => x.join(' '));
+    const columnHints = columns.map((x) => x.join('    '));
 
     return [rowHints, columnHints];
 }
