@@ -48,16 +48,6 @@ export const SitePage = {
         image: `${SitePath.public.directory.connectFour}${SitePath.public.file.thumbnail}`
     },
 
-    slidingPuzzle: {
-        title: 'スライドパズル',
-
-        url: SitePath.relativeUrl.slidingPuzzle,
-
-        description: fallback.description,
-
-        image: `${SitePath.public.directory.slidingPuzzle}${SitePath.public.file.thumbnail}`
-    },
-
     illustrationLogic: {
         title: 'お絵かきロジック',
 
@@ -86,6 +76,16 @@ export const SitePage = {
         description: fallback.description,
 
         image: `${SitePath.public.directory.oneStrokeWriting}${SitePath.public.file.thumbnail}`
+    },
+
+    slidingPuzzle: {
+        title: 'スライドパズル',
+
+        url: SitePath.relativeUrl.slidingPuzzle,
+
+        description: fallback.description,
+
+        image: `${SitePath.public.directory.slidingPuzzle}${SitePath.public.file.thumbnail}`
     },
 
     lightsOut: {
