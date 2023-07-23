@@ -58,6 +58,16 @@ export const SitePage = {
         image: `${SitePath.public.directory.slidingPuzzle}${SitePath.public.file.thumbnail}`
     },
 
+    illustrationLogic: {
+        title: 'お絵かきロジック',
+
+        url: SitePath.relativeUrl.illustrationLogic,
+
+        description: fallback.description,
+
+        image: `${SitePath.public.directory.illustrationLogic}${SitePath.public.file.thumbnail}`
+    },
+
     numberLink: {
         title: 'ナンバーリンク',
 
