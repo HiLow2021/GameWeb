@@ -244,8 +244,7 @@ const IllustrationLogic = (): JSX.Element => {
                                 setLevel(e.target.value as Level);
                             }}
                         >
-                            <MenuItem value={'normal'}>普通</MenuItem>
-                            <MenuItem value={'hard'}>難しい</MenuItem>
+                            <MenuItem value={Level.normal}>普通</MenuItem>
                         </Select>
                     </FormControl>
                 </div>
