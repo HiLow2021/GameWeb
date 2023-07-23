@@ -8,7 +8,8 @@
         "konva",
         "mydb",
         "tailwindcss",
-        "tsbuildinfo"
+        "tsbuildinfo",
+        "webp"
     ],
     "css.lint.unknownAtRules": "ignore"
 }

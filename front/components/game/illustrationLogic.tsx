@@ -6,7 +6,7 @@ import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/
 import { IllustrationLogicManager } from 'shared/game/illustrationLogic/illustrationLogicManager';
 import useImage from 'use-image';
 import { Coordinate } from '../../shared/game/illustrationLogic/coordinate';
-import { Level } from '../../shared/game/illustrationLogic/level';
+import { Level, toLogicValue } from '../../shared/game/illustrationLogic/level';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
 import { useContextSound } from '../../shared/utility/soundUtility';
 
@@ -43,7 +43,7 @@ const IllustrationLogic = (): JSX.Element => {
     const [initial, setInitial] = useState(true);
     const [level, setLevel] = useState<Level>(Level.normal);
 
-    const [image] = useImage('game/illustrationLogic/background.png');
+    const [image] = useImage('game/illustrationLogic/background.webp');
     const startSound = useContextSound('game/illustrationLogic/sound.mp3');
 
     const initialize = async () => {
@@ -128,7 +128,15 @@ const IllustrationLogic = (): JSX.Element => {
                             y={strokeWidth}
                             width={descriptionGroup.width}
                             height={descriptionGroup.height}
-                        ></Group>
+                        >
+                            <Rect
+                                fill={'#00000090'}
+                                x={0}
+                                y={0}
+                                width={descriptionGroup.width - margin}
+                                height={descriptionGroup.height - margin}
+                            />
+                        </Group>
                         <Group
                             key="illustration-logic-hint-horizontal-group"
                             x={strokeWidth}
@@ -137,19 +145,29 @@ const IllustrationLogic = (): JSX.Element => {
                             height={hintHorizontalGroup.height}
                         >
                             {hints[0].map((hint, i) => (
-                                <Text
-                                    text={hint}
-                                    x={0}
-                                    y={cellHintHorizontalHeight * i}
-                                    width={hintHorizontalGroup.width}
-                                    height={cellHintHorizontalHeight}
-                                    offsetX={hintHorizontalOffset.x}
-                                    offsetY={hintHorizontalOffset.y}
-                                    fill="black"
-                                    fontSize={small ? 14 : 26}
-                                    align="right"
-                                    verticalAlign="middle"
-                                />
+                                <>
+                                    <Rect
+                                        fill={i % 2 === 0 ? '#00000030' : '#00000050'}
+                                        x={0}
+                                        y={cellHintHorizontalHeight * i}
+                                        width={hintHorizontalGroup.width}
+                                        height={cellHintHorizontalHeight + (i === hints[0].length - 1 ? margin : 0)}
+                                    />
+                                    <Text
+                                        text={hint}
+                                        x={0}
+                                        y={cellHintHorizontalHeight * i}
+                                        width={hintHorizontalGroup.width}
+                                        height={cellHintHorizontalHeight}
+                                        offsetX={hintHorizontalOffset.x}
+                                        offsetY={hintHorizontalOffset.y}
+                                        fill="#9400D3"
+                                        fontSize={small ? 14 : 26}
+                                        fontFamily="Meiryo"
+                                        align="right"
+                                        verticalAlign="middle"
+                                    />
+                                </>
                             ))}
                         </Group>
                         <Group
@@ -160,19 +178,29 @@ const IllustrationLogic = (): JSX.Element => {
                             height={hintVerticalGroup.height}
                         >
                             {hints[1].map((hint, i) => (
-                                <Text
-                                    text={hint}
-                                    x={cellHintVerticalWidth * i}
-                                    y={0}
-                                    width={cellHintVerticalWidth}
-                                    height={hintVerticalGroup.height}
-                                    offsetX={hintVerticalOffset.x}
-                                    offsetY={hintVerticalOffset.y}
-                                    fill="black"
-                                    fontSize={small ? 14 : 26}
-                                    align="center"
-                                    verticalAlign="bottom"
-                                />
+                                <>
+                                    <Rect
+                                        fill={i % 2 === 0 ? '#00000030' : '#00000050'}
+                                        x={cellHintVerticalWidth * i}
+                                        y={0}
+                                        width={cellHintVerticalWidth + (i === hints[1].length - 1 ? margin : 0)}
+                                        height={hintVerticalGroup.height}
+                                    />
+                                    <Text
+                                        text={hint}
+                                        x={cellHintVerticalWidth * i}
+                                        y={0}
+                                        width={cellHintVerticalWidth}
+                                        height={hintVerticalGroup.height}
+                                        offsetX={hintVerticalOffset.x}
+                                        offsetY={hintVerticalOffset.y}
+                                        fill="#9400D3"
+                                        fontSize={small ? 14 : 26}
+                                        fontFamily="Meiryo"
+                                        align="center"
+                                        verticalAlign="bottom"
+                                    />
+                                </>
                             ))}
                         </Group>
                         <Group
@@ -237,12 +265,13 @@ const IllustrationLogic = (): JSX.Element => {
                             id="simple-select"
                             value={level}
                             sx={{ fontSize: small ? 14 : 16 }}
-                            onChange={async (e) => {
+                            onChange={(e) => {
                                 if (!canClick) {
                                     return;
                                 }
 
                                 setLevel(e.target.value as Level);
+                                setSize(toLogicValue(e.target.value as Level));
                             }}
                         >
                             <MenuItem value={Level.normal}>普通</MenuItem>
@@ -299,7 +328,7 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
             coordinates.push({
                 x,
                 y,
-                color: cell === IllustrationLogicBoardCell.on ? '#FFB601' : even ? '#CCCCCC' : '#DDDDDD'
+                color: cell === IllustrationLogicBoardCell.on ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD'
             });
         }
     }
