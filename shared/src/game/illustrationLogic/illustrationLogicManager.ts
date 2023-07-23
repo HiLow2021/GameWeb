@@ -6,7 +6,7 @@ import { IllustrationLogicBoard } from './illustrationLogicBoard';
 export class IllustrationLogicManager {
     private readonly _apiUrl = `${Config.apiUrl}/api/illustrationLogic/question`;
 
-    private _question: IllustrationLogicBoardCell[][];
+    private _answer: IllustrationLogicBoardCell[][];
 
     private _isFinished = false;
 
@@ -17,37 +17,35 @@ export class IllustrationLogicManager {
     }
 
     get hint(): [number[][], number[][]] {
-        return this.getLengths(this._question);
+        return this.getLengths(this._answer);
     }
 
     public constructor(width: number, height: number) {
         this.board = new IllustrationLogicBoard(width, height);
-        this._question = ArrayUtility.create2Array(width, height);
+        this._answer = ArrayUtility.create2Array(width, height);
     }
 
     public async initialize(): Promise<void> {
-        //ArrayUtility.copy2Array(json.cells, this._question);
-        const arr = [
-            ['on', 'off', 'off', 'on', 'on', 'off', 'off', 'on', 'off', 'on'],
-            ['off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on'],
-            ['off', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off'],
-            ['on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off'],
-            ['on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off'],
-            ['off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on'],
-            ['off', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off'],
-            ['on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off'],
-            ['off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on'],
-            ['on', 'off', 'on', 'off', 'on', 'off', 'on', 'off', 'on', 'off']
-        ];
+        const params = new URLSearchParams({
+            width: String(this.board.width),
+            height: String(this.board.height)
+        });
+        const response = await fetch(`${this._apiUrl}?${params}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
 
-        this._question = arr as IllustrationLogicBoardCell[][];
+        ArrayUtility.copy2Array(json.cells, this._answer);
         this.reset();
     }
 
     public reset(): void {
         this._isFinished = false;
         this.board.initialize();
-        ArrayUtility.copy2Array(this._question, this.board.cells)
+        ArrayUtility.copy2Array(this._answer, this.board.cells);
     }
 
     public next(x: number, y: number): boolean {
@@ -63,7 +61,7 @@ export class IllustrationLogicManager {
     }
 
     private updateResult(): void {
-        this._isFinished = this.board.cells.every((x, i) => x.every((y, j) => y === this._question[i][j]));
+        this._isFinished = this.board.cells.every((x, i) => x.every((y, j) => y === this._answer[i][j]));
     }
 
     private set(x: number, y: number): boolean {

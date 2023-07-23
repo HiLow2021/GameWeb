@@ -43,11 +43,6 @@ const IllustrationLogic = (): JSX.Element => {
 
     const startSound = useContextSound('game/illustrationLogic/sound.mp3');
 
-    const [debug, setDebug] = useState('');
-    const displayDebug = (text: string) => {
-        setDebug(text);
-    };
-
     const initialize = async () => {
         await illustrationLogicManager.initialize();
         setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
