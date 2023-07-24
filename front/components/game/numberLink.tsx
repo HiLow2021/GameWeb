@@ -263,7 +263,7 @@ const NumberLink = (): JSX.Element => {
                                 setSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(6)].map((_, i) => (
+                            {[...Array(3)].map((_, i) => (
                                 <MenuItem value={i + 5}>{i + 5}</MenuItem>
                             ))}
                         </Select>
@@ -360,23 +360,21 @@ function getColor(index?: number): string {
         return '#AAAAAA';
     }
 
-    switch ((index % 7) + 1) {
+    switch (index % 7) {
         case 1:
-            return '#BB0000';
+            return '#EE0000';
         case 2:
-            return '#DD0000';
-        case 3:
             return '#00BB00';
-        case 4:
+        case 3:
             return '#00BBCC';
-        case 5:
+        case 4:
             return '#FFA500';
+        case 5:
+            return '#0000FF';
         case 6:
-            return '#FFC0CB';
-        case 7:
-            return '#AAAAAA';
+            return '#8A2BE2';
         default:
-            return '#AAAAAA';
+            return '#FF1493';
     }
 }
 
