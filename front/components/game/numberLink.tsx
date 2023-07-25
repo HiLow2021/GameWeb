@@ -263,7 +263,7 @@ const NumberLink = (): JSX.Element => {
                                 setSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(3)].map((_, i) => (
+                            {[...Array(6)].map((_, i) => (
                                 <MenuItem value={i + 5}>{i + 5}</MenuItem>
                             ))}
                         </Select>
