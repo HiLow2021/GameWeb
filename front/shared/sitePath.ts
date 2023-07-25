@@ -26,9 +26,13 @@ export const SitePath = {
 
         connectFour: '/connectFour/',
 
-        slidingPuzzle: '/slidingPuzzle/',
+        illustrationLogic: '/illustrationLogic/',
+
+        numberLink: '/numberLink/',
 
         oneStrokeWriting: '/oneStrokeWriting/',
+
+        slidingPuzzle: '/slidingPuzzle/',
 
         lightsOut: '/lightsOut/'
     },
@@ -47,9 +51,13 @@ export const SitePath = {
 
             connectFour: `${gameDirectory}connectFour/`,
 
-            slidingPuzzle: `${gameDirectory}slidingPuzzle/`,
+            illustrationLogic: `${gameDirectory}illustrationLogic/`,
+
+            numberLink: `${gameDirectory}numberLink/`,
 
             oneStrokeWriting: `${gameDirectory}oneStrokeWriting/`,
+
+            slidingPuzzle: `${gameDirectory}slidingPuzzle/`,
 
             lightsOut: `${gameDirectory}lightsOut/`
         },

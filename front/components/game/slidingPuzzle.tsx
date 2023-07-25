@@ -66,7 +66,7 @@ const SlidingPuzzle = (): JSX.Element => {
         }
 
         setSlidingPuzzleManager(new SlidingPuzzleManager(size, size));
-    }, [size, size]);
+    }, [size]);
 
     useLayoutEffect(() => {
         setCellWidth((width - outerStrokeWidth * 2) / size);

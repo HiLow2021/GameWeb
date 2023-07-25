@@ -87,7 +87,7 @@ const OneStrokeWriting = (): JSX.Element => {
         }
 
         setOneStrokeWritingManager(new OneStrokeWritingManager(size, size));
-    }, [size, size]);
+    }, [size]);
 
     useEffect(() => {
         if (initial) {
@@ -116,7 +116,7 @@ const OneStrokeWriting = (): JSX.Element => {
         <>
             <div className="flex flex-col justify-center gap-4">
                 <Stage width={width} height={height + textAreaHeight + textAreaMargin} onClick={select} onTouchStart={select}>
-                    <Layer key="lighting-puzzle-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
+                    <Layer key="one-stroke-writing-board-layer" onTouchMove={(e) => e.evt.preventDefault()}>
                         <Rect
                             stroke="black"
                             strokeWidth={strokeWidth}
@@ -126,7 +126,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             height={height - strokeWidth + margin * 2}
                         />
                     </Layer>
-                    <Layer key="lighting-puzzle-piece-layer" listening={false}>
+                    <Layer key="one-stroke-writing-piece-layer" listening={false}>
                         {coordinates.map((coordinate) => (
                             <Rect
                                 fill={coordinate.color}
@@ -137,7 +137,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             />
                         ))}
                     </Layer>
-                    <Layer key="lighting-puzzle-text-layer" listening={false}>
+                    <Layer key="one-stroke-writing-text-layer" listening={false}>
                         <Rect fill="#DDDDDD" x={0} y={height + textAreaMargin} width={width} height={textAreaHeight} />
                         <Rect
                             stroke="black"
@@ -171,7 +171,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             size={small ? 'small' : 'medium'}
                             sx={{ minWidth: 80, fontSize: small ? 18 : 20, textAlign: 'center' }}
                             value={size}
-                            onChange={async (e) => {
+                            onChange={(e) => {
                                 if (!canClick) {
                                     return;
                                 }

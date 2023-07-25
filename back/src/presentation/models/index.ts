@@ -1,3 +1,5 @@
+export { GetIllustrationLogicQuestionResponse } from './getIllustrationLogicQuestionResponse';
+export { GetNumberLinkQuestionResponse } from './getNumberLinkQuestionResponse';
 export { GetOneStrokeWritingQuestionResponse } from './getOneStrokeWritingQuestionResponse';
 export { PostConnectFourNextRequest } from './postConnectFourNextRequest';
 export { PostConnectFourNextResponse } from './postConnectFourNextResponse';
