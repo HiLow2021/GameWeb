@@ -1,5 +1,5 @@
 import { RandomUtility } from 'shared/utility/randomUtility';
-import { IllustrationLogicQuestionJsonDao } from '../../dataAccess/IllustrationLogicQuestionJsonDao';
+import { IllustrationLogicQuestionJsonDao } from '../../dataAccess/illustrationLogicQuestionJsonDao';
 import { IllustrationLogicQuestionDto } from '../queries/illustrationLogicQuestionDto';
 
 export class GetIllustrationLogicQuestionQueryProcessor {
