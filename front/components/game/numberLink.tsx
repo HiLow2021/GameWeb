@@ -215,7 +215,7 @@ const NumberLink = (): JSX.Element => {
                                     width={cellWidth - margin * 2}
                                     height={cellHeight - margin * 2}
                                     fill="white"
-                                    fontSize={small ? 24 : 48}
+                                    fontSize={cellWidth / 2}
                                     align="center"
                                     verticalAlign="middle"
                                 />
