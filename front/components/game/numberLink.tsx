@@ -153,32 +153,27 @@ const NumberLink = (): JSX.Element => {
                         })}
                         {coordinates.map((coordinate) => (
                             <>
-                                <Ellipse
-                                    fill={coordinate.color}
-                                    x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidth}
-                                    y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidth}
-                                    radiusX={cellWidth / 5.35}
-                                    radiusY={cellHeight / 5.35}
-                                />
                                 {coordinate.routes.map((route) => {
                                     if (route.isSame(Vector.left)) {
                                         return (
                                             <Rect
                                                 fill={coordinate.color}
-                                                x={cellWidth * coordinate.x + strokeWidth - margin}
+                                                x={cellWidth * coordinate.x - cellWidth / 6 + strokeWidth - margin}
                                                 y={cellHeight * coordinate.y + cellHeight / 3 + strokeWidth - margin}
-                                                width={cellWidth / 2 + margin * 2}
+                                                width={cellWidth / 2 + cellWidth / 3 + margin * 2}
                                                 height={cellHeight / 3 + margin * 2}
+                                                cornerRadius={30}
                                             />
                                         );
                                     } else if (route.isSame(Vector.right)) {
                                         return (
                                             <Rect
                                                 fill={coordinate.color}
-                                                x={cellWidth * coordinate.x + cellWidth / 2 + strokeWidth - margin}
+                                                x={cellWidth * coordinate.x + cellWidth / 2 - cellWidth / 6 + strokeWidth - margin}
                                                 y={cellHeight * coordinate.y + cellHeight / 3 + strokeWidth - margin}
-                                                width={cellWidth / 2 + margin * 2}
+                                                width={cellWidth / 2 + cellWidth / 3 + margin * 2}
                                                 height={cellHeight / 3 + margin * 2}
+                                                cornerRadius={30}
                                             />
                                         );
                                     } else if (route.isSame(Vector.up)) {
@@ -186,9 +181,10 @@ const NumberLink = (): JSX.Element => {
                                             <Rect
                                                 fill={coordinate.color}
                                                 x={cellWidth * coordinate.x + cellHeight / 3 + strokeWidth - margin}
-                                                y={cellHeight * coordinate.y + strokeWidth - margin}
+                                                y={cellHeight * coordinate.y - cellHeight / 6 + strokeWidth - margin}
                                                 width={cellWidth / 3 + margin * 2}
-                                                height={cellHeight / 2 + margin * 2}
+                                                height={cellHeight / 2 + cellHeight / 3 + margin * 2}
+                                                cornerRadius={30}
                                             />
                                         );
                                     } else {
@@ -196,9 +192,10 @@ const NumberLink = (): JSX.Element => {
                                             <Rect
                                                 fill={coordinate.color}
                                                 x={cellWidth * coordinate.x + cellHeight / 3 + strokeWidth - margin}
-                                                y={cellHeight * coordinate.y + cellHeight / 2 + strokeWidth - margin}
+                                                y={cellHeight * coordinate.y + cellHeight / 2 - cellHeight / 6 + strokeWidth - margin}
                                                 width={cellWidth / 3 + margin * 2}
-                                                height={cellHeight / 2 + margin * 2}
+                                                height={cellHeight / 2 + cellHeight / 3 + margin * 2}
+                                                cornerRadius={30}
                                             />
                                         );
                                     }
