@@ -151,6 +151,14 @@ export class NumberLinkManager {
             return false;
         }
 
+        const isLoop =
+            this.getConnectedCells(x + direction.x, y + direction.y)
+                .flat()
+                .some((cell) => cell.x === x && cell.y === y) && !isConnected;
+        if (isLoop) {
+            return false;
+        }
+
         return true;
     }
 
