@@ -582,38 +582,6 @@
         "straight": true,
         "cells": [
             [
-                "off",
-                "off",
-                "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "off",
-                "off"
-            ],
-            [
-                "block",
-                "block",
-                "block",
-                "block"
-            ]
-        ]
-    },
-    {
-        "width": 4,
-        "height": 4,
-        "block": 4,
-        "straight": true,
-        "cells": [
-            [
                 "block",
                 "block",
                 "off",
