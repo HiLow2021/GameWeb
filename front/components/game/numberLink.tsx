@@ -141,7 +141,7 @@ const NumberLink = (): JSX.Element => {
                             slideEnd();
                             setMouseDown(false);
                         }}
-                        onTouchStart={(e) => clear(e)}
+                        onDblTap={(e) => clear(e)}
                         onTouchMove={(e) => {
                             e.evt.preventDefault();
                             slide(e);
