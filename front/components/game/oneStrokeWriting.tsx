@@ -68,11 +68,11 @@ const OneStrokeWriting = (): JSX.Element => {
     };
 
     const result = async (): Promise<void> => {
-        if (oneStrokeWritingManager.result === Result.undecided) {
+        if (oneStrokeWritingManager.result === Result.Undecided) {
             return;
         }
 
-        if (oneStrokeWritingManager.result === Result.failed) {
+        if (oneStrokeWritingManager.result === Result.Failed) {
             await CommonUtility.delay(200);
 
             oneStrokeWritingManager.reset();
@@ -148,7 +148,7 @@ const OneStrokeWriting = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={oneStrokeWritingManager.result === Result.succeeded ? 'クリア！' : ''}
+                            text={oneStrokeWritingManager.result === Result.Succeeded ? 'クリア！' : ''}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}
@@ -232,13 +232,13 @@ function convertCellsToCoordinates(manager: OneStrokeWritingManager): Coordinate
         for (let x = 0; x < cells[y].length; x++) {
             let coordinate: Coordinate;
 
-            if (manager.result === Result.succeeded || (manager.currentPosition?.x === x && manager.currentPosition?.y === y)) {
+            if (manager.result === Result.Succeeded || (manager.currentPosition?.x === x && manager.currentPosition?.y === y)) {
                 coordinate = { x, y, color: '#00BB00' };
-            } else if (cells[y][x] === OneStrokeWritingBoardCell.on) {
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.On) {
                 coordinate = { x, y, color: '#CCCC00' };
-            } else if (cells[y][x] === OneStrokeWritingBoardCell.off) {
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.Off) {
                 coordinate = { x, y, color: '#909090' };
-            } else if (cells[y][x] === OneStrokeWritingBoardCell.block) {
+            } else if (cells[y][x] === OneStrokeWritingBoardCell.Block) {
                 coordinate = { x, y, color: '#FF3333' };
             } else {
                 coordinate = { x, y, color: '#909090' };

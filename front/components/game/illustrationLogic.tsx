@@ -328,7 +328,7 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
             coordinates.push({
                 x,
                 y,
-                color: cell === IllustrationLogicBoardCell.on ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD'
+                color: cell === IllustrationLogicBoardCell.On ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD'
             });
         }
     }

@@ -38,12 +38,12 @@ export class OthelloManager extends OthelloManagerBase {
     }
 
     private setHighLight(chip: OthelloBoardCell): void {
-        this.board.reset(OthelloBoardCell.highLight);
+        this.board.reset(OthelloBoardCell.HighLight);
 
         for (let x = 0; x < this.board.size; x++) {
             for (let y = 0; y < this.board.size; y++) {
                 if (this.canPut(x, y, chip)) {
-                    this.board.set(x, y, OthelloBoardCell.highLight);
+                    this.board.set(x, y, OthelloBoardCell.HighLight);
                 }
             }
         }

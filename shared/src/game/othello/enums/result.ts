@@ -1,8 +1,8 @@
 export type Result = typeof Result[keyof typeof Result];
 
 export const Result = {
-    black: 'black',
-    white: 'white',
-    draw: 'draw',
-    undecided: 'undecided'
+    Black: 'black',
+    White: 'white',
+    Draw: 'draw',
+    Undecided: 'undecided'
 } as const;

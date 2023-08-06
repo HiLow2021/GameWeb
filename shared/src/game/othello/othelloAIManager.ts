@@ -40,7 +40,7 @@ export class OthelloAIManager extends OthelloManagerBase {
                 this.next(step.x, step.y);
             }
 
-            if ((backTurn === Turn.black && this.result === Result.black) || (backTurn === Turn.white && this.result === Result.white)) {
+            if ((backTurn === Turn.Black && this.result === Result.Black) || (backTurn === Turn.White && this.result === Result.White)) {
                 winCells[first.y][first.x]++;
             }
 

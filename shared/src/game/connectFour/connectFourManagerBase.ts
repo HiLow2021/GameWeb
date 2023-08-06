@@ -5,16 +5,16 @@ import { Turn } from './enums/turn';
 import { Vector } from './vector';
 
 export abstract class ConnectFourManagerBase {
-    protected _currentTurn: Turn = Turn.black;
+    protected _currentTurn: Turn = Turn.Black;
 
-    protected _result: Result = Result.undecided;
+    protected _result: Result = Result.Undecided;
 
     public readonly board: ConnectFourBoard;
 
     public readonly winCount: number;
 
     get currentStone(): ConnectFourBoardCell {
-        return this.currentTurn === Turn.black ? ConnectFourBoardCell.black : ConnectFourBoardCell.white;
+        return this.currentTurn === Turn.Black ? ConnectFourBoardCell.Black : ConnectFourBoardCell.White;
     }
 
     get currentTurn(): Turn {
@@ -22,7 +22,7 @@ export abstract class ConnectFourManagerBase {
     }
 
     get isFinished(): boolean {
-        return this._result !== Result.undecided;
+        return this._result !== Result.Undecided;
     }
 
     get result(): Result {
@@ -36,8 +36,8 @@ export abstract class ConnectFourManagerBase {
     }
 
     public initialize(): void {
-        this._currentTurn = Turn.black;
-        this._result = Result.undecided;
+        this._currentTurn = Turn.Black;
+        this._result = Result.Undecided;
         this.board.initialize();
     }
 
@@ -57,24 +57,24 @@ export abstract class ConnectFourManagerBase {
     }
 
     protected rotateTurn(): void {
-        if (this._currentTurn === Turn.black) {
-            this._currentTurn = Turn.white;
+        if (this._currentTurn === Turn.Black) {
+            this._currentTurn = Turn.White;
         } else {
-            this._currentTurn = Turn.black;
+            this._currentTurn = Turn.Black;
         }
     }
 
     protected updateResult(x: number, y: number, chip: ConnectFourBoardCell): void {
         const win = this.checkWin(x, y, chip);
 
-        if (win && this._currentTurn === Turn.black) {
-            this._result = Result.black;
-        } else if (win && this._currentTurn === Turn.white) {
-            this._result = Result.white;
+        if (win && this._currentTurn === Turn.Black) {
+            this._result = Result.Black;
+        } else if (win && this._currentTurn === Turn.White) {
+            this._result = Result.White;
         } else if (!this.canPutAll()) {
-            this._result = Result.draw;
+            this._result = Result.Draw;
         } else {
-            this._result = Result.undecided;
+            this._result = Result.Undecided;
         }
     }
 
@@ -87,9 +87,9 @@ export abstract class ConnectFourManagerBase {
         const chip2 = this.board.get(x, y + 1);
 
         return (
-            (chip1 === ConnectFourBoardCell.empty || chip1 === ConnectFourBoardCell.highLight) &&
-            chip2 !== ConnectFourBoardCell.empty &&
-            chip2 !== ConnectFourBoardCell.highLight
+            (chip1 === ConnectFourBoardCell.Empty || chip1 === ConnectFourBoardCell.HighLight) &&
+            chip2 !== ConnectFourBoardCell.Empty &&
+            chip2 !== ConnectFourBoardCell.HighLight
         );
     }
 
@@ -121,7 +121,7 @@ export abstract class ConnectFourManagerBase {
             y += dy;
         }
         const sideChip1 = this.board.get(x + dx, y + dy);
-        const side1 = Number(sideChip1 === ConnectFourBoardCell.empty || sideChip1 === ConnectFourBoardCell.highLight);
+        const side1 = Number(sideChip1 === ConnectFourBoardCell.Empty || sideChip1 === ConnectFourBoardCell.HighLight);
 
         let count = 0;
         while (this.board.get(x, y) === chip) {
@@ -130,7 +130,7 @@ export abstract class ConnectFourManagerBase {
             count++;
         }
         const sideChip2 = this.board.get(x, y);
-        const side2 = Number(sideChip2 === ConnectFourBoardCell.empty || sideChip2 === ConnectFourBoardCell.highLight);
+        const side2 = Number(sideChip2 === ConnectFourBoardCell.Empty || sideChip2 === ConnectFourBoardCell.HighLight);
 
         if (includingEmptySides) {
             count += side1 + side2;

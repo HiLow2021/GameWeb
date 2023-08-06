@@ -193,7 +193,7 @@ const Othello = (): JSX.Element => {
                             radiusY={cellHeight / 3}
                         />
                         <Text
-                            text={displayCount(othelloManager.board, OthelloBoardCell.black)}
+                            text={displayCount(othelloManager.board, OthelloBoardCell.Black)}
                             x={cellWidth / 2}
                             y={height}
                             width={cellWidth + strokeWidth}
@@ -211,7 +211,7 @@ const Othello = (): JSX.Element => {
                             radiusY={cellHeight / 3}
                         />
                         <Text
-                            text={displayCount(othelloManager.board, OthelloBoardCell.white)}
+                            text={displayCount(othelloManager.board, OthelloBoardCell.White)}
                             x={cellWidth * (size - 1) - cellWidth / 2}
                             y={height}
                             width={cellWidth + strokeWidth}
@@ -316,15 +316,15 @@ function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case OthelloBoardCell.black:
+                case OthelloBoardCell.Black:
                     coordinate = { x, y, color: 'black', stone: true };
                     break;
 
-                case OthelloBoardCell.white:
+                case OthelloBoardCell.White:
                     coordinate = { x, y, color: 'white', stone: true };
                     break;
 
-                case OthelloBoardCell.highLight:
+                case OthelloBoardCell.HighLight:
                     coordinate = { x, y, color: 'orange', stone: false };
                     break;
 
@@ -340,7 +340,7 @@ function convertCellsToCoordinates(cells: OthelloBoardCell[][]): Coordinate[] {
 }
 
 function isOpponent(currentTurn: Turn, player: Player): boolean {
-    return (currentTurn === Turn.white && player === Player.black) || (currentTurn === Turn.black && player === Player.white);
+    return (currentTurn === Turn.White && player === Player.black) || (currentTurn === Turn.Black && player === Player.white);
 }
 
 function displayCount(board: OthelloBoard, cell: OthelloBoardCell): string {
@@ -348,15 +348,15 @@ function displayCount(board: OthelloBoard, cell: OthelloBoardCell): string {
 }
 
 function displayText(result: Result, currentTurn: Turn, player: Player): string {
-    if (result === Result.undecided) {
-        if ((currentTurn === Turn.black && player === Player.black) || (currentTurn === Turn.white && player === Player.white)) {
+    if (result === Result.Undecided) {
+        if ((currentTurn === Turn.Black && player === Player.black) || (currentTurn === Turn.White && player === Player.white)) {
             return 'プレイヤーのターンです';
         } else {
             return 'AIのターンです';
         }
-    } else if (result === Result.draw) {
+    } else if (result === Result.Draw) {
         return '引き分けです';
-    } else if ((result === Result.black && player === Player.black) || (result === Result.white && player === Player.white)) {
+    } else if ((result === Result.Black && player === Player.black) || (result === Result.White && player === Player.white)) {
         return 'プレイヤーの勝利です';
     } else {
         return 'AIの勝利です';

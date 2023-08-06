@@ -245,15 +245,15 @@ function convertCellsToCoordinates(cells: ConnectFourBoardCell[][]): Coordinate[
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case ConnectFourBoardCell.black:
+                case ConnectFourBoardCell.Black:
                     coordinate = { x, y, borderColor: 'gray', innerColorStart: '#EE0000', innerColorEnd: '#BB0000', stone: true };
                     break;
 
-                case ConnectFourBoardCell.white:
+                case ConnectFourBoardCell.White:
                     coordinate = { x, y, borderColor: 'gray', innerColorStart: '#EEEE00', innerColorEnd: '#BBBB00', stone: true };
                     break;
 
-                case ConnectFourBoardCell.highLight:
+                case ConnectFourBoardCell.HighLight:
                     coordinate = { x, y, borderColor: 'gray', innerColorStart: '', innerColorEnd: '', stone: false };
                     break;
 
@@ -269,19 +269,19 @@ function convertCellsToCoordinates(cells: ConnectFourBoardCell[][]): Coordinate[
 }
 
 function isOpponent(currentTurn: Turn, player: Player): boolean {
-    return (currentTurn === Turn.white && player === Player.black) || (currentTurn === Turn.black && player === Player.white);
+    return (currentTurn === Turn.White && player === Player.black) || (currentTurn === Turn.Black && player === Player.white);
 }
 
 function displayText(result: Result, currentTurn: Turn, player: Player): string {
-    if (result === Result.undecided) {
-        if ((currentTurn === Turn.black && player === Player.black) || (currentTurn === Turn.white && player === Player.white)) {
+    if (result === Result.Undecided) {
+        if ((currentTurn === Turn.Black && player === Player.black) || (currentTurn === Turn.White && player === Player.white)) {
             return 'プレイヤーのターンです';
         } else {
             return 'AIのターンです';
         }
-    } else if (result === Result.draw) {
+    } else if (result === Result.Draw) {
         return '引き分けです';
-    } else if ((result === Result.black && player === Player.black) || (result === Result.white && player === Player.white)) {
+    } else if ((result === Result.Black && player === Player.black) || (result === Result.White && player === Player.white)) {
         return 'プレイヤーの勝利です';
     } else {
         return 'AIの勝利です';
