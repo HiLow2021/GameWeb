@@ -124,10 +124,8 @@ const NumberLink = (): JSX.Element => {
                 <Stage width={width} height={height + textAreaHeight + textAreaMargin}>
                     <Layer
                         key="number-link-board-layer"
-                        onMouseDown={(e) => {
-                            setMouseDown(true);
-                            clear(e);
-                        }}
+                        onDblClick={(e) => clear(e)}
+                        onMouseDown={() => setMouseDown(true)}
                         onMouseUp={() => {
                             slideEnd();
                             setMouseDown(false);
@@ -141,7 +139,7 @@ const NumberLink = (): JSX.Element => {
                             slideEnd();
                             setMouseDown(false);
                         }}
-                        onTouchStart={(e) => clear(e)}
+                        onDblTap={(e) => clear(e)}
                         onTouchMove={(e) => {
                             e.evt.preventDefault();
                             slide(e);
