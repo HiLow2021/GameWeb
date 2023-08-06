@@ -38,12 +38,12 @@ export class ConnectFourManager extends ConnectFourManagerBase {
     }
 
     private setHighLight(): void {
-        this.board.reset(ConnectFourBoardCell.highLight);
+        this.board.reset(ConnectFourBoardCell.HighLight);
 
         for (let x = 0; x < this.board.width; x++) {
             for (let y = 0; y < this.board.height; y++) {
                 if (this.canPut(x, y)) {
-                    this.board.set(x, y, ConnectFourBoardCell.highLight);
+                    this.board.set(x, y, ConnectFourBoardCell.HighLight);
                 }
             }
         }

@@ -6,7 +6,7 @@ import { Vector } from './vector';
 
 export class ConnectFourAIManager extends ConnectFourManagerBase {
     get opponentStone(): ConnectFourBoardCell {
-        return this.currentStone === ConnectFourBoardCell.black ? ConnectFourBoardCell.white : ConnectFourBoardCell.black;
+        return this.currentStone === ConnectFourBoardCell.Black ? ConnectFourBoardCell.White : ConnectFourBoardCell.Black;
     }
 
     public setBoard(cells: ConnectFourBoardCell[][], currentTurn: Turn): void {
@@ -66,7 +66,7 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
         let result = neededEmptySides
             ? this.countAll(x, y, chip, true).some((count) => count >= neededLineCount + 2)
             : this.countAll(x, y, chip).some((count) => count >= neededLineCount);
-        this.board.set(x, y, ConnectFourBoardCell.empty);
+        this.board.set(x, y, ConnectFourBoardCell.Empty);
 
         if (result && neededLineCount < this.winCount) {
             result = !this.isDangerPosition(x, y, neededLineCount + 1);
@@ -79,16 +79,16 @@ export class ConnectFourAIManager extends ConnectFourManagerBase {
         this.board.set(x, y, this.currentStone);
 
         if (!this.canPut(x, y - 1)) {
-            this.board.set(x, y, ConnectFourBoardCell.empty);
+            this.board.set(x, y, ConnectFourBoardCell.Empty);
 
             return false;
         }
 
         this.board.set(x, y - 1, this.opponentStone);
         const result = this.countAll(x, y - 1, this.opponentStone).some((count) => count >= neededLineCount);
-        this.board.set(x, y - 1, ConnectFourBoardCell.empty);
+        this.board.set(x, y - 1, ConnectFourBoardCell.Empty);
 
-        this.board.set(x, y, ConnectFourBoardCell.empty);
+        this.board.set(x, y, ConnectFourBoardCell.Empty);
 
         return result;
     }

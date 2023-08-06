@@ -27,18 +27,18 @@ export class OthelloBoard {
     public initialize(): void {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
-                this._cells[y][x] = OthelloBoardCell.empty;
+                this._cells[y][x] = OthelloBoardCell.Empty;
             }
         }
-        this._cells[this.halfSize - 1][this.halfSize - 1] = OthelloBoardCell.white;
-        this._cells[this.halfSize][this.halfSize - 1] = OthelloBoardCell.black;
-        this._cells[this.halfSize - 1][this.halfSize] = OthelloBoardCell.black;
-        this._cells[this.halfSize][this.halfSize] = OthelloBoardCell.white;
+        this._cells[this.halfSize - 1][this.halfSize - 1] = OthelloBoardCell.White;
+        this._cells[this.halfSize][this.halfSize - 1] = OthelloBoardCell.Black;
+        this._cells[this.halfSize - 1][this.halfSize] = OthelloBoardCell.Black;
+        this._cells[this.halfSize][this.halfSize] = OthelloBoardCell.White;
     }
 
     public get(x: number, y: number): OthelloBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return OthelloBoardCell.outOfRange;
+            return OthelloBoardCell.OutOfRange;
         }
 
         return this._cells[y][x];
@@ -73,7 +73,7 @@ export class OthelloBoard {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
                 if (this._cells[y][x] === cell) {
-                    this._cells[y][x] = OthelloBoardCell.empty;
+                    this._cells[y][x] = OthelloBoardCell.Empty;
                 }
             }
         }

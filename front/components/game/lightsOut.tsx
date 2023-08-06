@@ -189,11 +189,11 @@ function convertCellsToCoordinates(cells: LightsOutBoardCell[][]): Coordinate[] 
             let coordinate: Coordinate;
 
             switch (cells[y][x]) {
-                case LightsOutBoardCell.on:
+                case LightsOutBoardCell.On:
                     coordinate = { x, y, color: '#CCCC00' };
                     break;
 
-                case LightsOutBoardCell.off:
+                case LightsOutBoardCell.Off:
                     coordinate = { x, y, color: '#909090' };
                     break;
 

@@ -41,7 +41,7 @@ export class OneStrokeWritingGenerator {
     }
 
     private check(x: number, y: number): boolean {
-        if (this.board.get(x, y) !== OneStrokeWritingBoardCell.off) {
+        if (this.board.get(x, y) !== OneStrokeWritingBoardCell.Off) {
             return false;
         }
 
@@ -49,16 +49,16 @@ export class OneStrokeWritingGenerator {
     }
 
     private move(x1: number, y1: number): boolean {
-        this.board.set(x1, y1, OneStrokeWritingBoardCell.on);
+        this.board.set(x1, y1, OneStrokeWritingBoardCell.On);
 
-        let result = this.board.cells.flat().every((x) => x !== OneStrokeWritingBoardCell.off);
+        let result = this.board.cells.flat().every((x) => x !== OneStrokeWritingBoardCell.Off);
 
         for (const direction of Vector.all) {
             let x2 = x1 + direction.x;
             let y2 = y1 + direction.y;
-            if (this.board.get(x2, y2) === OneStrokeWritingBoardCell.off) {
-                while (this.straightMode && this.board.get(x2 + direction.x, y2 + direction.y) === OneStrokeWritingBoardCell.off) {
-                    this.board.set(x2, y2, OneStrokeWritingBoardCell.on);
+            if (this.board.get(x2, y2) === OneStrokeWritingBoardCell.Off) {
+                while (this.straightMode && this.board.get(x2 + direction.x, y2 + direction.y) === OneStrokeWritingBoardCell.Off) {
+                    this.board.set(x2, y2, OneStrokeWritingBoardCell.On);
                     x2 += direction.x;
                     y2 += direction.y;
                 }
@@ -68,7 +68,7 @@ export class OneStrokeWritingGenerator {
                 while (this.straightMode && !(x2 === x1 + direction.x && y2 === y1 + direction.y)) {
                     x2 -= direction.x;
                     y2 -= direction.y;
-                    this.board.set(x2, y2, OneStrokeWritingBoardCell.off);
+                    this.board.set(x2, y2, OneStrokeWritingBoardCell.Off);
                 }
 
                 if (result) {
@@ -77,7 +77,7 @@ export class OneStrokeWritingGenerator {
             }
         }
 
-        this.board.set(x1, y1, OneStrokeWritingBoardCell.off);
+        this.board.set(x1, y1, OneStrokeWritingBoardCell.Off);
 
         return result;
     }
@@ -87,8 +87,8 @@ export class OneStrokeWritingGenerator {
             const x = RandomUtility.random(0, this.board.width);
             const y = RandomUtility.random(0, this.board.height);
 
-            if (this.board.get(x, y) !== OneStrokeWritingBoardCell.block) {
-                this.board.set(x, y, OneStrokeWritingBoardCell.block);
+            if (this.board.get(x, y) !== OneStrokeWritingBoardCell.Block) {
+                this.board.set(x, y, OneStrokeWritingBoardCell.Block);
                 blockCount--;
             }
         }

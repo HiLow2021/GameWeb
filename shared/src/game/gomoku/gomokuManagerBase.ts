@@ -5,16 +5,16 @@ import { GomokuBoard } from './gomokuBoard';
 import { Vector } from './vector';
 
 export abstract class GomokuManagerBase {
-    protected _currentTurn: Turn = Turn.black;
+    protected _currentTurn: Turn = Turn.Black;
 
-    protected _result: Result = Result.undecided;
+    protected _result: Result = Result.Undecided;
 
     public readonly board: GomokuBoard;
 
     public readonly winCount: number;
 
     get currentStone(): GomokuBoardCell {
-        return this.currentTurn === Turn.black ? GomokuBoardCell.black : GomokuBoardCell.white;
+        return this.currentTurn === Turn.Black ? GomokuBoardCell.Black : GomokuBoardCell.White;
     }
 
     get currentTurn(): Turn {
@@ -22,7 +22,7 @@ export abstract class GomokuManagerBase {
     }
 
     get isFinished(): boolean {
-        return this._result !== Result.undecided;
+        return this._result !== Result.Undecided;
     }
 
     get result(): Result {
@@ -36,8 +36,8 @@ export abstract class GomokuManagerBase {
     }
 
     public initialize(): void {
-        this._currentTurn = Turn.black;
-        this._result = Result.undecided;
+        this._currentTurn = Turn.Black;
+        this._result = Result.Undecided;
         this.board.initialize();
     }
 
@@ -57,24 +57,24 @@ export abstract class GomokuManagerBase {
     }
 
     protected rotateTurn(): void {
-        if (this._currentTurn === Turn.black) {
-            this._currentTurn = Turn.white;
+        if (this._currentTurn === Turn.Black) {
+            this._currentTurn = Turn.White;
         } else {
-            this._currentTurn = Turn.black;
+            this._currentTurn = Turn.Black;
         }
     }
 
     protected updateResult(x: number, y: number, chip: GomokuBoardCell): void {
         const win = this.checkWin(x, y, chip);
 
-        if (win && this._currentTurn === Turn.black) {
-            this._result = Result.black;
-        } else if (win && this._currentTurn === Turn.white) {
-            this._result = Result.white;
+        if (win && this._currentTurn === Turn.Black) {
+            this._result = Result.Black;
+        } else if (win && this._currentTurn === Turn.White) {
+            this._result = Result.White;
         } else if (!this.canPutAll()) {
-            this._result = Result.draw;
+            this._result = Result.Draw;
         } else {
-            this._result = Result.undecided;
+            this._result = Result.Undecided;
         }
     }
 
@@ -83,7 +83,7 @@ export abstract class GomokuManagerBase {
     }
 
     protected canPut(x: number, y: number): boolean {
-        return this.board.get(x, y) === GomokuBoardCell.empty;
+        return this.board.get(x, y) === GomokuBoardCell.Empty;
     }
 
     protected canPutAll(): boolean {
@@ -113,7 +113,7 @@ export abstract class GomokuManagerBase {
             x += dx;
             y += dy;
         }
-        const side1 = Number(this.board.get(x + dx, y + dy) === GomokuBoardCell.empty);
+        const side1 = Number(this.board.get(x + dx, y + dy) === GomokuBoardCell.Empty);
 
         let count = 0;
         while (this.board.get(x, y) === chip) {
@@ -121,7 +121,7 @@ export abstract class GomokuManagerBase {
             y -= dy;
             count++;
         }
-        const side2 = Number(this.board.get(x, y) === GomokuBoardCell.empty);
+        const side2 = Number(this.board.get(x, y) === GomokuBoardCell.Empty);
 
         if (includingEmptySides) {
             count += side1 + side2;

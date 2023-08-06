@@ -30,14 +30,14 @@ export class GomokuBoard {
     public initialize(): void {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
-                this._cells[y][x] = GomokuBoardCell.empty;
+                this._cells[y][x] = GomokuBoardCell.Empty;
             }
         }
     }
 
     public get(x: number, y: number): GomokuBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return GomokuBoardCell.outOfRange;
+            return GomokuBoardCell.OutOfRange;
         }
 
         return this._cells[y][x];

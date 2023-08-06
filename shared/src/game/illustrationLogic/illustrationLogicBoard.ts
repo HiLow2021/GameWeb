@@ -23,14 +23,14 @@ export class IllustrationLogicBoard {
     public initialize(): void {
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                this._cells[y][x] = IllustrationLogicBoardCell.off;
+                this._cells[y][x] = IllustrationLogicBoardCell.Off;
             }
         }
     }
 
     public get(x: number, y: number): IllustrationLogicBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return IllustrationLogicBoardCell.outOfRange;
+            return IllustrationLogicBoardCell.OutOfRange;
         }
 
         return this._cells[y][x];

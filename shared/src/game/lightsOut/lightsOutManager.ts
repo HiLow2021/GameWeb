@@ -13,7 +13,7 @@ export class LightsOutManager {
     }
 
     get isCompleted(): boolean {
-        return this.board.cells.flat().every((x) => x === LightsOutBoardCell.off);
+        return this.board.cells.flat().every((x) => x === LightsOutBoardCell.Off);
     }
 
     public constructor(width: number, height: number) {
@@ -29,17 +29,17 @@ export class LightsOutManager {
     }
 
     public next(x: number, y: number): boolean {
-        if (this.board.get(x, y) === LightsOutBoardCell.outOfRange) {
+        if (this.board.get(x, y) === LightsOutBoardCell.OutOfRange) {
             return false;
         }
 
         for (const direction of Vector.all) {
             const chip1 = this.board.get(x + direction.x, y + direction.y);
-            if (chip1 === LightsOutBoardCell.outOfRange) {
+            if (chip1 === LightsOutBoardCell.OutOfRange) {
                 continue;
             }
 
-            const chip2 = chip1 === LightsOutBoardCell.on ? LightsOutBoardCell.off : LightsOutBoardCell.on;
+            const chip2 = chip1 === LightsOutBoardCell.On ? LightsOutBoardCell.Off : LightsOutBoardCell.On;
 
             this.board.set(x + direction.x, y + direction.y, chip2);
         }

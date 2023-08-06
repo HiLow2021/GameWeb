@@ -30,14 +30,14 @@ export class ConnectFourBoard {
     public initialize(): void {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
-                this._cells[y][x] = ConnectFourBoardCell.empty;
+                this._cells[y][x] = ConnectFourBoardCell.Empty;
             }
         }
     }
 
     public get(x: number, y: number): ConnectFourBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return ConnectFourBoardCell.outOfRange;
+            return ConnectFourBoardCell.OutOfRange;
         }
 
         return this._cells[y][x];
@@ -59,7 +59,7 @@ export class ConnectFourBoard {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
                 if (this._cells[y][x] === cell) {
-                    this._cells[y][x] = ConnectFourBoardCell.empty;
+                    this._cells[y][x] = ConnectFourBoardCell.Empty;
                 }
             }
         }

@@ -6,7 +6,7 @@ import { Vector } from './vector';
 
 export class GomokuAIManager extends GomokuManagerBase {
     get opponentStone(): GomokuBoardCell {
-        return this.currentStone === GomokuBoardCell.black ? GomokuBoardCell.white : GomokuBoardCell.black;
+        return this.currentStone === GomokuBoardCell.Black ? GomokuBoardCell.White : GomokuBoardCell.Black;
     }
 
     public setBoard(cells: GomokuBoardCell[][], currentTurn: Turn): void {
@@ -26,7 +26,7 @@ export class GomokuAIManager extends GomokuManagerBase {
     }
 
     public improvedRandomMethod(): Vector {
-        if (this.board.getCount(GomokuBoardCell.empty) === this.board.square) {
+        if (this.board.getCount(GomokuBoardCell.Empty) === this.board.square) {
             const halfWidth = Math.floor(this.board.width / 2);
             const halfHeight = Math.floor(this.board.height / 2);
             const range = 3;
@@ -88,12 +88,12 @@ export class GomokuAIManager extends GomokuManagerBase {
 
     private isCandidate(x: number, y: number, chip: GomokuBoardCell, neededLineCount: number, neededEmptySides: boolean): boolean {
         let result = false;
-        if (this.board.get(x, y) === GomokuBoardCell.empty) {
+        if (this.board.get(x, y) === GomokuBoardCell.Empty) {
             this.board.set(x, y, chip);
             result = neededEmptySides
                 ? this.countAll(x, y, chip, true).some((count) => count >= neededLineCount + 2)
                 : this.countAll(x, y, chip).some((count) => count >= neededLineCount);
-            this.board.set(x, y, GomokuBoardCell.empty);
+            this.board.set(x, y, GomokuBoardCell.Empty);
         }
 
         return result;

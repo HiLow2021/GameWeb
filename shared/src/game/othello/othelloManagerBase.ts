@@ -5,14 +5,14 @@ import { OthelloBoard } from './othelloBoard';
 import { Result } from './enums/result';
 
 export abstract class OthelloManagerBase {
-    protected _currentTurn: Turn = Turn.black;
+    protected _currentTurn: Turn = Turn.Black;
 
-    protected _result: Result = Result.undecided;
+    protected _result: Result = Result.Undecided;
 
     public readonly board: OthelloBoard;
 
     get currentStone(): OthelloBoardCell {
-        return this.currentTurn === Turn.black ? OthelloBoardCell.black : OthelloBoardCell.white;
+        return this.currentTurn === Turn.Black ? OthelloBoardCell.Black : OthelloBoardCell.White;
     }
 
     get currentTurn(): Turn {
@@ -20,7 +20,7 @@ export abstract class OthelloManagerBase {
     }
 
     get isFinished(): boolean {
-        return this._result !== Result.undecided;
+        return this._result !== Result.Undecided;
     }
 
     get result(): Result {
@@ -33,8 +33,8 @@ export abstract class OthelloManagerBase {
     }
 
     public initialize(): void {
-        this._currentTurn = Turn.black;
-        this._result = Result.undecided;
+        this._currentTurn = Turn.Black;
+        this._result = Result.Undecided;
         this.board.initialize();
     }
 
@@ -54,38 +54,38 @@ export abstract class OthelloManagerBase {
     }
 
     protected rotateTurn(): void {
-        const canPutBlack = this.canPutAll(OthelloBoardCell.black);
-        const canPutWhite = this.canPutAll(OthelloBoardCell.white);
+        const canPutBlack = this.canPutAll(OthelloBoardCell.Black);
+        const canPutWhite = this.canPutAll(OthelloBoardCell.White);
 
-        if (this._currentTurn === Turn.black && canPutWhite) {
-            this._currentTurn = Turn.white;
-        } else if (this._currentTurn === Turn.white && canPutBlack) {
-            this._currentTurn = Turn.black;
+        if (this._currentTurn === Turn.Black && canPutWhite) {
+            this._currentTurn = Turn.White;
+        } else if (this._currentTurn === Turn.White && canPutBlack) {
+            this._currentTurn = Turn.Black;
         }
     }
 
     protected updateResult(): void {
-        const blackCount = this.board.getCount(OthelloBoardCell.black);
-        const whiteCount = this.board.getCount(OthelloBoardCell.white);
-        const canPutBlack = this.canPutAll(OthelloBoardCell.black);
-        const canPutWhite = this.canPutAll(OthelloBoardCell.white);
+        const blackCount = this.board.getCount(OthelloBoardCell.Black);
+        const whiteCount = this.board.getCount(OthelloBoardCell.White);
+        const canPutBlack = this.canPutAll(OthelloBoardCell.Black);
+        const canPutWhite = this.canPutAll(OthelloBoardCell.White);
 
         if (!canPutBlack && !canPutWhite) {
             if (blackCount > whiteCount) {
-                this._result = Result.black;
+                this._result = Result.Black;
             } else if (whiteCount > blackCount) {
-                this._result = Result.white;
+                this._result = Result.White;
             } else {
-                this._result = Result.draw;
+                this._result = Result.Draw;
             }
         } else {
-            this._result = Result.undecided;
+            this._result = Result.Undecided;
         }
     }
 
     protected canPut(x: number, y: number, chip: OthelloBoardCell): boolean {
         const currentChip = this.board.get(x, y);
-        if (currentChip !== OthelloBoardCell.empty && currentChip !== OthelloBoardCell.highLight) {
+        if (currentChip !== OthelloBoardCell.Empty && currentChip !== OthelloBoardCell.HighLight) {
             return false;
         }
 
@@ -159,8 +159,8 @@ export abstract class OthelloManagerBase {
 
     protected canSearch(chip1: OthelloBoardCell, chip2: OthelloBoardCell): boolean {
         return (
-            (chip1 == OthelloBoardCell.black && chip2 == OthelloBoardCell.white) ||
-            (chip2 == OthelloBoardCell.black && chip1 == OthelloBoardCell.white)
+            (chip1 == OthelloBoardCell.Black && chip2 == OthelloBoardCell.White) ||
+            (chip2 == OthelloBoardCell.Black && chip1 == OthelloBoardCell.White)
         );
     }
 }

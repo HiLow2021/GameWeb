@@ -87,6 +87,20 @@ export class NumberLinkManager {
         return result;
     }
 
+    public clearConnectedCells(x: number, y: number): boolean {
+        const startCell = this.board.get(x, y);
+        if (!startCell || !startCell.number) {
+            return false;
+        }
+
+        const connectedCells = this.getConnectedCells(x, y).flat();
+        for (const cell of connectedCells) {
+            cell.routes.splice(0, 2);
+        }
+
+        return true;
+    }
+
     private updateResult(): void {
         const count = this.board.cells.flat().filter((x) => x.number != undefined).length;
 
@@ -134,7 +148,10 @@ export class NumberLinkManager {
         const isConnected = cell1.routes.some((route) => route.isSame(direction));
         const count1 = cell1.routes.length;
         const count2 = cell2.routes.length;
-        if (!isConnected && ((cell1.number ? count1 === 1 : count1 === 2) || (cell2.number ? count2 === 1 : count2 === 2))) {
+        if (
+            (!isConnected && ((cell1.number ? count1 === 1 : count1 !== 1) || (cell2.number ? count2 === 1 : count2 === 2))) ||
+            (isConnected && (cell1.number || count1 === 2))
+        ) {
             return false;
         }
 
@@ -147,15 +164,7 @@ export class NumberLinkManager {
 
         const number1 = cell1.number ? cell1.number : getNumber(x, y);
         const number2 = cell2.number ? cell2.number : getNumber(x + direction.x, y + direction.y);
-        if (number1 && number2 && number1 !== number2) {
-            return false;
-        }
-
-        const isLoop =
-            this.getConnectedCells(x + direction.x, y + direction.y)
-                .flat()
-                .some((cell) => cell.x === x && cell.y === y) && !isConnected;
-        if (isLoop) {
+        if ((!number1 && !number2) || (number1 && number2 && number1 !== number2)) {
             return false;
         }
 

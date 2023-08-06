@@ -26,14 +26,14 @@ export class OneStrokeWritingBoard {
     public initialize(): void {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
-                this._cells[y][x] = OneStrokeWritingBoardCell.off;
+                this._cells[y][x] = OneStrokeWritingBoardCell.Off;
             }
         }
     }
 
     public get(x: number, y: number): OneStrokeWritingBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return OneStrokeWritingBoardCell.outOfRange;
+            return OneStrokeWritingBoardCell.OutOfRange;
         }
 
         return this._cells[y][x];

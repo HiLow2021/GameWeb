@@ -65,14 +65,14 @@ export class IllustrationLogicManager {
 
     private set(x: number, y: number): boolean {
         const cell = this.board.get(x, y);
-        if (cell === IllustrationLogicBoardCell.outOfRange) {
+        if (cell === IllustrationLogicBoardCell.OutOfRange) {
             return false;
         }
 
-        if (cell === IllustrationLogicBoardCell.on) {
-            this.board.set(x, y, IllustrationLogicBoardCell.off);
-        } else if (cell === IllustrationLogicBoardCell.off) {
-            this.board.set(x, y, IllustrationLogicBoardCell.on);
+        if (cell === IllustrationLogicBoardCell.On) {
+            this.board.set(x, y, IllustrationLogicBoardCell.Off);
+        } else if (cell === IllustrationLogicBoardCell.Off) {
+            this.board.set(x, y, IllustrationLogicBoardCell.On);
         }
 
         return true;
@@ -84,7 +84,7 @@ export class IllustrationLogicManager {
             let count = 0;
             const result = [];
             for (const pixel of array) {
-                if (pixel === IllustrationLogicBoardCell.on) {
+                if (pixel === IllustrationLogicBoardCell.On) {
                     count += 1;
                     if (!flag) {
                         flag = true;

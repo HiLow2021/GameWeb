@@ -26,14 +26,14 @@ export class LightsOutBoard {
     public initialize(): void {
         for (let y = 0; y < this._cells.length; y++) {
             for (let x = 0; x < this._cells[y].length; x++) {
-                this._cells[y][x] = LightsOutBoardCell.off;
+                this._cells[y][x] = LightsOutBoardCell.Off;
             }
         }
     }
 
     public get(x: number, y: number): LightsOutBoardCell {
         if (!this.isWithinRange(x, y)) {
-            return LightsOutBoardCell.outOfRange;
+            return LightsOutBoardCell.OutOfRange;
         }
 
         return this._cells[y][x];

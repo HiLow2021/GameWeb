@@ -33,7 +33,7 @@ const NumberLink = (): JSX.Element => {
         setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
     };
 
-    const slide = async (e: KonvaEventObject<Event>): Promise<void> => {
+    const slide = (e: KonvaEventObject<Event>): void => {
         if (!canClick || numberLinkManager.isFinished) {
             return;
         }
@@ -57,23 +57,38 @@ const NumberLink = (): JSX.Element => {
         }
 
         setSlidePosition([x, y]);
-
-        function convert(e: KonvaEventObject<Event>): number[] {
-            const stage = e.target.getStage();
-            const position = stage?.getPointerPosition();
-            if (!position) {
-                return [-1, -1];
-            }
-
-            const x = Math.floor((position.x - strokeWidth) / cellWidth);
-            const y = Math.floor((position.y - strokeWidth) / cellHeight);
-
-            return [x, y];
-        }
     };
 
     const slideEnd = (): void => {
         setSlidePosition(undefined);
+    };
+
+    const clear = (e: KonvaEventObject<Event>): void => {
+        if (!canClick || numberLinkManager.isFinished) {
+            return;
+        }
+
+        const [x, y] = convert(e);
+        if (numberLinkManager.clearConnectedCells(x, y)) {
+            setCanClick(() => false);
+
+            setCoordinates(() => convertCellsToCoordinates(numberLinkManager));
+
+            setCanClick(() => true);
+        }
+    };
+
+    const convert = (e: KonvaEventObject<Event>): number[] => {
+        const stage = e.target.getStage();
+        const position = stage?.getPointerPosition();
+        if (!position) {
+            return [-1, -1];
+        }
+
+        const x = Math.floor((position.x - strokeWidth) / cellWidth);
+        const y = Math.floor((position.y - strokeWidth) / cellHeight);
+
+        return [x, y];
     };
 
     useEffect(() => {
@@ -109,24 +124,29 @@ const NumberLink = (): JSX.Element => {
                 <Stage width={width} height={height + textAreaHeight + textAreaMargin}>
                     <Layer
                         key="number-link-board-layer"
-                        onMouseDown={() => setMouseDown(true)}
+                        onMouseDown={(e) => {
+                            setMouseDown(true);
+                            clear(e);
+                        }}
                         onMouseUp={() => {
                             slideEnd();
                             setMouseDown(false);
                         }}
-                        onMouseMove={async (e) => {
+                        onMouseMove={(e) => {
                             if (mouseDown) {
-                                await slide(e);
+                                slide(e);
                             }
                         }}
                         onMouseLeave={() => {
                             slideEnd();
                             setMouseDown(false);
                         }}
-                        onTouchMove={async (e) => {
+                        onTouchStart={(e) => clear(e)}
+                        onTouchMove={(e) => {
                             e.evt.preventDefault();
-                            await slide(e);
+                            slide(e);
                         }}
+                        onTouchEnd={() => slideEnd()}
                     >
                         <Rect
                             stroke="black"
@@ -336,17 +356,6 @@ function convertCellsToCoordinates(manager: NumberLinkManager): Coordinate[] {
                 ids.add(cell2.id);
             }
         }
-    }
-
-    const remainCells = manager.board.cells.flat().filter((x) => x.routes.length > 0 && !ids.has(x.id));
-    for (const cell of remainCells) {
-        coordinates.push({
-            x: cell.x,
-            y: cell.y,
-            routes: cell.routes,
-            color: getColor()
-        });
-        ids.add(cell.id);
     }
 
     return coordinates;
