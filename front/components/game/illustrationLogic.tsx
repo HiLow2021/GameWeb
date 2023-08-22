@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
+import { Group, Image, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/illustrationLogicBoardCell';
 import { IllustrationLogicManager } from 'shared/game/illustrationLogic/illustrationLogicManager';
 import useImage from 'use-image';
@@ -15,6 +15,7 @@ const IllustrationLogic = (): JSX.Element => {
 
     const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
+    const miniStrokeWidth = strokeWidth * 2;
     const margin = small ? 2 : 4;
     const miniMargin = margin * 12;
     const textAreaHeight = small ? 44 : 80;
@@ -221,14 +222,44 @@ const IllustrationLogic = (): JSX.Element => {
                         >
                             <Rect fill={'#707070'} x={0} y={0} width={mainGroup.width} height={mainGroup.height} cornerRadius={4} />
                             {coordinates.map((coordinate) => (
-                                <Rect
-                                    fill={coordinate.color}
-                                    x={cellMainWidth * coordinate.x + margin}
-                                    y={cellMainHeight * coordinate.y + margin}
-                                    width={cellMainWidth - margin}
-                                    height={cellMainHeight - margin}
-                                    cornerRadius={4}
-                                />
+                                <>
+                                    <Rect
+                                        fill={coordinate.color}
+                                        x={cellMainWidth * coordinate.x + margin}
+                                        y={cellMainHeight * coordinate.y + margin}
+                                        width={cellMainWidth - margin}
+                                        height={cellMainHeight - margin}
+                                        cornerRadius={4}
+                                    />
+                                    <Rect
+                                        fill={coordinate.color}
+                                        x={cellMainWidth * coordinate.x + margin}
+                                        y={cellMainHeight * coordinate.y + margin}
+                                        width={cellMainWidth - margin}
+                                        height={cellMainHeight - margin}
+                                        cornerRadius={4}
+                                    />
+                                    <Line
+                                        stroke={coordinate.markColor}
+                                        strokeWidth={miniStrokeWidth}
+                                        points={[
+                                            cellMainWidth * coordinate.x + margin * 3 + 1,
+                                            cellMainHeight * coordinate.y + margin * 3 + 1,
+                                            cellMainWidth * (coordinate.x + 1) - margin * 2.5 + 1,
+                                            cellMainHeight * (coordinate.y + 1) - margin * 2.5 + 1
+                                        ]}
+                                    />
+                                    <Line
+                                        stroke={coordinate.markColor}
+                                        strokeWidth={miniStrokeWidth}
+                                        points={[
+                                            cellMainWidth * coordinate.x + margin * 3 + 1,
+                                            cellMainHeight * (coordinate.y + 1) - margin * 2.5 + 1,
+                                            cellMainWidth * (coordinate.x + 1) - margin * 2.5 + 1,
+                                            cellMainHeight * coordinate.y + margin * 3 + 1
+                                        ]}
+                                    />
+                                </>
                             ))}
                         </Group>
                         <Rect
@@ -337,7 +368,8 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
                 x,
                 y,
                 color: cell === IllustrationLogicBoardCell.On ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD',
-                miniColor: cell === IllustrationLogicBoardCell.On ? '#FFFFFF' : 'transparent'
+                miniColor: cell === IllustrationLogicBoardCell.On ? '#FFFFFF' : 'transparent',
+                markColor: cell === IllustrationLogicBoardCell.Mark ? '#FF7F50' : 'transparent'
             });
         }
     }

@@ -53,6 +53,7 @@ export class IllustrationLogicManager {
     public reset(): void {
         this._isFinished = false;
         this.board.initialize();
+        ArrayUtility.copy2Array(this._answer, this.board.cells);
     }
 
     public next(x: number, y: number): boolean {
@@ -68,7 +69,13 @@ export class IllustrationLogicManager {
     }
 
     private updateResult(): void {
-        this._isFinished = this.board.cells.every((x, i) => x.every((y, j) => y === this._answer[i][j]));
+        this._isFinished = this.board.cells.every((x, i) =>
+            x.every((y, j) =>
+                this._answer[i][j] === IllustrationLogicBoardCell.On
+                    ? y === IllustrationLogicBoardCell.On
+                    : y === IllustrationLogicBoardCell.Off || y === IllustrationLogicBoardCell.Mark
+            )
+        );
     }
 
     private set(x: number, y: number): boolean {
@@ -78,9 +85,11 @@ export class IllustrationLogicManager {
         }
 
         if (cell === IllustrationLogicBoardCell.On) {
-            this.board.set(x, y, IllustrationLogicBoardCell.Off);
+            this.board.set(x, y, IllustrationLogicBoardCell.Mark);
         } else if (cell === IllustrationLogicBoardCell.Off) {
             this.board.set(x, y, IllustrationLogicBoardCell.On);
+        } else {
+            this.board.set(x, y, IllustrationLogicBoardCell.Off);
         }
 
         return true;

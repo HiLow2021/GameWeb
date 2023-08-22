@@ -3,4 +3,5 @@ export type Coordinate = {
     y: number;
     color: string;
     miniColor: string;
+    markColor: string;
 };
