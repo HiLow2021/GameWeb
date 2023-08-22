@@ -17,6 +17,7 @@ const IllustrationLogic = (): JSX.Element => {
     const miniStrokeWidth = strokeWidth * 1.5;
     const margin = small ? 2 : 4;
     const miniMargin = margin * 12;
+    const intervalLine = 5;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
@@ -218,6 +219,30 @@ const IllustrationLogic = (): JSX.Element => {
                             onTouchMove={(e) => e.evt.preventDefault()}
                         >
                             <Rect fill={'#707070'} x={0} y={0} width={mainGroup.width} height={mainGroup.height} cornerRadius={4} />
+                            {Array.from({ length: size / intervalLine - 1 }).map((_, i) => (
+                                <>
+                                    <Line
+                                        stroke="#0070FF"
+                                        strokeWidth={strokeWidth * 2}
+                                        points={[
+                                            cellMainWidth * (i + 1) * intervalLine + strokeWidthHalf,
+                                            0,
+                                            cellMainWidth * (i + 1) * intervalLine + strokeWidthHalf,
+                                            mainGroup.height
+                                        ]}
+                                    />
+                                    <Line
+                                        stroke="#0070FF"
+                                        strokeWidth={strokeWidth * 2}
+                                        points={[
+                                            0,
+                                            cellMainHeight * (i + 1) * intervalLine + strokeWidthHalf,
+                                            mainGroup.width,
+                                            cellMainHeight * (i + 1) * intervalLine + strokeWidthHalf
+                                        ]}
+                                    />
+                                </>
+                            ))}
                             {coordinates.map((coordinate) => (
                                 <>
                                     <Rect
