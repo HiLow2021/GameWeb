@@ -1,8 +1,6 @@
 import { NumberLinkBoardCell } from 'shared/game/numberLink/type/numberLinkBoardCell';
-import { Result } from './result';
+import { Response } from './response';
 
-export type GetNumberLinkQuestionResponse = {
+export type GetNumberLinkQuestionResponse = Response & {
     cells: NumberLinkBoardCell[][];
-
-    result: Result;
 };

@@ -1,9 +1,7 @@
-import { Result } from './result';
+import { Response } from './response';
 
-export type PostGomokuNextResponse = {
+export type PostGomokuNextResponse = Response & {
     x: number;
 
     y: number;
-
-    result: Result;
 };
