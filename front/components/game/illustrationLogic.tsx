@@ -16,13 +16,14 @@ const IllustrationLogic = (): JSX.Element => {
     const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
     const margin = small ? 2 : 4;
+    const miniMargin = margin * 12;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
     const mainGroup = { width: width / 1.33, height: height / 1.33 };
-    const descriptionGroup = { width: width / 4, height: height / 4 };
+    const miniGroup = { width: width / 4, height: height / 4 };
     const hintHorizontalGroup = { width: width / 4, height: height / 1.33 };
     const hintVerticalGroup = { width: width / 1.33, height: height / 4 };
     const hintHorizontalOffset = { x: small ? 8 : 16, y: small ? -2 : -2 };
@@ -31,6 +32,8 @@ const IllustrationLogic = (): JSX.Element => {
     const [size, setSize] = useState(10);
     const [cellMainWidth, setCellMainWidth] = useState((mainGroup.width - margin) / size);
     const [cellMainHeight, setCellMainHeight] = useState((mainGroup.height - margin) / size);
+    const [cellMiniWidth, setCellMiniWidth] = useState((miniGroup.width - miniMargin) / size);
+    const [cellMiniHeight, setCellMiniHeight] = useState((miniGroup.height - miniMargin) / size);
     const [cellHintHorizontalHeight, setCellHintHorizontalHeight] = useState((hintHorizontalGroup.height - margin) / size);
     const [cellHintVerticalWidth, setCellHintVerticalWidth] = useState((hintVerticalGroup.width - margin) / size);
 
@@ -105,6 +108,8 @@ const IllustrationLogic = (): JSX.Element => {
     useLayoutEffect(() => {
         setCellMainWidth((mainGroup.width - margin) / size);
         setCellMainHeight((mainGroup.height - margin) / size);
+        setCellMiniWidth((miniGroup.width - miniMargin) / size);
+        setCellMiniHeight((miniGroup.height - miniMargin) / size);
         setCellHintHorizontalHeight((hintHorizontalGroup.height - margin) / size);
         setCellHintVerticalWidth((hintVerticalGroup.width - margin) / size);
         setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
@@ -123,24 +128,27 @@ const IllustrationLogic = (): JSX.Element => {
                     <Layer key="illustration-logic-board-layer">
                         <Image image={image} x={0} y={0} width={width} height={height} />
                         <Group
-                            key="illustration-logic-description-group"
+                            key="illustration-logic-mini-group"
                             x={strokeWidth}
                             y={strokeWidth}
-                            width={descriptionGroup.width}
-                            height={descriptionGroup.height}
+                            width={miniGroup.width}
+                            height={miniGroup.height}
                         >
-                            <Rect
-                                fill={'#00000090'}
-                                x={0}
-                                y={0}
-                                width={descriptionGroup.width - margin}
-                                height={descriptionGroup.height - margin}
-                            />
+                            <Rect fill={'#00000090'} x={0} y={0} width={miniGroup.width - margin} height={miniGroup.height - margin} />
+                            {coordinates.map((coordinate) => (
+                                <Rect
+                                    fill={coordinate.miniColor}
+                                    x={cellMiniWidth * coordinate.x + miniMargin / 2.25}
+                                    y={cellMiniHeight * coordinate.y + miniMargin / 2.25}
+                                    width={cellMiniWidth + 1}
+                                    height={cellMiniHeight + 1}
+                                />
+                            ))}
                         </Group>
                         <Group
                             key="illustration-logic-hint-horizontal-group"
                             x={strokeWidth}
-                            y={descriptionGroup.height}
+                            y={miniGroup.height}
                             width={hintHorizontalGroup.width}
                             height={hintHorizontalGroup.height}
                         >
@@ -172,7 +180,7 @@ const IllustrationLogic = (): JSX.Element => {
                         </Group>
                         <Group
                             key="illustration-logic-hint-vertical-group"
-                            x={descriptionGroup.width}
+                            x={miniGroup.width}
                             y={strokeWidth}
                             width={hintVerticalGroup.width}
                             height={hintVerticalGroup.height}
@@ -328,7 +336,8 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
             coordinates.push({
                 x,
                 y,
-                color: cell === IllustrationLogicBoardCell.On ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD'
+                color: cell === IllustrationLogicBoardCell.On ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD',
+                miniColor: cell === IllustrationLogicBoardCell.On ? '#FFFFFF' : 'transparent'
             });
         }
     }
