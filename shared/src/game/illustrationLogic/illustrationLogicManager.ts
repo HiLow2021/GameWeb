@@ -6,11 +6,17 @@ import { IllustrationLogicBoard } from './illustrationLogicBoard';
 export class IllustrationLogicManager {
     private readonly _apiUrl = `${Config.apiUrl}/api/illustrationLogic/question`;
 
+    private _title: string;
+
     private _answer: IllustrationLogicBoardCell[][];
 
     private _isFinished = false;
 
     public readonly board: IllustrationLogicBoard;
+
+    get title(): string {
+        return this._title;
+    }
 
     get isFinished(): boolean {
         return this._isFinished;
@@ -22,6 +28,7 @@ export class IllustrationLogicManager {
 
     public constructor(width: number, height: number) {
         this.board = new IllustrationLogicBoard(width, height);
+        this._title = '';
         this._answer = ArrayUtility.create2Array(width, height);
     }
 
@@ -38,6 +45,7 @@ export class IllustrationLogicManager {
         });
         const json = await response.json();
 
+        this._title = json.title;
         ArrayUtility.copy2Array(json.cells, this._answer);
         this.reset();
     }

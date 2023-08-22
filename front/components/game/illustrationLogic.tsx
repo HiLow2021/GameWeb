@@ -243,7 +243,7 @@ const IllustrationLogic = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={illustrationLogicManager.isFinished ? 'クリア！' : ''}
+                            text={illustrationLogicManager.isFinished ? `答えは 「${illustrationLogicManager.title}」` : ''}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}

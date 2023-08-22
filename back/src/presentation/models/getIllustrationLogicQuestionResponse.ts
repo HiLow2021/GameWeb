@@ -2,5 +2,7 @@ import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/
 import { Response } from './response';
 
 export type GetIllustrationLogicQuestionResponse = Response & {
+    title: string;
+
     cells: IllustrationLogicBoardCell[][];
 };
