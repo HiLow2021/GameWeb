@@ -14,7 +14,7 @@ const IllustrationLogic = (): JSX.Element => {
 
     const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
-    const miniStrokeWidth = strokeWidth * 2;
+    const miniStrokeWidth = strokeWidth * 1.5;
     const margin = small ? 2 : 4;
     const miniMargin = margin * 12;
     const textAreaHeight = small ? 44 : 80;
