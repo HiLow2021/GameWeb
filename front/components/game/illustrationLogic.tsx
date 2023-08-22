@@ -1,10 +1,9 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Group, Image, Layer, Line, Rect, Stage, Text } from 'react-konva';
+import { Group, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/illustrationLogicBoardCell';
 import { IllustrationLogicManager } from 'shared/game/illustrationLogic/illustrationLogicManager';
-import useImage from 'use-image';
 import { Coordinate } from '../../shared/game/illustrationLogic/coordinate';
 import { Level, toLogicValue } from '../../shared/game/illustrationLogic/level';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
@@ -47,7 +46,6 @@ const IllustrationLogic = (): JSX.Element => {
     const [initial, setInitial] = useState(true);
     const [level, setLevel] = useState<Level>(Level.normal);
 
-    const [image] = useImage('game/illustrationLogic/background.webp');
     const startSound = useContextSound('game/illustrationLogic/sound.mp3');
 
     const initialize = async () => {
@@ -127,7 +125,6 @@ const IllustrationLogic = (): JSX.Element => {
                     onTouchStart={select}
                 >
                     <Layer key="illustration-logic-board-layer">
-                        <Image image={image} x={0} y={0} width={width} height={height} />
                         <Group
                             key="illustration-logic-mini-group"
                             x={strokeWidth}
@@ -156,7 +153,7 @@ const IllustrationLogic = (): JSX.Element => {
                             {hints[0].map((hint, i) => (
                                 <>
                                     <Rect
-                                        fill={i % 2 === 0 ? '#00000030' : '#00000050'}
+                                        fill={i % 2 === 0 ? '#00000020' : '#00000040'}
                                         x={0}
                                         y={cellHintHorizontalHeight * i}
                                         width={hintHorizontalGroup.width}
@@ -189,7 +186,7 @@ const IllustrationLogic = (): JSX.Element => {
                             {hints[1].map((hint, i) => (
                                 <>
                                     <Rect
-                                        fill={i % 2 === 0 ? '#00000030' : '#00000050'}
+                                        fill={i % 2 === 0 ? '#00000020' : '#00000040'}
                                         x={cellHintVerticalWidth * i}
                                         y={0}
                                         width={cellHintVerticalWidth + (i === hints[1].length - 1 ? margin : 0)}

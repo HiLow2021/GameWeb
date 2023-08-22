@@ -53,7 +53,6 @@ export class IllustrationLogicManager {
     public reset(): void {
         this._isFinished = false;
         this.board.initialize();
-        ArrayUtility.copy2Array(this._answer, this.board.cells);
     }
 
     public next(x: number, y: number): boolean {
