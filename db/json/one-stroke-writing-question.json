@@ -46,38 +46,6 @@
             [
                 "off",
                 "off",
-                "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "block",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "block",
-                "off"
-            ]
-        ]
-    },
-    {
-        "width": 4,
-        "height": 4,
-        "block": 2,
-        "straight": true,
-        "cells": [
-            [
-                "off",
-                "off",
-                "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
                 "block",
                 "off"
             ],
@@ -207,38 +175,6 @@
                 "off",
                 "block",
                 "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "off",
-                "off"
-            ]
-        ]
-    },
-    {
-        "width": 4,
-        "height": 4,
-        "block": 3,
-        "straight": true,
-        "cells": [
-            [
-                "block",
-                "block",
-                "off",
-                "off"
-            ],
-            [
-                "off",
-                "off",
-                "block",
                 "off"
             ],
             [

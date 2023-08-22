@@ -18,7 +18,12 @@ export class IllustrationLogicQuestionJsonDao {
             return undefined;
         }
 
-        return questions[index].answer.map((x) => x.map((y) => (y === 1 ? IllustrationLogicBoardCell.On : IllustrationLogicBoardCell.Off)));
+        return {
+            title: questions[index].title,
+            cells: questions[index].answer.map((x) =>
+                x.map((y) => (y === 1 ? IllustrationLogicBoardCell.On : IllustrationLogicBoardCell.Off))
+            )
+        };
     }
 
     private async getQuestions(width: number, height: number): Promise<IllustrationLogicQuestion[]> {

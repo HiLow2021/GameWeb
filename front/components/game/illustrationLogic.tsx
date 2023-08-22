@@ -1,10 +1,9 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
+import { Group, Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/illustrationLogicBoardCell';
 import { IllustrationLogicManager } from 'shared/game/illustrationLogic/illustrationLogicManager';
-import useImage from 'use-image';
 import { Coordinate } from '../../shared/game/illustrationLogic/coordinate';
 import { Level, toLogicValue } from '../../shared/game/illustrationLogic/level';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
@@ -15,14 +14,17 @@ const IllustrationLogic = (): JSX.Element => {
 
     const strokeWidth = small ? 2 : 4;
     const strokeWidthHalf = strokeWidth / 2;
+    const miniStrokeWidth = strokeWidth * 1.5;
     const margin = small ? 2 : 4;
+    const miniMargin = margin * 12;
+    const intervalLine = 5;
     const textAreaHeight = small ? 44 : 80;
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
 
     const mainGroup = { width: width / 1.33, height: height / 1.33 };
-    const descriptionGroup = { width: width / 4, height: height / 4 };
+    const miniGroup = { width: width / 4, height: height / 4 };
     const hintHorizontalGroup = { width: width / 4, height: height / 1.33 };
     const hintVerticalGroup = { width: width / 1.33, height: height / 4 };
     const hintHorizontalOffset = { x: small ? 8 : 16, y: small ? -2 : -2 };
@@ -31,6 +33,8 @@ const IllustrationLogic = (): JSX.Element => {
     const [size, setSize] = useState(10);
     const [cellMainWidth, setCellMainWidth] = useState((mainGroup.width - margin) / size);
     const [cellMainHeight, setCellMainHeight] = useState((mainGroup.height - margin) / size);
+    const [cellMiniWidth, setCellMiniWidth] = useState((miniGroup.width - miniMargin) / size);
+    const [cellMiniHeight, setCellMiniHeight] = useState((miniGroup.height - miniMargin) / size);
     const [cellHintHorizontalHeight, setCellHintHorizontalHeight] = useState((hintHorizontalGroup.height - margin) / size);
     const [cellHintVerticalWidth, setCellHintVerticalWidth] = useState((hintVerticalGroup.width - margin) / size);
 
@@ -43,7 +47,6 @@ const IllustrationLogic = (): JSX.Element => {
     const [initial, setInitial] = useState(true);
     const [level, setLevel] = useState<Level>(Level.normal);
 
-    const [image] = useImage('game/illustrationLogic/background.webp');
     const startSound = useContextSound('game/illustrationLogic/sound.mp3');
 
     const initialize = async () => {
@@ -105,6 +108,8 @@ const IllustrationLogic = (): JSX.Element => {
     useLayoutEffect(() => {
         setCellMainWidth((mainGroup.width - margin) / size);
         setCellMainHeight((mainGroup.height - margin) / size);
+        setCellMiniWidth((miniGroup.width - miniMargin) / size);
+        setCellMiniHeight((miniGroup.height - miniMargin) / size);
         setCellHintHorizontalHeight((hintHorizontalGroup.height - margin) / size);
         setCellHintVerticalWidth((hintVerticalGroup.width - margin) / size);
         setCoordinates(() => convertCellsToCoordinates(illustrationLogicManager));
@@ -121,33 +126,35 @@ const IllustrationLogic = (): JSX.Element => {
                     onTouchStart={select}
                 >
                     <Layer key="illustration-logic-board-layer">
-                        <Image image={image} x={0} y={0} width={width} height={height} />
                         <Group
-                            key="illustration-logic-description-group"
+                            key="illustration-logic-mini-group"
                             x={strokeWidth}
                             y={strokeWidth}
-                            width={descriptionGroup.width}
-                            height={descriptionGroup.height}
+                            width={miniGroup.width}
+                            height={miniGroup.height}
                         >
-                            <Rect
-                                fill={'#00000090'}
-                                x={0}
-                                y={0}
-                                width={descriptionGroup.width - margin}
-                                height={descriptionGroup.height - margin}
-                            />
+                            <Rect fill={'#00000090'} x={0} y={0} width={miniGroup.width - margin} height={miniGroup.height - margin} />
+                            {coordinates.map((coordinate) => (
+                                <Rect
+                                    fill={coordinate.miniColor}
+                                    x={cellMiniWidth * coordinate.x + miniMargin / 2.25}
+                                    y={cellMiniHeight * coordinate.y + miniMargin / 2.25}
+                                    width={cellMiniWidth + 1}
+                                    height={cellMiniHeight + 1}
+                                />
+                            ))}
                         </Group>
                         <Group
                             key="illustration-logic-hint-horizontal-group"
                             x={strokeWidth}
-                            y={descriptionGroup.height}
+                            y={miniGroup.height}
                             width={hintHorizontalGroup.width}
                             height={hintHorizontalGroup.height}
                         >
                             {hints[0].map((hint, i) => (
                                 <>
                                     <Rect
-                                        fill={i % 2 === 0 ? '#00000030' : '#00000050'}
+                                        fill={i % 2 === 0 ? '#00000020' : '#00000040'}
                                         x={0}
                                         y={cellHintHorizontalHeight * i}
                                         width={hintHorizontalGroup.width}
@@ -161,7 +168,7 @@ const IllustrationLogic = (): JSX.Element => {
                                         height={cellHintHorizontalHeight}
                                         offsetX={hintHorizontalOffset.x}
                                         offsetY={hintHorizontalOffset.y}
-                                        fill="#9400D3"
+                                        fill="#0070FF"
                                         fontSize={small ? 14 : 26}
                                         fontFamily="Meiryo"
                                         align="right"
@@ -172,7 +179,7 @@ const IllustrationLogic = (): JSX.Element => {
                         </Group>
                         <Group
                             key="illustration-logic-hint-vertical-group"
-                            x={descriptionGroup.width}
+                            x={miniGroup.width}
                             y={strokeWidth}
                             width={hintVerticalGroup.width}
                             height={hintVerticalGroup.height}
@@ -180,7 +187,7 @@ const IllustrationLogic = (): JSX.Element => {
                             {hints[1].map((hint, i) => (
                                 <>
                                     <Rect
-                                        fill={i % 2 === 0 ? '#00000030' : '#00000050'}
+                                        fill={i % 2 === 0 ? '#00000020' : '#00000040'}
                                         x={cellHintVerticalWidth * i}
                                         y={0}
                                         width={cellHintVerticalWidth + (i === hints[1].length - 1 ? margin : 0)}
@@ -194,7 +201,7 @@ const IllustrationLogic = (): JSX.Element => {
                                         height={hintVerticalGroup.height}
                                         offsetX={hintVerticalOffset.x}
                                         offsetY={hintVerticalOffset.y}
-                                        fill="#9400D3"
+                                        fill="#0070FF"
                                         fontSize={small ? 14 : 26}
                                         fontFamily="Meiryo"
                                         align="center"
@@ -212,15 +219,69 @@ const IllustrationLogic = (): JSX.Element => {
                             onTouchMove={(e) => e.evt.preventDefault()}
                         >
                             <Rect fill={'#707070'} x={0} y={0} width={mainGroup.width} height={mainGroup.height} cornerRadius={4} />
+                            {Array.from({ length: size / intervalLine - 1 }).map((_, i) => (
+                                <>
+                                    <Line
+                                        stroke="#0070FF"
+                                        strokeWidth={strokeWidth * 2}
+                                        points={[
+                                            cellMainWidth * (i + 1) * intervalLine + strokeWidthHalf,
+                                            0,
+                                            cellMainWidth * (i + 1) * intervalLine + strokeWidthHalf,
+                                            mainGroup.height
+                                        ]}
+                                    />
+                                    <Line
+                                        stroke="#0070FF"
+                                        strokeWidth={strokeWidth * 2}
+                                        points={[
+                                            0,
+                                            cellMainHeight * (i + 1) * intervalLine + strokeWidthHalf,
+                                            mainGroup.width,
+                                            cellMainHeight * (i + 1) * intervalLine + strokeWidthHalf
+                                        ]}
+                                    />
+                                </>
+                            ))}
                             {coordinates.map((coordinate) => (
-                                <Rect
-                                    fill={coordinate.color}
-                                    x={cellMainWidth * coordinate.x + margin}
-                                    y={cellMainHeight * coordinate.y + margin}
-                                    width={cellMainWidth - margin}
-                                    height={cellMainHeight - margin}
-                                    cornerRadius={4}
-                                />
+                                <>
+                                    <Rect
+                                        fill={coordinate.color}
+                                        x={cellMainWidth * coordinate.x + margin}
+                                        y={cellMainHeight * coordinate.y + margin}
+                                        width={cellMainWidth - margin}
+                                        height={cellMainHeight - margin}
+                                        cornerRadius={4}
+                                    />
+                                    <Rect
+                                        fill={coordinate.color}
+                                        x={cellMainWidth * coordinate.x + margin}
+                                        y={cellMainHeight * coordinate.y + margin}
+                                        width={cellMainWidth - margin}
+                                        height={cellMainHeight - margin}
+                                        cornerRadius={4}
+                                    />
+                                    <Line
+                                        stroke={coordinate.markColor}
+                                        strokeWidth={miniStrokeWidth}
+                                        points={[
+                                            cellMainWidth * coordinate.x + margin * 3 + 1,
+                                            cellMainHeight * coordinate.y + margin * 3 + 1,
+                                            cellMainWidth * (coordinate.x + 1) - margin * 2.5 + 1,
+                                            cellMainHeight * (coordinate.y + 1) - margin * 2.5 + 1
+                                        ]}
+                                    />
+                                    <Line
+                                        stroke={coordinate.markColor}
+                                        strokeWidth={miniStrokeWidth}
+                                        points={[
+                                            cellMainWidth * coordinate.x + margin * 3 + 1,
+                                            cellMainHeight * (coordinate.y + 1) - margin * 2.5 + 1,
+                                            cellMainWidth * (coordinate.x + 1) - margin * 2.5 + 1,
+                                            cellMainHeight * coordinate.y + margin * 3 + 1
+                                        ]}
+                                    />
+                                </>
                             ))}
                         </Group>
                         <Rect
@@ -243,7 +304,7 @@ const IllustrationLogic = (): JSX.Element => {
                             height={textAreaHeight - textStrokeWidth}
                         />
                         <Text
-                            text={illustrationLogicManager.isFinished ? 'クリア！' : ''}
+                            text={illustrationLogicManager.isFinished ? `答えは 「${illustrationLogicManager.title}」` : ''}
                             x={0}
                             y={height + textAreaMargin}
                             width={width}
@@ -283,7 +344,7 @@ const IllustrationLogic = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="secondary"
+                        color="info"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
@@ -300,7 +361,7 @@ const IllustrationLogic = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="secondary"
+                        color="info"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
@@ -328,7 +389,9 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
             coordinates.push({
                 x,
                 y,
-                color: cell === IllustrationLogicBoardCell.On ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD'
+                color: cell === IllustrationLogicBoardCell.On ? '#00CFFF' : even ? '#CCCCCC' : '#DDDDDD',
+                miniColor: cell === IllustrationLogicBoardCell.On ? '#FFFFFF' : 'transparent',
+                markColor: cell === IllustrationLogicBoardCell.Mark ? '#FF7F50' : 'transparent'
             });
         }
     }

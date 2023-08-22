@@ -1,9 +1,7 @@
-import { Result } from './result';
+import { Response } from './response';
 
-export type PostOthelloNextResponse = {
+export type PostOthelloNextResponse = Response & {
     x: number;
 
     y: number;
-
-    result: Result;
 };

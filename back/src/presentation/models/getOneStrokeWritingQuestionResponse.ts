@@ -1,8 +1,6 @@
 import { OneStrokeWritingBoardCell } from 'shared/game/oneStrokeWriting/enum/oneStrokeWritingBoardCell';
-import { Result } from './result';
+import { Response } from './response';
 
-export type GetOneStrokeWritingQuestionResponse = {
+export type GetOneStrokeWritingQuestionResponse = Response & {
     cells: OneStrokeWritingBoardCell[][];
-
-    result: Result;
 };

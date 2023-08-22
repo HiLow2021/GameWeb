@@ -1,8 +1,8 @@
 import { IllustrationLogicBoardCell } from 'shared/game/illustrationLogic/enums/illustrationLogicBoardCell';
-import { Result } from './result';
+import { Response } from './response';
 
-export type GetIllustrationLogicQuestionResponse = {
+export type GetIllustrationLogicQuestionResponse = Response & {
+    title: string;
+
     cells: IllustrationLogicBoardCell[][];
-
-    result: Result;
 };
