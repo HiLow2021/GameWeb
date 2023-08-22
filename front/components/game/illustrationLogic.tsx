@@ -167,7 +167,7 @@ const IllustrationLogic = (): JSX.Element => {
                                         height={cellHintHorizontalHeight}
                                         offsetX={hintHorizontalOffset.x}
                                         offsetY={hintHorizontalOffset.y}
-                                        fill="#9400D3"
+                                        fill="#0070FF"
                                         fontSize={small ? 14 : 26}
                                         fontFamily="Meiryo"
                                         align="right"
@@ -200,7 +200,7 @@ const IllustrationLogic = (): JSX.Element => {
                                         height={hintVerticalGroup.height}
                                         offsetX={hintVerticalOffset.x}
                                         offsetY={hintVerticalOffset.y}
-                                        fill="#9400D3"
+                                        fill="#0070FF"
                                         fontSize={small ? 14 : 26}
                                         fontFamily="Meiryo"
                                         align="center"
@@ -319,7 +319,7 @@ const IllustrationLogic = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="secondary"
+                        color="info"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
@@ -336,7 +336,7 @@ const IllustrationLogic = (): JSX.Element => {
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
                         variant="contained"
-                        color="secondary"
+                        color="info"
                         style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
                         onClick={() => {
                             if (!canClick) {
@@ -364,7 +364,7 @@ function convertCellsToCoordinates(manager: IllustrationLogicManager): Coordinat
             coordinates.push({
                 x,
                 y,
-                color: cell === IllustrationLogicBoardCell.On ? '#EE82EE' : even ? '#CCCCCC' : '#DDDDDD',
+                color: cell === IllustrationLogicBoardCell.On ? '#00CFFF' : even ? '#CCCCCC' : '#DDDDDD',
                 miniColor: cell === IllustrationLogicBoardCell.On ? '#FFFFFF' : 'transparent',
                 markColor: cell === IllustrationLogicBoardCell.Mark ? '#FF7F50' : 'transparent'
             });
