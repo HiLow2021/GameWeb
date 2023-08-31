@@ -133,7 +133,7 @@ const IllustrationLogic = (): JSX.Element => {
                             width={miniGroup.width}
                             height={miniGroup.height}
                         >
-                            <Rect fill={'#00000090'} x={0} y={0} width={miniGroup.width - margin} height={miniGroup.height - margin} />
+                            <Rect fill="#00000090" x={0} y={0} width={miniGroup.width - margin} height={miniGroup.height - margin} />
                             {coordinates.map((coordinate) => (
                                 <Rect
                                     fill={coordinate.miniColor}
@@ -218,7 +218,7 @@ const IllustrationLogic = (): JSX.Element => {
                             height={mainGroup.height}
                             onTouchMove={(e) => e.evt.preventDefault()}
                         >
-                            <Rect fill={'#707070'} x={0} y={0} width={mainGroup.width} height={mainGroup.height} cornerRadius={4} />
+                            <Rect fill="#707070" x={0} y={0} width={mainGroup.width} height={mainGroup.height} cornerRadius={4} />
                             {Array.from({ length: size / intervalLine - 1 }).map((_, i) => (
                                 <>
                                     <Line

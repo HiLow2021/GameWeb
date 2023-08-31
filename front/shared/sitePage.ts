@@ -1,9 +1,7 @@
 import { SitePath } from './sitePath';
 
 const fallback = {
-    description: `色々なミニゲームが遊べるサイトです。
-                  ウェブアプリの学習の一環として製作してみました。
-                  もし良ければ、遊んでみてくださいね😊`
+    description: '色々なミニゲームが遊べるゲームサイトです。\n' + 'Web アプリとクラウドの学習の一環として製作してみました。'
 } as const;
 
 /**
@@ -23,7 +21,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.othello,
 
-        description: fallback.description,
+        description: 'オセロが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.othello}${SitePath.public.file.thumbnail}`
     },
@@ -33,7 +31,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.gomoku,
 
-        description: fallback.description,
+        description: '五目並べが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.gomoku}${SitePath.public.file.thumbnail}`
     },
@@ -43,7 +41,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.connectFour,
 
-        description: fallback.description,
+        description: 'コネクトフォーが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.connectFour}${SitePath.public.file.thumbnail}`
     },
@@ -53,7 +51,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.illustrationLogic,
 
-        description: fallback.description,
+        description: 'お絵かきロジック (ピクロス) が遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.illustrationLogic}${SitePath.public.file.thumbnail}`
     },
@@ -63,7 +61,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.numberLink,
 
-        description: fallback.description,
+        description: 'ナンバーリンクが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.numberLink}${SitePath.public.file.thumbnail}`
     },
@@ -73,7 +71,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.oneStrokeWriting,
 
-        description: fallback.description,
+        description: '一筆書きパズルが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.oneStrokeWriting}${SitePath.public.file.thumbnail}`
     },
@@ -83,7 +81,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.slidingPuzzle,
 
-        description: fallback.description,
+        description: 'スライドパズルが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.slidingPuzzle}${SitePath.public.file.thumbnail}`
     },
@@ -93,7 +91,7 @@ export const SitePage = {
 
         url: SitePath.relativeUrl.lightsOut,
 
-        description: fallback.description,
+        description: 'ライツアウトが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.lightsOut}${SitePath.public.file.thumbnail}`
     }

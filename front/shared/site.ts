@@ -38,6 +38,11 @@ export const Site = {
     favicon: SitePath.public.file.favicon,
 
     /**
+     * Twitter ID
+     */
+    twitter: '@HiLow28564028',
+
+    /**
      * 著作権
      */
     copyright: '© 2022-2023 HiLow'
