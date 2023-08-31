@@ -24,6 +24,8 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
                 <meta property="og:description" content={Site.page.home.description} />
                 <meta property="og:type" content="website" />
                 <meta property="og:locale" content="ja_JP" />
+                <meta name="twitter:site" content={Site.twitter} />
+                <meta name="twitter:creator" content={Site.twitter} />
                 <meta name="twitter:card" content="summary_large_image" />
                 {existsGoogleSearchConsoleId && <meta name="google-site-verification" content={googleSearchConsoleId} />}
             </Head>
