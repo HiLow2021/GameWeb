@@ -7,7 +7,7 @@ export const Layout = ({ children, title, top }: { children: React.ReactNode; ti
     return (
         <>
             <header className="h-18 top-0 flex items-center justify-center bg-black p-4 text-gray-300">
-                <p className="text-center text-3xl sm:text-4xl">{title}</p>
+                <h1 className="text-center text-3xl sm:text-4xl">{title}</h1>
                 <div className="absolute left-4 sm:left-8">
                     <>{top ? <HomeButton /> : <BackButton />}</>
                 </div>
