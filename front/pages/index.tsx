@@ -14,7 +14,7 @@ const Index: NextPage = (): JSX.Element => {
                             <a>
                                 <div className="flex flex-col items-center">
                                     <img className="h-36 w-36 object-scale-down sm:h-48 sm:w-48" src={game.thumbnail} alt={game.title} />
-                                    <div className="p-4 text-center text-xl">{game.title}</div>
+                                    <h2 className="p-4 text-center text-xl">{game.title}</h2>
                                 </div>
                             </a>
                         </Link>
