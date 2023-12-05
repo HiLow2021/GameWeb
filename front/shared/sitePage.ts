@@ -87,11 +87,11 @@ export const SitePage = {
     },
 
     lightsOut: {
-        title: 'ライツアウト',
+        title: '消灯パズル',
 
         url: SitePath.relativeUrl.lightsOut,
 
-        description: 'ライツアウトが遊べるゲームサイトです。',
+        description: '消灯パズルが遊べるゲームサイトです。',
 
         image: `${SitePath.public.directory.lightsOut}${SitePath.public.file.thumbnail}`
     }
