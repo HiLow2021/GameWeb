@@ -1,6 +1,8 @@
 import { SitePage } from './sitePage';
 import { SitePath } from './sitePath';
 
+const currentYear = new Date().getFullYear();
+
 export const Site = {
     /**
      * 名前
@@ -45,5 +47,5 @@ export const Site = {
     /**
      * 著作権
      */
-    copyright: '© 2022-2023 HiLow'
+    copyright: `© 2022-${currentYear} HiLow`
 } as const;
