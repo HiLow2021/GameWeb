@@ -49,12 +49,15 @@ export class LightsOutManager {
         return true;
     }
 
-    private shuffle(step = 100): void {
-        while (step-- > 0) {
-            const x = RandomUtility.random(0, this.board.width);
-            const y = RandomUtility.random(0, this.board.height);
+    private shuffle(max = 100): void {
+        while (this.isCompleted) {
+            this._step = 0;
+            while (this._step < max) {
+                const x = RandomUtility.random(0, this.board.width);
+                const y = RandomUtility.random(0, this.board.height);
 
-            this.next(x, y);
+                this.next(x, y);
+            }
         }
     }
 }

@@ -46,19 +46,21 @@ export class SlidingPuzzleManager {
         return false;
     }
 
-    private shuffle(step = 1000): void {
-        const missingNumberPosition = this.board.find(this.missingNumber);
-        if (!missingNumberPosition) {
-            return;
-        }
+    private shuffle(max = 1000): void {
+        while (this.isSorted) {
+            const missingNumberPosition = this.board.find(this.missingNumber);
+            if (!missingNumberPosition) {
+                return;
+            }
 
-        for (let index = 0; index < step; index++) {
-            for (const direction of RandomUtility.shuffle(Vector.all)) {
-                if (this.slide(missingNumberPosition.x + direction.x, missingNumberPosition.y + direction.y)) {
-                    missingNumberPosition.x += direction.x;
-                    missingNumberPosition.y += direction.y;
+            for (let index = 0; index < max; index++) {
+                for (const direction of RandomUtility.shuffle(Vector.all)) {
+                    if (this.slide(missingNumberPosition.x + direction.x, missingNumberPosition.y + direction.y)) {
+                        missingNumberPosition.x += direction.x;
+                        missingNumberPosition.y += direction.y;
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
