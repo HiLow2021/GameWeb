@@ -12,7 +12,7 @@ import { useContextSound } from '../../shared/utility/soundUtility';
 const SlidingPuzzle = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
 
-    const outerStrokeWidth = small ? 10 : 10;
+    const outerStrokeWidth = small ? 10 : 20;
     const outerStrokeWidthHalf = outerStrokeWidth / 2;
     const innerStrokeWidth = small ? 1 : 2;
     const innerStrokeWidthHalf = innerStrokeWidth / 2;
@@ -119,8 +119,8 @@ const SlidingPuzzle = (): JSX.Element => {
                                         width={cellWidth - innerStrokeWidth}
                                         height={cellHeight - innerStrokeWidth}
                                         crop={{
-                                            x: cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf,
-                                            y: cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf,
+                                            x: cellWidth * (coordinate.number % size) + outerStrokeWidth + innerStrokeWidthHalf,
+                                            y: cellHeight * Math.floor(coordinate.number / size) + outerStrokeWidth + innerStrokeWidthHalf,
                                             width: cellWidth,
                                             height: cellHeight
                                         }}
