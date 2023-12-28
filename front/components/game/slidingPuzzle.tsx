@@ -12,7 +12,7 @@ import { useContextSound } from '../../shared/utility/soundUtility';
 const SlidingPuzzle = (): JSX.Element => {
     const { width, height, small } = getGameComponentSize();
 
-    const outerStrokeWidth = small ? 10 : 20;
+    const outerStrokeWidth = small ? 10 : 10;
     const outerStrokeWidthHalf = outerStrokeWidth / 2;
     const innerStrokeWidth = small ? 1 : 2;
     const innerStrokeWidthHalf = innerStrokeWidth / 2;
@@ -21,7 +21,7 @@ const SlidingPuzzle = (): JSX.Element => {
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
     const imageDirectory = `game/slidingPuzzle/${width}/`;
-    const imageCountMax = 23; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
+    const imageCountMax = 29; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
 
     const [size, setSize] = useState(4);
     const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / size);
@@ -119,8 +119,8 @@ const SlidingPuzzle = (): JSX.Element => {
                                         width={cellWidth - innerStrokeWidth}
                                         height={cellHeight - innerStrokeWidth}
                                         crop={{
-                                            x: cellWidth * (coordinate.number % size) + outerStrokeWidth + innerStrokeWidthHalf,
-                                            y: cellHeight * Math.floor(coordinate.number / size) + outerStrokeWidth + innerStrokeWidthHalf,
+                                            x: cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf,
+                                            y: cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf,
                                             width: cellWidth,
                                             height: cellHeight
                                         }}
