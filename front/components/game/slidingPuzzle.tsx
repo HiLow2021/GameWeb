@@ -1,8 +1,9 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Group, Layer, Rect, Stage, Text } from 'react-konva';
+import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
+import { RandomUtility } from 'shared/utility/randomUtility';
 import { Coordinate } from '../../shared/game/slidingPuzzle/coordinate';
 import { getGameComponentSize } from '../../shared/utility/componentUtility';
 import { useContextSound } from '../../shared/utility/soundUtility';
@@ -18,14 +19,21 @@ const SlidingPuzzle = (): JSX.Element => {
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
+    const imageDirectory = `game/slidingPuzzle/${width}/`;
+    const imageCountMax = 23; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
 
     const [size, setSize] = useState(4);
     const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / size);
     const [cellHeight, setCellHeight] = useState((height - outerStrokeWidth * 2) / size);
     const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(size, size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+    const [imageNumber, setImageNumber] = useState(getRandomString(1, imageCountMax + 1));
+    const [imagePath, setImagePath] = useState(`${imageDirectory}${imageNumber}.webp`);
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
+
+    const image = new window.Image();
+    image.src = imagePath;
 
     const startSound = useContextSound('game/slidingPuzzle/sound.mp3');
 
@@ -66,12 +74,14 @@ const SlidingPuzzle = (): JSX.Element => {
         }
 
         setSlidingPuzzleManager(new SlidingPuzzleManager(size, size));
+        setImageNumber(getRandomString(1, imageCountMax + 1));
     }, [size]);
 
     useLayoutEffect(() => {
         setCellWidth((width - outerStrokeWidth * 2) / size);
         setCellHeight((height - outerStrokeWidth * 2) / size);
         setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+        setImagePath(`${imageDirectory}${imageNumber}.webp`);
     }, [slidingPuzzleManager, width, height]);
 
     return (
@@ -93,16 +103,6 @@ const SlidingPuzzle = (): JSX.Element => {
                             coordinate.number !== slidingPuzzleManager.missingNumber ? (
                                 <Group>
                                     <Rect
-                                        x={cellWidth * coordinate.x + outerStrokeWidth}
-                                        y={cellHeight * coordinate.y + outerStrokeWidth}
-                                        width={cellWidth}
-                                        height={cellHeight}
-                                        fillPriority="linear-gradient"
-                                        fillLinearGradientStartPoint={{ x: 0, y: 0 }}
-                                        fillLinearGradientEndPoint={{ x: cellWidth, y: cellHeight }}
-                                        fillLinearGradientColorStops={[0, '#EEEEEE', 1, '#BBBBBB']}
-                                    />
-                                    <Rect
                                         stroke="#888888"
                                         strokeWidth={innerStrokeWidth}
                                         x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
@@ -110,17 +110,26 @@ const SlidingPuzzle = (): JSX.Element => {
                                         width={cellWidth - innerStrokeWidth}
                                         height={cellHeight - innerStrokeWidth}
                                     />
-                                    <Text
-                                        text={coordinate.number != undefined ? (coordinate.number + 1).toString() : ''}
-                                        x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
-                                        y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
-                                        width={cellWidth}
-                                        height={cellHeight}
-                                        fill={coordinate.correct ? '#0088FF' : '#666666'}
-                                        fontSize={small ? 20 : 32}
-                                        align="center"
-                                        verticalAlign="middle"
-                                    />
+                                    {coordinate.number != undefined ? (
+                                        <Image
+                                            image={image}
+                                            x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
+                                            y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
+                                            width={cellWidth - innerStrokeWidth}
+                                            height={cellHeight - innerStrokeWidth}
+                                            crop={{
+                                                x: cellWidth * (coordinate.number % size) + outerStrokeWidth + innerStrokeWidthHalf,
+                                                y:
+                                                    cellHeight * Math.floor(coordinate.number / size) +
+                                                    outerStrokeWidth +
+                                                    innerStrokeWidthHalf,
+                                                width: cellWidth,
+                                                height: cellHeight
+                                            }}
+                                        />
+                                    ) : (
+                                        <></>
+                                    )}
                                 </Group>
                             ) : (
                                 <></>
@@ -180,8 +189,8 @@ const SlidingPuzzle = (): JSX.Element => {
                                 setSize(e.target.value as number);
                             }}
                         >
-                            {[...Array(7)].map((_, i) => (
-                                <MenuItem value={i + 4}>{i + 4}</MenuItem>
+                            {[...Array(3)].map((_, i) => (
+                                <MenuItem value={i + 3}>{i + 3}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -219,6 +228,14 @@ function convertCellsToCoordinates(cells: number[][]): Coordinate[] {
     }
 
     return coordinates;
+}
+
+function getRandomString(min: number, max: number): string {
+    const digit = max < 10 ? 2 : max.toString().length;
+    const number = RandomUtility.random(min, max + 1);
+    const numberString = number.toString().padStart(digit, '0');
+
+    return numberString;
 }
 
 export default SlidingPuzzle;
