@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, MenuItem, Select } from '@mui/material';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
+import { Image, Layer, Rect, Stage, Text } from 'react-konva';
 import { SlidingPuzzleManager } from 'shared/game/slidingPuzzle/slidingPuzzleManager';
 import { RandomUtility } from 'shared/utility/randomUtility';
 import { Coordinate } from '../../shared/game/slidingPuzzle/coordinate';
@@ -27,7 +27,7 @@ const SlidingPuzzle = (): JSX.Element => {
     const [cellHeight, setCellHeight] = useState((height - outerStrokeWidth * 2) / size);
     const [slidingPuzzleManager, setSlidingPuzzleManager] = useState<SlidingPuzzleManager>(new SlidingPuzzleManager(size, size));
     const [coordinates, setCoordinates] = useState<Coordinate[]>(convertCellsToCoordinates(slidingPuzzleManager.board.cells));
-    const [imageNumber, setImageNumber] = useState(getRandomString(1, imageCountMax + 1));
+    const [imageNumber, setImageNumber] = useState(getRandomString(1, imageCountMax));
     const [imagePath, setImagePath] = useState(`${imageDirectory}${imageNumber}.webp`);
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
@@ -74,14 +74,14 @@ const SlidingPuzzle = (): JSX.Element => {
         }
 
         setSlidingPuzzleManager(new SlidingPuzzleManager(size, size));
-        setImageNumber(getRandomString(1, imageCountMax + 1));
+        setImageNumber(getRandomString(1, imageCountMax));
     }, [size]);
 
     useLayoutEffect(() => {
         setCellWidth((width - outerStrokeWidth * 2) / size);
         setCellHeight((height - outerStrokeWidth * 2) / size);
-        setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
         setImagePath(`${imageDirectory}${imageNumber}.webp`);
+        setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     }, [slidingPuzzleManager, width, height]);
 
     return (
@@ -100,37 +100,20 @@ const SlidingPuzzle = (): JSX.Element => {
                     </Layer>
                     <Layer key="sliding-puzzle-piece-layer" listening={false}>
                         {coordinates.map((coordinate) =>
-                            coordinate.number !== slidingPuzzleManager.missingNumber ? (
-                                <Group>
-                                    <Rect
-                                        stroke="#888888"
-                                        strokeWidth={innerStrokeWidth}
-                                        x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
-                                        y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
-                                        width={cellWidth - innerStrokeWidth}
-                                        height={cellHeight - innerStrokeWidth}
-                                    />
-                                    {coordinate.number != undefined ? (
-                                        <Image
-                                            image={image}
-                                            x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
-                                            y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
-                                            width={cellWidth - innerStrokeWidth}
-                                            height={cellHeight - innerStrokeWidth}
-                                            crop={{
-                                                x: cellWidth * (coordinate.number % size) + outerStrokeWidth + innerStrokeWidthHalf,
-                                                y:
-                                                    cellHeight * Math.floor(coordinate.number / size) +
-                                                    outerStrokeWidth +
-                                                    innerStrokeWidthHalf,
-                                                width: cellWidth,
-                                                height: cellHeight
-                                            }}
-                                        />
-                                    ) : (
-                                        <></>
-                                    )}
-                                </Group>
+                            coordinate.number !== slidingPuzzleManager.missingNumber && coordinate.number != undefined ? (
+                                <Image
+                                    image={image}
+                                    x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
+                                    y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
+                                    width={cellWidth - innerStrokeWidth}
+                                    height={cellHeight - innerStrokeWidth}
+                                    crop={{
+                                        x: cellWidth * (coordinate.number % size) + outerStrokeWidth + innerStrokeWidthHalf,
+                                        y: cellHeight * Math.floor(coordinate.number / size) + outerStrokeWidth + innerStrokeWidthHalf,
+                                        width: cellWidth,
+                                        height: cellHeight
+                                    }}
+                                />
                             ) : (
                                 <></>
                             )
@@ -195,7 +178,24 @@ const SlidingPuzzle = (): JSX.Element => {
                         </Select>
                     </FormControl>
                 </div>
-                <div className="flex justify-center sm:justify-end">
+                <div className="flex justify-center gap-4 sm:justify-end">
+                    <Button
+                        className="h-10 w-32 sm:h-12 sm:w-48"
+                        fullWidth={false}
+                        variant="contained"
+                        color="primary"
+                        style={{ fontSize: small ? 18 : 24, fontWeight: small ? 'bold' : 'normal' }}
+                        onClick={() => {
+                            if (!canClick) {
+                                return;
+                            }
+
+                            slidingPuzzleManager.reset();
+                            setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+                        }}
+                    >
+                        リセット
+                    </Button>
                     <Button
                         className="h-10 w-32 sm:h-12 sm:w-48"
                         fullWidth={false}
@@ -208,10 +208,12 @@ const SlidingPuzzle = (): JSX.Element => {
                             }
 
                             slidingPuzzleManager.initialize();
+                            setImageNumber(getRandomString(1, imageCountMax));
+                            setImagePath(`${imageDirectory}${imageNumber}.webp`);
                             setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
                         }}
                     >
-                        リセット
+                        次の問題
                     </Button>
                 </div>
             </div>
