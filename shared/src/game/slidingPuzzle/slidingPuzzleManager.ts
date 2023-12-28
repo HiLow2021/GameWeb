@@ -1,9 +1,12 @@
+import { ArrayUtility } from '../../utility/arrayUtility';
 import { RandomUtility } from '../../utility/randomUtility';
 import { SlidingPuzzleBoard } from './slidingPuzzleBoard';
 import { Vector } from './vector';
 
 export class SlidingPuzzleManager {
     private _step = 0;
+
+    private _question: number[][];
 
     public readonly board: SlidingPuzzleBoard;
 
@@ -20,6 +23,7 @@ export class SlidingPuzzleManager {
     public constructor(width: number, height: number, missingNumber?: number) {
         this.board = new SlidingPuzzleBoard(width, height);
         this.missingNumber = missingNumber ?? this.board.square - 1;
+        this._question = ArrayUtility.create2Array(width, height);
 
         this.initialize();
         this.validate();
@@ -28,7 +32,13 @@ export class SlidingPuzzleManager {
     public initialize(): void {
         this.board.initialize();
         this.shuffle(this.board.square * this.board.square);
+        ArrayUtility.copy2Array(this.board.cells, this._question);
+        this.reset();
+    }
+
+    public reset(): void {
         this._step = 0;
+        ArrayUtility.copy2Array(this._question, this.board.cells);
     }
 
     public slide(x: number, y: number): boolean {
