@@ -20,8 +20,7 @@ const SlidingPuzzle = (): JSX.Element => {
     const textAreaMargin = 16;
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
-    const imageDirectory = `game/slidingPuzzle/${width}/`;
-    const imageCountMax = 29; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
+    const imageCountMax = 50; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
 
     const [size, setSize] = useState(4);
     const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / size);
@@ -31,20 +30,14 @@ const SlidingPuzzle = (): JSX.Element => {
     const [canClick, setCanClick] = useState(true);
     const [initial, setInitial] = useState(true);
 
-    const [imageNumber, setImageNumber] = useState(getRandomString(1, imageCountMax));
-    const [imagePath, setImagePath] = useState(`${imageDirectory}${imageNumber}.webp`);
+    const [imageNumber, setImageNumber] = useState(RandomUtility.random(1, imageCountMax + 1));
     const [display, setDisplay] = useState<Display>(Display.image);
-
-    const image = new window.Image();
-    image.src = imagePath;
 
     const startSound = useContextSound('game/slidingPuzzle/sound.mp3');
 
     const initialize = async () => {
-        slidingPuzzleManager.initialize();
-        setImageNumber(getRandomString(1, imageCountMax));
-        setImagePath(`${imageDirectory}${imageNumber}.webp`);
-        setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
+        setSlidingPuzzleManager(new SlidingPuzzleManager(size, size));
+        setImageNumber(RandomUtility.random(1, imageCountMax + 1));
     };
 
     const select = async (e: KonvaEventObject<Event>): Promise<void> => {
@@ -83,14 +76,12 @@ const SlidingPuzzle = (): JSX.Element => {
             return;
         }
 
-        setSlidingPuzzleManager(new SlidingPuzzleManager(size, size));
-        setImageNumber(getRandomString(1, imageCountMax));
+        initialize();
     }, [size]);
 
     useLayoutEffect(() => {
         setCellWidth((width - outerStrokeWidth * 2) / size);
         setCellHeight((height - outerStrokeWidth * 2) / size);
-        setImagePath(`${imageDirectory}${imageNumber}.webp`);
         setCoordinates(() => convertCellsToCoordinates(slidingPuzzleManager.board.cells));
     }, [slidingPuzzleManager, width, height]);
 
@@ -113,7 +104,7 @@ const SlidingPuzzle = (): JSX.Element => {
                             coordinate.number !== slidingPuzzleManager.missingNumber && coordinate.number != undefined ? (
                                 display === Display.image ? (
                                     <Image
-                                        image={image}
+                                        image={getImage(imageNumber, width)}
                                         x={cellWidth * coordinate.x + outerStrokeWidth + innerStrokeWidthHalf}
                                         y={cellHeight * coordinate.y + outerStrokeWidth + innerStrokeWidthHalf}
                                         width={cellWidth - innerStrokeWidth}
@@ -308,12 +299,15 @@ function convertCellsToCoordinates(cells: number[][]): Coordinate[] {
     return coordinates;
 }
 
-function getRandomString(min: number, max: number): string {
-    const digit = max < 10 ? 2 : max.toString().length;
-    const number = RandomUtility.random(min, max + 1);
+function getImage(number: number, width: number): HTMLImageElement {
+    const digit = number < 10 ? 2 : number.toString().length;
     const numberString = number.toString().padStart(digit, '0');
+    const path = `game/slidingPuzzle/${width}/${numberString}.webp`;
 
-    return numberString;
+    const image = new window.Image();
+    image.src = path;
+
+    return image;
 }
 
 export default SlidingPuzzle;
