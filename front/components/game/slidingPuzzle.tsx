@@ -21,7 +21,7 @@ const SlidingPuzzle = (): JSX.Element => {
     const textStrokeWidth = small ? 2 : 4;
     const textStrokeWidthHalf = textStrokeWidth / 2;
     const imageDirectory = `game/slidingPuzzle/${width}/`;
-    const imageCountMax = 29; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
+    const imageCountMax = 50; // 'public/game/slidingPuzzle/XXX/' の画像ファイル数に合わせる。
 
     const [size, setSize] = useState(4);
     const [cellWidth, setCellWidth] = useState((width - outerStrokeWidth * 2) / size);
